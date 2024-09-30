@@ -1,6 +1,25 @@
-## workhorse
-## could be implemented in C++
-## weights have to conform with order
+#' Fitter function for ordinal probit switching regression model
+#'
+#' This is the basic computing engine called by [`opsr`] used to fit ordinal
+#' probit switching regression models. Should usually *not* be used directly.
+#' Could be implemented in C++ for speed-up.
+#'
+#' @param Ws
+#' @param Xs
+#' @param Ys
+#' @param start
+#' @param weights a vector of weights to be used in the fitting process. Has to
+#'   conform with order (`w <- weights[order(Z)]`, where Z is the ordinal
+#'   outcome).
+#' @param method
+#' @param iterlim
+#' @param printLevel
+#' @param ...
+#'
+#' @return object of class `"maxLik" "maxim"`.
+#' @export
+#'
+#' @seealso Formula 6 (translates almost verbatim).
 opsr.fit <- function(Ws, Xs, Ys, start, weights,
                      method, iterlim, printLevel, ...) {
   nReg <- length(Xs)

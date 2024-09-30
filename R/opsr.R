@@ -1,6 +1,66 @@
-## high-level Formula interface to the workhorse opsr.fit()
-## most of the arguments of opsr() are passed to model.frame()
-## dots are passed to maxLik
+#' Fitting ordinal probit switching regression models
+#'
+#' High-level formula interface to the workhorse [`opsr.fit`].
+#'
+#' @param formula an object of class `"Formula" "formula"`: A symbolic description
+#'   of the model to be fitted. The details of model specification are given under
+#'   'Details'.
+#' @param data an optional data frame, list or environment (or object coercible by
+#'   [`as.data.frame`] to a data frame) containing the variables in the model. If
+#'   not found in `data`, the variables are taken from `environment(formula)`,
+#'   typically the environment from which `opsr` is called.
+#' @param subset an optional vector specifying a subset of observations to be used
+#'   in the fitting process. (See additional details about how this argument
+#'   interacts with data-dependent bases in the 'Details' section of the [`model.frame`]
+#'   documentation.).
+#' @param weights an optional vector of weights to be used in the fitting process.
+#'   Should be `NULL` or a numeric vector. If non-NULL, then observation-specific
+#'   log-likelihood contributions are multiplied by their corresponding weight
+#'   before summing.
+#' @param na.action a function which indicates what should happen when the data
+#'   contain `NA`s. The default is set by the `na.action` setting of [`options`],
+#'   and is [`na.fail`] if that is unset. The 'factory-fresh' default is [`na.omit`].
+#'   Another possible value is `NULL`, no action. Value [`na.exclude`] can be useful.
+#' @param start a named numeric vector with the starting values (passed to [`maxLik`]).
+#'   If no starting values are provided, reasonable values are auto-generated via
+#'   the 2-step procedure. The structure of `start` has to conform with `opsr`'s
+#'   expectations. An example is included in the error message if this should not
+#'   be the case.
+#' @param method defaults to `"NM"` (see [`maxLik`]).
+#' @param iterlim defaults to 50000 (see [`maxLik`]).
+#' @param printLevel defaults to 2 (see [`maxLik`]).
+#' @param ... passed to [`maxLik`]
+#'
+#' @return an object of class `"opsr" "maxLik" "maxim"`.
+#' @export
+#'
+#' @details
+#' Models for `opsr` are specified symbolically. A typical model has the form
+#' `selection_outcome | continuous_outcome ~ selection_process | continuous_process_1 | continuous_process_2 | ...`.
+#' `selection_outcome` is the ordered (numeric) response vector (starting from 1,
+#' in integer-increasing fashion). For the `process` specification the rules of
+#' the regular formula interface applies. See also [stats::lm] or the 'Examples'
+#' section below.  The intercept in the `selection_process` is excluded automatically
+#' (no need to specify `-1`). If the user wants to specify the same `process` for
+#' all groups, two processes are enough (`... ~ selection_process | generic_process`).
+#'
+#' @examples
+#' \dontrun{
+#' sim_dat <- sim_dat_1()
+#' dat <- sim_dat$data
+#' head(dat)
+#' formula <- Z | Y ~ X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2
+#' formula <- Z | Y ~ X1 + X2 | -1 + X1 + X2
+#' system.time(
+#'   fit <- opsr(formula, dat)
+#' )
+#' summary(fit)
+#' class(fit)
+#'
+#' ## ground truth
+#' sim_dat$params
+#' sim_dat$sigma
+#' }
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
                  method = "NM", iterlim = 50000, printLevel = 2, ...) {
   mf <- match.call(expand.dots = FALSE)
@@ -32,10 +92,10 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
          " without any gaps. However, unique levels are ", unique(Z))
   }
 
-  if (nParts != 1 && nParts != nReg + 1) {  # +1 for W (selection)
+  if (nParts != 2 && nParts != nReg + 1) {  # +1 for W (selection)
     stop("formula parts must match the number of selection outcomes + 1", nReg + 1,
-         " or 1 (if the same specification is used for the selection and all",
-         " continuous outcomes. However, ", nParts, " were specified.")
+         " or 2 (if the same specification is used for all continuous outcomes.",
+         " However, ", nParts, " were specified.")
   }
 
   w <- as.vector(model.weights(mf))
@@ -58,7 +118,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
 
   Xs <- lapply(seq_len(nReg), function(i) {
     ## if the same outcome equation applies
-    rhs <- ifelse(nParts == 1, 1, i + 1)  # first is for selection process
+    rhs <- ifelse(nParts == 2, 2, i + 1)  # first is for selection process
     X <- model.matrix(f, mf, rhs = rhs)
     X[Z == i, ]
   })

@@ -1,13 +1,6 @@
 # Notes
 
 
-## PROCEED ##
-Tidy up repo and think about next steps (probably make package dev version and share => minimal next steps for Xinyi)
-- Would be great to test opsr() with the data and specification from https://www.sciencedirect.com/science/article/pii/S0965856424001204
-- Could you share the data with me? It would be great to attach it to the package (and conduct a replication exercise - maybe for one table) - would this be possible?
-- opsr_generate_start() currently estimates an OL for the selection process and separate linear models for the outcomes (sigma is set to 1 and rho to 0). How did you implement the 2-step estimation procedure (to arrive at reasonable starting values)? Could you share the code (or feel free to implement it yourself)!
-- standard errors for conditional expectations / treatment effects (otherwise use delta method)
-- Do you have a github account => collaboration would be easiest via github (attached is the package)
 
 -[x] Generalization of own_loglik_imp => Formula (parsing) and preparing of inputs (in particular theta and its names => i.e. similar to mvProbitPrepareCoef() and mvProbitCoefNames()) => also implement some minimal checks of user input and try to conform to the suggestions below (e.g., first wrap Formula or metaprogramming for model.frame mf, etc.)
 -[x] Formula vignette (read printed from start)
