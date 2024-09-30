@@ -40,6 +40,7 @@ errors <- function(Sigma, nobs = 1000) {
 }
 
 ## hard-coded specification
+#' @export
 sim_dat_1 <- function(sigma = NULL) {
   ## same vars are important in all models
   W <- X <- obs_mat(p = 2, sd = 0.5)  # otherwise perfect separation
