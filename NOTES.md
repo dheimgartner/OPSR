@@ -27,6 +27,7 @@
 - The (conditional) expectation formulas in the paper can be used for predict function
   - Maybe one should add functionality to predict the ordered outcome in isolation
   - We should also compute the standard error of the (conditional) expectation (treatment effect)
+  - Using the delta method: see delta_method.R
 -[x] First in opsr(formula, ...) => wrap f <- Formula(formula)
 - How to create reasonable starting values? 2-step? For selection regular ordinal probit should do the trick, right? => how did Xinyi do it (also for sigma and rho)?
 - How to compute robust standard errors from maxLik output? => asked chat already => seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
@@ -38,3 +39,7 @@
 - Write test cases (e.g., hard-coded maxLik with simulated data should yield same)
   - However, you probably don't want to execute all of these tests on cran or package build...
 - BFGS converges much faster!
+-[ ] Formula 7 (conditional probability) => shouldn't it be W_j gamma (instead W gamma)?
+  - otherwise you have a dimensionality missmatch W gamma is a vector of length n
+  - And what about formula 8?
+- rho has to be positive, right? should we use log(rho) (or something) in max lik estimation? and then backtransform?

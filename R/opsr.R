@@ -147,6 +147,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   fit$start <- start
   fit$nReg <- nReg
   fit$nObs <- c(Total = nObs, setNames(c(table(Z)), paste0("o", seq_len(nReg))))
+  fit$nParts <- nParts
 
   class(fit) <- c("opsr", class(fit))
 

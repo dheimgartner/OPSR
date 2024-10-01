@@ -37,6 +37,13 @@ Ys <- lapply(seq_len(nReg), function(i) {
 })
 opsr_generate_start(W, Xs, Z, Ys)
 
-## predict
+## test predict
 devtools::load_all()
-predict(fit_nm, j = 1)
+summary(fit_bfgs)
+j <- 2
+p_pred <- predict(fit_bfgs, j = j)
+p_true <- dat$Y[dat$Z == j]
+plot(p_pred, p_true)
+
+p_counterfact <- predict(fit_bfgs, j = j, j_star = j + 1)
+plot(p_pred, p_counterfactual)
