@@ -37,3 +37,4 @@
 -[x] Check when to use intercepts (in particular for selection process)
 - Write test cases (e.g., hard-coded maxLik with simulated data should yield same)
   - However, you probably don't want to execute all of these tests on cran or package build...
+- BFGS converges much faster!

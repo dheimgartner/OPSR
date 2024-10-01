@@ -39,7 +39,7 @@
 #' `selection_outcome | continuous_outcome ~ selection_process | continuous_process_1 | continuous_process_2 | ...`.
 #' `selection_outcome` is the ordered (numeric) response vector (starting from 1,
 #' in integer-increasing fashion). For the `process` specification the rules of
-#' the regular formula interface applies. See also [stats::lm] or the 'Examples'
+#' the regular formula interface apply. See also [stats::lm] or the 'Examples'
 #' section below.  The intercept in the `selection_process` is excluded automatically
 #' (no need to specify `-1`). If the user wants to specify the same `process` for
 #' all groups, two processes are enough (`... ~ selection_process | generic_process`).
@@ -143,6 +143,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
 
   ## return also some other useful information
   fit$call <- match.call()
+  fit$formula <- f
   fit$start <- start
   fit$nReg <- nReg
   fit$nObs <- c(Total = nObs, setNames(c(table(Z)), paste0("o", seq_len(nReg))))

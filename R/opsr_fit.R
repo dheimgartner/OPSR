@@ -45,7 +45,7 @@ opsr.fit <- function(Ws, Xs, Ys, start, weights,
 
   loglik <- function(theta) {
     ## do as little as possible in here (gets called many times)
-    theta_ <- opsr_prepare_theta(theta, nReg)
+    theta_ <- opsr_prepare_coefs(theta, nReg)
     ll <- vector(mode = "list", length = nReg)
     for (i in seq_len(nReg)) {
       theta_j <- theta_[[i]]

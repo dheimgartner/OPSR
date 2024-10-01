@@ -1,6 +1,6 @@
 ## list of length nReg
 ## each list element contains right gamma, kappa_j_1, kappa_j, beta_j, sigma_j, rho_j
-opsr_prepare_theta <- function(theta, nReg) {
+opsr_prepare_coefs <- function(theta, nReg) {
   coef_names <- names(theta)
   gamma <- theta[grepl("^s_", coef_names)]
   kappa <- c(-Inf, theta[grepl("^kappa", coef_names)], Inf)

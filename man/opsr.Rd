@@ -67,7 +67,7 @@ Models for \code{opsr} are specified symbolically. A typical model has the form
 \code{selection_outcome | continuous_outcome ~ selection_process | continuous_process_1 | continuous_process_2 | ...}.
 \code{selection_outcome} is the ordered (numeric) response vector (starting from 1,
 in integer-increasing fashion). For the \code{process} specification the rules of
-the regular formula interface applies. See also \link[stats:lm]{stats::lm} or the 'Examples'
+the regular formula interface apply. See also \link[stats:lm]{stats::lm} or the 'Examples'
 section below.  The intercept in the \code{selection_process} is excluded automatically
 (no need to specify \code{-1}). If the user wants to specify the same \code{process} for
 all groups, two processes are enough (\code{... ~ selection_process | generic_process}).
