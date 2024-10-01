@@ -1,5 +1,8 @@
 # Notes
 
+- Render vignette using devtools::build_vignettes() => renders to doc
+  - Conform to jss-template.Rnw styleguide
+  - This uses the Sweave engine and chunk options
 
 
 -[x] Generalization of own_loglik_imp => Formula (parsing) and preparing of inputs (in particular theta and its names => i.e. similar to mvProbitPrepareCoef() and mvProbitCoefNames()) => also implement some minimal checks of user input and try to conform to the suggestions below (e.g., first wrap Formula or metaprogramming for model.frame mf, etc.)
