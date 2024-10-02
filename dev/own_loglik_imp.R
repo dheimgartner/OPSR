@@ -6,7 +6,7 @@ library(maxLik)
 
 rm(list = ls())
 
-sim_dat <- sim_dat_1()
+sim_dat <- opsr_simulate()
 true_params <- sim_dat$params
 dat <- sim_dat$data
 

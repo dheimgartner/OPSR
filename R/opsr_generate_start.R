@@ -1,7 +1,7 @@
-#' 2-step regression to generate reasonable starting values.
+#' 2-step regression to generate reasonable starting values
 #'
 #' Currently, separate ordinal probit regression and linear regression and
-#' setting sigma to 1 and rho to 0. Should be improved!
+#' setting sigma and rho to 0.5. Should be improved!
 #'
 #' @param W
 #' @param Xs
@@ -14,7 +14,7 @@
 #' @examples
 #' \dontrun{
 #' ## generate the arguments (as done by opsr())
-#' sim_dat <- sim_dat_1()
+#' sim_dat <- opsr_simulate()
 #' dat <- sim_dat$data
 #' W <- as.matrix(dat[, c("X1", "X2")])
 #' Z <- dat$Z
@@ -64,10 +64,10 @@ opsr_generate_start <- function(W, Xs, Z, Ys) {
   })
   betas <- unlist(betas)
 
-  sigma <- rep(1, nReg)
+  sigma <- rep(0.5, nReg)
   names(sigma) <- paste0("sigma", 1:length(sigma))
 
-  rho <- rep(0, nReg)
+  rho <- rep(0.5, nReg)
   names(rho) <- paste0("rho", 1:length(rho))
 
   c(kappa, gamma, betas, sigma, rho)

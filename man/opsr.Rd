@@ -11,7 +11,7 @@ opsr(
   weights,
   na.action,
   start = NULL,
-  method = "NM",
+  method = "BFGS",
   iterlim = 50000,
   printLevel = 2,
   ...
@@ -48,13 +48,13 @@ the 2-step procedure. The structure of \code{start} has to conform with \code{op
 expectations. An example is included in the error message if this should not
 be the case.}
 
-\item{method}{defaults to \code{"NM"} (see \code{\link{maxLik}}).}
+\item{method}{defaults to \code{"BFGS"} (see \code{\link{maxLik}}).}
 
 \item{iterlim}{defaults to 50000 (see \code{\link{maxLik}}).}
 
 \item{printLevel}{defaults to 2 (see \code{\link{maxLik}}).}
 
-\item{...}{passed to \code{\link{maxLik}}}
+\item{...}{passed to \code{\link{maxLik}}.}
 }
 \value{
 an object of class \verb{"opsr" "maxLik" "maxim"}.
@@ -64,21 +64,21 @@ High-level formula interface to the workhorse \code{\link{opsr.fit}}.
 }
 \details{
 Models for \code{opsr} are specified symbolically. A typical model has the form
-\code{selection_outcome | continuous_outcome ~ selection_process | continuous_process_1 | continuous_process_2 | ...}.
-\code{selection_outcome} is the ordered (numeric) response vector (starting from 1,
-in integer-increasing fashion). For the \code{process} specification the rules of
+\code{ys | yo ~ terms_s | terms_o1 | terms_o2 | ...}.
+\code{ys} is the ordered (numeric) response vector (starting from 1,
+in integer-increasing fashion). For the \code{terms} specification the rules of
 the regular formula interface apply. See also \link[stats:lm]{stats::lm} or the 'Examples'
-section below.  The intercept in the \code{selection_process} is excluded automatically
-(no need to specify \code{-1}). If the user wants to specify the same \code{process} for
-all groups, two processes are enough (\code{... ~ selection_process | generic_process}).
+section below.  The intercept in the \code{terms_s} (selection process) is excluded automatically
+(no need to specify \code{-1}). If the user wants to specify the same process for
+all groups and the OL model, one processes is enough (\code{ys | yo ~ terms}).
 }
 \examples{
 \dontrun{
-sim_dat <- sim_dat_1()
+sim_dat <- opsr_simulate()
 dat <- sim_dat$data
 head(dat)
 formula <- Z | Y ~ X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2
-formula <- Z | Y ~ X1 + X2 | -1 + X1 + X2
+formula <- Z | Y ~ -1 + X1 + X2  # equivalent to above
 system.time(
   fit <- opsr(formula, dat)
 )

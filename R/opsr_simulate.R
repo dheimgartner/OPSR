@@ -1,4 +1,3 @@
-
 obs_mat <- function(nobs = 1000, p, sd = 1) {
   obs_mat <- matrix(nrow = nobs, ncol = p)
   for (i in seq(p)) {
@@ -39,11 +38,10 @@ errors <- function(Sigma, nobs = 1000) {
   errors
 }
 
-## hard-coded specification
 #' @export
-sim_dat_1 <- function(sigma = NULL) {
+opsr_simulate <- function(sigma = NULL) {
   ## same vars are important in all models
-  W <- X <- obs_mat(p = 2, sd = 0.5)  # otherwise perfect separation
+  W <- X <- obs_mat(p = 2, sd = 1)  # otherwise perfect separation
 
   if (is.null(sigma)) {
     sigma <- matrix(c(
@@ -63,12 +61,13 @@ sim_dat_1 <- function(sigma = NULL) {
   kappa <- c(-2, 1)
   z <- Z(kappa, J = 3, cali_z)
 
-  b1 <- c(1, 1.1)
-  b2 <- c(-1, 1.5)
-  b3 <- c(1.6, -2)
-  y1 <- y_j(X, b1, eta1)
-  y2 <- y_j(X, b2, eta2)
-  y3 <- y_j(X, b3, eta3)
+  b1 <- c(1, 2, 1.1)
+  b2 <- c(1, -1, 1.5)
+  b3 <- c(1, 1.6, -2)
+  X_ <- cbind(1, X)
+  y1 <- y_j(X_, b1, eta1)
+  y2 <- y_j(X_, b2, eta2)
+  y3 <- y_j(X_, b3, eta3)
 
   params <- list(
     gamma = gamma,

@@ -25,15 +25,17 @@
   - the lm just parses the formula and prepares the input
   - see 4 steps in Formula vignette
   -[x] understand (1) processing the call
-- lm() which is a high-level formula interface to the work-horse lm.fit() function
+-[x] lm() which is a high-level formula interface to the work-horse lm.fit() function
   -[x] Follow this convention opsr() and opsr.fit()
-- The (conditional) expectation formulas in the paper can be used for predict function
+-[x] The (conditional) expectation formulas in the paper can be used for predict function
   - Maybe one should add functionality to predict the ordered outcome in isolation
   - We should also compute the standard error of the (conditional) expectation (treatment effect)
   - Using the delta method: see delta_method.R
+    - However, not that easy...
 -[x] First in opsr(formula, ...) => wrap f <- Formula(formula)
-- How to create reasonable starting values? 2-step? For selection regular ordinal probit should do the trick, right? => how did Xinyi do it (also for sigma and rho)?
-- How to compute robust standard errors from maxLik output? => asked chat already => seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
+-[ ] How to create reasonable starting values? 2-step? For selection regular ordinal probit should do the trick, right? => how did Xinyi do it (also for sigma and rho)?
+  - See maybe Chiburis and/or Jimenez (references in Xinyu)
+-[ ] How to compute robust standard errors from maxLik output? => asked chat already => seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
   - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!
   - I think robust se and stuff should be computed in summary.opsr
     - default summary.maxLik() already useful => just wrap?
@@ -42,7 +44,10 @@
 - Write test cases (e.g., hard-coded maxLik with simulated data should yield same)
   - However, you probably don't want to execute all of these tests on cran or package build...
 - BFGS converges much faster!
--[ ] Formula 7 (conditional probability) => shouldn't it be W_j gamma (instead W gamma)?
+-[x] Formula 7 (conditional probability) => shouldn't it be W_j gamma (instead W gamma)?
   - otherwise you have a dimensionality missmatch W gamma is a vector of length n
   - And what about formula 8?
 - rho has to be positive, right? should we use log(rho) (or something) in max lik estimation? and then backtransform?
+- Tobit-5 model (switching regression for binary regime) => see sampleSelection
+  - make sense of terminology (general multiple process models or something => difference to heckman, hurdle, zero-inflated, tobit, simultaneous equation, etc.)
+- Identification issues?

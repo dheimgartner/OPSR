@@ -5,7 +5,7 @@ devtools::load_all()
 rm(list = ls())
 
 ## here 1 OP and 3 regression specifications
-sim_dat <- sim_dat_1()
+sim_dat <- opsr_simulate()
 true_params <- sim_dat$params
 dat <- sim_dat$data
 

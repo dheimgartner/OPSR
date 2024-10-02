@@ -4,7 +4,7 @@ library(tidyverse)
 
 rm(list = ls())
 
-sd1 <- sim_dat_1()
+sd1 <- opsr_simulate()
 plot.errors(sd1$errors)
 
 estimate <- function(sim_dat) {
@@ -29,11 +29,11 @@ extract_coefs <- function(fit_list) {
 all_coefs <- extract_coefs(fit1)
 
 simulation_study <- function(n = 100, sigma = NULL) {
-  sd1 <- sim_dat_1(sigma)
+  sd1 <- opsr_simulate(sigma)
   true_params <- sd1$params
   errors <- sd1$errors
   all_coefs <- lapply(1:n, function(x) {
-    sim <- sim_dat_1(sigma)
+    sim <- opsr_simulate(sigma)
     fit <- estimate(sim)
     all_coefs <- extract_coefs(fit)
     all_coefs
@@ -141,9 +141,9 @@ plot_truncated <- function(sim_dat) {
 (p1 <- plot_truncated(sd1))
 
 sigma2
-sd2 <- sim_dat_1(sigma = sigma2)
+sd2 <- opsr_simulate(sigma = sigma2)
 (p2 <- plot_truncated(sd2))
 
 sigma3
-sd3 <- sim_dat_1(sigma = sigma3)
+sd3 <- opsr_simulate(sigma = sigma3)
 (p3 <- plot_truncated(sd3))

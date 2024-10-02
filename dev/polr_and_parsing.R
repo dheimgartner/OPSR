@@ -8,7 +8,7 @@ rm(list = ls())
 
 polr
 
-sd1 <- sim_dat_1()
+sd1 <- opsr_simulate()
 dat <- sd1$data
 
 doit <- function() {
