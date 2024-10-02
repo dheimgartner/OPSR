@@ -15,6 +15,10 @@
 #' @return list of design matrices `X_j` and `W_j`.
 #' @export
 opsr_model_matrices <- function(object, yo, newdata = NULL, z = NULL) {
+
+  warning("Does not apply subset and stuff... Should it? See how others do this",
+          " usually in model.matrix.class.")
+
   if (is.null(newdata)) {
     data_env <- environment(object$formula)
     data_nm <- object$call$data
@@ -23,7 +27,7 @@ opsr_model_matrices <- function(object, yo, newdata = NULL, z = NULL) {
     data <- newdata
   }
 
-  j <- ifelse(yo >= object$nParts, 1, yo + 1)  # if same specification for all outcomes (first is selection)
+  j <- ifelse(yo >= object$nParts, 2, yo + 1)  # if same specification for all outcomes (first is selection)
   X <- model.matrix(object$formula, data = data, rhs = j)
   Z <- Formula::model.part(object$formula, data = data, lhs = 1, drop = TRUE)
   W <- model.matrix(update(object$formula, ~ . -1), data = data, rhs = 1)  # again, drop intercept

@@ -42,20 +42,25 @@
 #' the regular formula interface apply. See also [stats::lm] or the 'Examples'
 #' section below.  The intercept in the `terms_s` (selection process) is excluded automatically
 #' (no need to specify `-1`). If the user wants to specify the same process for
-#' all groups and the OL model, one processes is enough (`ys | yo ~ terms`).
+#' all continuous outcomes, two processes are enough (`ys | yo ~ terms_s | terms_o`).
+#' Note that the model is poorly identifyable if `terms_s == terms_o` (same regressors
+#' are used in selection and outcome processes).
 #'
 #' @examples
 #' \dontrun{
 #' sim_dat <- opsr_simulate()
 #' dat <- sim_dat$data
-#' head(dat)
-#' formula <- Z | Y ~ X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2
-#' formula <- Z | Y ~ -1 + X1 + X2  # equivalent to above
+#' formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
+#' formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above
 #' system.time(
-#'   fit <- opsr(formula, dat)
+#'   fit_nm <- opsr(formula, dat, method = "NM")
 #' )
-#' summary(fit)
-#' class(fit)
+#' system.time(
+#'   fit_bfgs <- opsr(formula, dat, method = "BFGS")
+#' )
+#' summary(fit_nm)
+#' summary(fit_bfgs)
+#' class(fit_bfgs)
 #'
 #' ## ground truth
 #' sim_dat$params
@@ -92,10 +97,10 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
          " without any gaps. However, unique levels are ", unique(Z))
   }
 
-  if (nParts != 1 && nParts != nReg + 1) {  # +1 for W (selection)
+  if (nParts != 2 && nParts != nReg + 1) {  # +1 for W (selection)
     stop("formula parts must match the number of selection outcomes + 1", nReg + 1,
-         " or 1 (if the same specification is used for all outcomes. However, ",
-         nParts, " were specified.")
+         " or 2 (if the same specification is used for all continuous outcomes.",
+         " However, ", nParts, " were specified.")
   }
 
   w <- as.vector(model.weights(mf))
@@ -118,7 +123,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
 
   Xs <- lapply(seq_len(nReg), function(i) {
     ## if the same outcome equation applies
-    rhs <- ifelse(nParts == 1, 1, i + 1)  # first is for selection process
+    rhs <- ifelse(nParts == 2, 2, i + 1)  # first is for selection process
     X <- model.matrix(f, mf, rhs = rhs)
     X[Z == i, ]
   })

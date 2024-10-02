@@ -40,8 +40,11 @@ errors <- function(Sigma, nobs = 1000) {
 
 #' @export
 opsr_simulate <- function(sigma = NULL) {
-  ## same vars are important in all models
-  W <- X <- obs_mat(p = 2, sd = 1)  # otherwise perfect separation
+  ## same regressors in selection and outcome might lead to identification issues
+  X <- obs_mat(p = 2, sd = 1)
+  colnames(X) <- paste0("xo", 1:ncol(X))
+  W <- obs_mat(p = 2, sd = 1)
+  colnames(W) <- paste0("xs", 1:ncol(X))
 
   if (is.null(sigma)) {
     sigma <- matrix(c(
@@ -78,8 +81,9 @@ opsr_simulate <- function(sigma = NULL) {
   )
 
   data <- data.frame(
-    Z = z,
-    Y = ifelse(z == 1, y1, ifelse(z == 2, y2, y3)),
+    ys = z,
+    yo = ifelse(z == 1, y1, ifelse(z == 2, y2, y3)),
+    W,
     X
   )
 

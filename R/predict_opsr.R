@@ -32,7 +32,7 @@ predict.opsr <- function(object, newdata, yo, ys = NULL) {
   X <- opsr_model_matrices(object, yo, newdata)
   X_j <- X$X_j
   W_j <- X$W_j
-  coefs_j <- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[j]]
+  coefs_j <- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[yo]]
 
   if (!is.null(ys)) {
     X_star <- opsr_model_matrices(object, ys, newdata, z = yo)

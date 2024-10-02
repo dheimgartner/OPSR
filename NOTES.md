@@ -51,6 +51,6 @@
 - Tobit-5 model (switching regression for binary regime) => see sampleSelection
   - make sense of terminology (general multiple process models or something => difference to heckman, hurdle, zero-inflated, tobit, simultaneous equation, etc.)
 - Identification issues?
-  - See page 551 in Cameron => could be due to same explanatory variables X in all processes!
+  - See page 551 in Cameron => could be due to same explanatory variables X in all processes! => note this in paper!
   - Maybe change in opsr() => must specify different processes (for selection and outcome)
 -[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
