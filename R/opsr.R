@@ -26,31 +26,31 @@
 #'   the 2-step procedure. The structure of `start` has to conform with `opsr`'s
 #'   expectations. An example is included in the error message if this should not
 #'   be the case.
-#' @param method defaults to `"NM"` (see [`maxLik`]).
+#' @param method defaults to `"BFGS"` (see [`maxLik`]).
 #' @param iterlim defaults to 50000 (see [`maxLik`]).
 #' @param printLevel defaults to 2 (see [`maxLik`]).
-#' @param ... passed to [`maxLik`]
+#' @param ... passed to [`maxLik`].
 #'
 #' @return an object of class `"opsr" "maxLik" "maxim"`.
 #' @export
 #'
 #' @details
 #' Models for `opsr` are specified symbolically. A typical model has the form
-#' `selection_outcome | continuous_outcome ~ selection_process | continuous_process_1 | continuous_process_2 | ...`.
-#' `selection_outcome` is the ordered (numeric) response vector (starting from 1,
-#' in integer-increasing fashion). For the `process` specification the rules of
+#' `ys | yo ~ terms_s | terms_o1 | terms_o2 | ...`.
+#' `ys` is the ordered (numeric) response vector (starting from 1,
+#' in integer-increasing fashion). For the `terms` specification the rules of
 #' the regular formula interface apply. See also [stats::lm] or the 'Examples'
-#' section below.  The intercept in the `selection_process` is excluded automatically
-#' (no need to specify `-1`). If the user wants to specify the same `process` for
-#' all groups, two processes are enough (`... ~ selection_process | generic_process`).
+#' section below.  The intercept in the `terms_s` (selection process) is excluded automatically
+#' (no need to specify `-1`). If the user wants to specify the same process for
+#' all groups and the OL model, one processes is enough (`ys | yo ~ terms`).
 #'
 #' @examples
 #' \dontrun{
-#' sim_dat <- sim_dat_1()
+#' sim_dat <- opsr_simulate()
 #' dat <- sim_dat$data
 #' head(dat)
 #' formula <- Z | Y ~ X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2
-#' formula <- Z | Y ~ X1 + X2 | -1 + X1 + X2
+#' formula <- Z | Y ~ -1 + X1 + X2  # equivalent to above
 #' system.time(
 #'   fit <- opsr(formula, dat)
 #' )
@@ -62,7 +62,7 @@
 #' sim_dat$sigma
 #' }
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
-                 method = "NM", iterlim = 50000, printLevel = 2, ...) {
+                 method = "BFGS", iterlim = 50000, printLevel = 2, ...) {
   mf <- match.call(expand.dots = FALSE)
   m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
   mf <- mf[c(1, m)]
@@ -92,10 +92,10 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
          " without any gaps. However, unique levels are ", unique(Z))
   }
 
-  if (nParts != 2 && nParts != nReg + 1) {  # +1 for W (selection)
+  if (nParts != 1 && nParts != nReg + 1) {  # +1 for W (selection)
     stop("formula parts must match the number of selection outcomes + 1", nReg + 1,
-         " or 2 (if the same specification is used for all continuous outcomes.",
-         " However, ", nParts, " were specified.")
+         " or 1 (if the same specification is used for all outcomes. However, ",
+         nParts, " were specified.")
   }
 
   w <- as.vector(model.weights(mf))
@@ -118,7 +118,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
 
   Xs <- lapply(seq_len(nReg), function(i) {
     ## if the same outcome equation applies
-    rhs <- ifelse(nParts == 2, 2, i + 1)  # first is for selection process
+    rhs <- ifelse(nParts == 1, 1, i + 1)  # first is for selection process
     X <- model.matrix(f, mf, rhs = rhs)
     X[Z == i, ]
   })
