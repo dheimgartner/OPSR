@@ -49,8 +49,21 @@
   - And what about formula 8?
 - rho has to be positive, right? should we use log(rho) (or something) in max lik estimation? and then backtransform?
 - Tobit-5 model (switching regression for binary regime) => see sampleSelection
-  - make sense of terminology (general multiple process models or something => difference to heckman, hurdle, zero-inflated, tobit, simultaneous equation, etc.)
+  - make sense of terminology (general multiple process models or something => difference to heckman, hurdle, zero-inflated, tobit, simultaneous equation, etc.) => see Cameron
 - Identification issues?
   - See page 551 in Cameron => could be due to same explanatory variables X in all processes! => note this in paper!
   - Maybe change in opsr() => must specify different processes (for selection and outcome)
 -[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
+
+
+
+Cameron is an excellent review!
+- Tobit models originally developed to handle truncated, censored or interval data
+  - Only one latent process y* that determines both the censoring mechanism and the outcome
+- Then generalization of the original Tobit model => Two-part models (excessive zeros) and sample selection models (where we only observe an outcome for a subsample of the whole population)
+  - These generalizations come with many different names type 2 (5) Tobit model, generalized Tobit model, sample selection model or if the selection mechanism is named specifically probit selection equation.
+  - However, conceptually, they are all very similar.
+- A further generalization is then the switching regression, where the outcome is not only observed for a subsample but the population is partitioned into different groupes (regimes) and a separate process governs the observed outcome.
+- So maybe at the conceptual highest level it is easiest to differentiate whether y censored or truncated, observed only for a subsample or observed for the full sample but stemming from separate processes.
+- Many different variants can then be derived by either placing different distributional assumptions on the errors of these latent processes (e.g. multivariate normal) and/or how the latent process manifests into observed outcomes (e.g., continuous outcomes vs. binary outcomes). While originally the sample selection models were developed for binary selection, also the selection process can be extended even to the multivariate case.
+- All of these variantes have the same legitimization - namely that regular OLS is rendered inconsistent if the errors of the latent processes are correlated.
