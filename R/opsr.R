@@ -98,8 +98,8 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   }
 
   if (nParts != 2 && nParts != nReg + 1) {  # +1 for W (selection)
-    stop("formula parts must match the number of selection outcomes + 1", nReg + 1,
-         " or 2 (if the same specification is used for all continuous outcomes.",
+    stop("formula parts must match the number of selection outcomes + 1 (", nReg + 1,
+         ") or 2 (if the same specification is used for all continuous outcomes.",
          " However, ", nParts, " were specified.")
   }
 
