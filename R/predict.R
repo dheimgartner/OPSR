@@ -10,12 +10,12 @@
 #' @param object an object of class `"opsr"`.
 #' @param newdata an optional data frame in which to look for variables used in
 #'   `object$formula`. If omitted, `environment(object$formula)` is used. See
-#'   also [`opsr_model_matrices`].
-#' @param yo predict outcome of this group.
-#' @param ys predict outcome `yo` given counterfactual selection `ys`.
+#'   also [`model.matrix.opsr`].
+#' @param group predict outcome of this group.
+#' @param counterfact counterfactual group.
 #'
 #' @export
-predict.opsr <- function(object, newdata, yo, ys = NULL) {
+predict.opsr <- function(object, newdata, group, counterfact = NULL, ...) {
   predict_opsr <- function(X_j, W_j, beta_j, rho_j, sigma_j, kappa_j_1, kappa_j, gamma) {
     Xb <- X_j %*% beta_j
     Wg <- W_j %*% gamma
@@ -28,25 +28,24 @@ predict.opsr <- function(object, newdata, yo, ys = NULL) {
   }
 
   ## prepare inputs for function from args
-  newdata <- if (missing(newdata)) NULL
-  X <- opsr_model_matrices(object, yo, newdata)
-  X_j <- X$X_j
-  W_j <- X$W_j
-  coefs_j <- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[yo]]
+  mm <- model.matrix(object, data = newdata)
+  X <- mm$X[[group]]
+  W <- mm$W[[group]]
+  coefs_j <- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[group]]
 
-  if (!is.null(ys)) {
-    X_star <- opsr_model_matrices(object, ys, newdata, z = yo)
-    coefs_j_star <- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[ys]]
+  if (!is.null(counterfact)) {
+    mm <- model.matrix(object, data = newdata, filter = group)
+    coefs_j_<- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[counterfact]]
     ## overwrite
-    X_j <- X_star$X_j
-    W_j <- X_star$W_j
-    coefs_j[["beta_j"]] <- coefs_j_star[["beta_j"]]
-    coefs_j[["rho_j"]] <- coefs_j_star[["rho_j"]]
-    coefs_j[["sigma_j"]] <- coefs_j_star[["sigma_j"]]
+    X <- mm$X[[counterfact]]
+    W <- mm$W[[counterfact]]
+    coefs_j[["beta_j"]] <- coefs_j_[["beta_j"]]
+    coefs_j[["rho_j"]] <- coefs_j_[["rho_j"]]
+    coefs_j[["sigma_j"]] <- coefs_j_[["sigma_j"]]
   }
 
   ## is kappa_j_1 -Inf and kappa_j Inf a problem => don't think so
-  p <- predict_opsr(X$X_j, X$W_j, coefs_j[["beta_j"]], coefs_j[["rho_j"]],
+  p <- predict_opsr(X, W, coefs_j[["beta_j"]], coefs_j[["rho_j"]],
                     coefs_j[["sigma_j"]], coefs_j[["kappa_j_1"]], coefs_j[["kappa_j"]],
                     coefs_j[["gamma"]])
 

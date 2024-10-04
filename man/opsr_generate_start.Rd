@@ -15,12 +15,12 @@ setting sigma and rho to 0.5. Should be improved!
 }
 \examples{
 \dontrun{
-## generate the arguments (as done by opsr())
+## tick: this is done by opsr() internally
 sim_dat <- opsr_simulate()
 dat <- sim_dat$data
-W <- as.matrix(dat[, c("X1", "X2")])
-Z <- dat$Z
-Y <- dat$Y
+W <- as.matrix(dat[, c("xs1", "xs2")])
+Z <- dat$ys
+Y <- dat$yo
 nReg <- length(unique(Z))
 Xs <- lapply(seq_len(nReg), function(i) {
   X <- W
@@ -29,6 +29,7 @@ Xs <- lapply(seq_len(nReg), function(i) {
 Ys <- lapply(seq_len(nReg), function(i) {
   Y[Z == i]
 })
+## tock
 
 opsr_generate_start(W, Xs, Z, Ys)
 }

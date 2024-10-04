@@ -70,20 +70,25 @@ in integer-increasing fashion). For the \code{terms} specification the rules of
 the regular formula interface apply. See also \link[stats:lm]{stats::lm} or the 'Examples'
 section below.  The intercept in the \code{terms_s} (selection process) is excluded automatically
 (no need to specify \code{-1}). If the user wants to specify the same process for
-all groups and the OL model, one processes is enough (\code{ys | yo ~ terms}).
+all continuous outcomes, two processes are enough (\code{ys | yo ~ terms_s | terms_o}).
+Note that the model is poorly identifyable if \code{terms_s == terms_o} (same regressors
+are used in selection and outcome processes).
 }
 \examples{
 \dontrun{
 sim_dat <- opsr_simulate()
 dat <- sim_dat$data
-head(dat)
-formula <- Z | Y ~ X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2 | -1 + X1 + X2
-formula <- Z | Y ~ -1 + X1 + X2  # equivalent to above
+formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
+formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above
 system.time(
-  fit <- opsr(formula, dat)
+  fit_nm <- opsr(formula, dat, method = "NM")
 )
-summary(fit)
-class(fit)
+system.time(
+  fit_bfgs <- opsr(formula, dat, method = "BFGS")
+)
+summary(fit_nm)
+summary(fit_bfgs)
+class(fit_bfgs)
 
 ## ground truth
 sim_dat$params

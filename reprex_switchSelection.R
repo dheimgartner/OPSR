@@ -38,3 +38,6 @@ fit <- msel(list(ys ~ xs1 + xs2),
             data = dat)
 
 summary(fit)
+class(fit)
+
+predict(fit)

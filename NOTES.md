@@ -48,12 +48,16 @@
   - otherwise you have a dimensionality missmatch W gamma is a vector of length n
   - And what about formula 8?
 - rho has to be positive, right? should we use log(rho) (or something) in max lik estimation? and then backtransform?
+  - Doesn't have to be! In Stata they censor rho to lie in [-0.85, 0.85] => so if in 2-step rho = 0.86 they use rho = 0.85
 - Tobit-5 model (switching regression for binary regime) => see sampleSelection
   - make sense of terminology (general multiple process models or something => difference to heckman, hurdle, zero-inflated, tobit, simultaneous equation, etc.) => see Cameron
 - Identification issues?
   - See page 551 in Cameron => could be due to same explanatory variables X in all processes! => note this in paper!
   - Maybe change in opsr() => must specify different processes (for selection and outcome)
 -[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
+- Mention switchSelection very powerful and much more flexible than OPSR (however, accompanying papers only in Russian) and rather for advanced users - provide example.
+- How to compute standard errors for the 2-step procedure (use sigma_hat_j) => then similar to regular OLS => i.e., sigma_hat^2 (X'X)^-1
+- Wald test on H0: rho1 == rho2 == ... (see stata paper)
 
 
 
@@ -63,7 +67,8 @@ Cameron is an excellent review!
 - Then generalization of the original Tobit model => Two-part models (excessive zeros) and sample selection models (where we only observe an outcome for a subsample of the whole population)
   - These generalizations come with many different names type 2 (5) Tobit model, generalized Tobit model, sample selection model or if the selection mechanism is named specifically probit selection equation.
   - However, conceptually, they are all very similar.
-- A further generalization is then the switching regression, where the outcome is not only observed for a subsample but the population is partitioned into different groupes (regimes) and a separate process governs the observed outcome.
+- A further generalization is then the switching regression, where the outcome is not only observed for a subsample but the population is partitioned into different groupes (regimes) and a separate process governs the observed outcome. E.g., originally known as the Roy model (also referred to as switching regression model in Maddala and Tobit type 5 model in Amemiya) which is a generalization of the bivariate sample selection model (where now the continuous outcome is observed for all individuals and not just the selected ones).
+  - I think Tobit 5 is implemented in sampleSelection package.
 - So maybe at the conceptual highest level it is easiest to differentiate whether y censored or truncated, observed only for a subsample or observed for the full sample but stemming from separate processes.
 - Many different variants can then be derived by either placing different distributional assumptions on the errors of these latent processes (e.g. multivariate normal) and/or how the latent process manifests into observed outcomes (e.g., continuous outcomes vs. binary outcomes). While originally the sample selection models were developed for binary selection, also the selection process can be extended even to the multivariate case.
 - All of these variantes have the same legitimization - namely that regular OLS is rendered inconsistent if the errors of the latent processes are correlated.
