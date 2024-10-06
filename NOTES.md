@@ -58,7 +58,8 @@
 - Mention switchSelection very powerful and much more flexible than OPSR (however, accompanying papers only in Russian) and rather for advanced users - provide example.
 - How to compute standard errors for the 2-step procedure (use sigma_hat_j) => then similar to regular OLS => i.e., sigma_hat^2 (X'X)^-1
 - Wald test on H0: rho1 == rho2 == ... (see stata paper)
-
+-[ ] Predict without group arg => predict for all with the respective observed groups
+  - GOF indicators R2 and stuff for whole model and submodels?
 
 
 Cameron is an excellent review!
