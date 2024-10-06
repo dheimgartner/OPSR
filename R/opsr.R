@@ -27,7 +27,7 @@
 #'   expectations. An example is included in the error message if this should not
 #'   be the case.
 #' @param method defaults to `"BFGS"` (see [`maxLik`]).
-#' @param iterlim defaults to 50000 (see [`maxLik`]).
+#' @param iterlim defaults to 1000 (see [`maxLik`]).
 #' @param printLevel defaults to 2 (see [`maxLik`]).
 #' @param ... passed to [`maxLik`].
 #'
@@ -67,7 +67,7 @@
 #' sim_dat$sigma
 #' }
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
-                 method = "BFGS", iterlim = 50000, printLevel = 2, ...) {
+                 method = "BFGS", iterlim = 1000, printLevel = 2, ...) {
   mf <- match.call(expand.dots = FALSE)
   m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
   mf <- mf[c(1, m)]
@@ -88,6 +88,11 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
 
   nParts <- l[2]
   Z <- Formula::model.part(f, data = mf, lhs = 1, drop = TRUE)
+
+  if (is.factor(Z)) {
+    stop("Selection outcome has to be numeric (and not a 'factor').")
+  }
+
   Y <- Formula::model.part(f, data = mf, lhs = 2, drop = TRUE)
   nReg <- length(unique(Z))
   nObs <- length(Y)
