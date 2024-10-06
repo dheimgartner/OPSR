@@ -19,8 +19,9 @@ object of class \verb{"maxLik" "maxim"}.
 \description{
 This is the basic computing engine called by \code{\link{opsr}} used to fit ordinal
 probit switching regression models. Should usually \emph{not} be used directly.
-Could be implemented in C++ for speed-up.
+Log-likelihood function is implemented in C++ which yields a considerable
+speed-up. However, gradient and Hessian is currently numerically determined.
 }
 \seealso{
-Formula 6 (translates almost verbatim).
+\link{'loglik'}, Formula 6 (translates almost verbatim).
 }

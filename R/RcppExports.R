@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 loglik <- function(theta, W, X, Y, weights, nReg) {
-    .Call('_OPSR_loglik', PACKAGE = 'OPSR', theta, W, X, Y, weights, nReg)
+    .Call(`_OPSR_loglik`, theta, W, X, Y, weights, nReg)
 }
 
 opsr_prepare_coefs <- function(theta, nReg) {
-    .Call('_OPSR_opsr_prepare_coefs', PACKAGE = 'OPSR', theta, nReg)
+    .Call(`_OPSR_opsr_prepare_coefs`, theta, nReg)
 }
 
