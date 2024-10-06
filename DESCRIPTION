@@ -14,4 +14,6 @@ Imports:
     Formula,
     MASS,
     maxLik,
-    mvtnorm
+    mvtnorm,
+    Rcpp
+LinkingTo: Rcpp
