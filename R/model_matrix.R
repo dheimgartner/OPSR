@@ -1,5 +1,5 @@
 #' @export
-model.matrix.opsr <- function(object, data = environment(object), filter = NULL, ...) {
+model.matrix.opsr <- function(object, data, filter = NULL, ...) {
   if (missing(data) || is.null(data)) {
     data <- model.frame(object)
   }

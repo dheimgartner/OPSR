@@ -52,6 +52,11 @@ ref <- dat$yo[dat$ys == counterfact]
 mean(ref)
 mean(p_counterfact)
 
+## with new data
+newdat <- dat[dat$ys == group, ][1, ]
+p_newdat <- predict(fit_bfgs, newdata = newdat, group = group)
+newdat$yo
+
 ## without error correlation (compare to lm)
 sigma <- diag(1, nrow = 4, ncol = 4)
 sim_dat_no_cor <- opsr_simulate(sigma = sigma)
