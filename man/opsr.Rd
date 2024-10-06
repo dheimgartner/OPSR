@@ -12,7 +12,7 @@ opsr(
   na.action,
   start = NULL,
   method = "BFGS",
-  iterlim = 50000,
+  iterlim = 1000,
   printLevel = 2,
   ...
 )
@@ -50,7 +50,7 @@ be the case.}
 
 \item{method}{defaults to \code{"BFGS"} (see \code{\link{maxLik}}).}
 
-\item{iterlim}{defaults to 50000 (see \code{\link{maxLik}}).}
+\item{iterlim}{defaults to 1000 (see \code{\link{maxLik}}).}
 
 \item{printLevel}{defaults to 2 (see \code{\link{maxLik}}).}
 

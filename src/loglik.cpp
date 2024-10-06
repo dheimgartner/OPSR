@@ -44,12 +44,12 @@ double loglik(NumericVector& theta, List& W, List& X, List& Y,
   int boundary;
   int min_z = 1;
   int max_z = nReg;
-  List theta_j;
+  List theta_, theta_j;
   NumericMatrix w, x;
   NumericVector y, gamma, beta, ll_j, ll;
   double kappa1, kappa2, sigma, rho, ll_weighted;
 
-  List theta_ = opsr_prepare_coefs(theta, nReg);
+  theta_ = opsr_prepare_coefs(theta, nReg);
 
   for (int i = 0; i < nReg; i++) {
     theta_j = theta_.at(i);
