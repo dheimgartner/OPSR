@@ -16,7 +16,7 @@
 -[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
 -[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper)
   - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
--[ ] Think about what predict method should return
+-[ ] Think about what predict method should return (see also stata paper)
   - Predict without group arg => predict for all with the respective observed groups
 -[ ] GOF indicators R2 and stuff for whole model and submodels?
 
