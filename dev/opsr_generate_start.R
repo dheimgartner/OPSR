@@ -32,9 +32,6 @@
 #' opsr_generate_start(W, Xs, Z, Ys)
 #' }
 opsr_generate_start <- function(W, Xs, Z, Ys) {
-  warning("2-step regression to generate reasonable starting values should",
-          " be improved.")
-
   nReg <- length(Xs)
 
   fit_selection <- suppressWarnings(

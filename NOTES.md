@@ -33,8 +33,8 @@
   - Using the delta method: see delta_method.R
     - However, not that easy...
 -[x] First in opsr(formula, ...) => wrap f <- Formula(formula)
--[ ] How to create reasonable starting values? 2-step? For selection regular ordinal probit should do the trick, right? => how did Xinyi do it (also for sigma and rho)?
-  - See maybe Chiburis and/or Jimenez (references in Xinyu)
+-[x] How to create reasonable starting values? 2-step? For selection regular ordinal probit should do the trick, right? => how did Xinyi do it (also for sigma and rho)?
+  - See maybe Chiburis and/or Jimenez (references in Xinyi)
 -[ ] How to compute robust standard errors from maxLik output? => asked chat already => seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
   - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!
   - I think robust se and stuff should be computed in summary.opsr
@@ -49,15 +49,15 @@
   - And what about formula 8?
 - rho has to be positive, right? should we use log(rho) (or something) in max lik estimation? and then backtransform?
   - Doesn't have to be! In Stata they censor rho to lie in [-0.85, 0.85] => so if in 2-step rho = 0.86 they use rho = 0.85
-- Tobit-5 model (switching regression for binary regime) => see sampleSelection
+-[x] Tobit-5 model (switching regression for binary regime) => see sampleSelection
   - make sense of terminology (general multiple process models or something => difference to heckman, hurdle, zero-inflated, tobit, simultaneous equation, etc.) => see Cameron
-- Identification issues?
+-[x] Identification issues?
   - See page 551 in Cameron => could be due to same explanatory variables X in all processes! => note this in paper!
   - Maybe change in opsr() => must specify different processes (for selection and outcome)
 -[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
 - Mention switchSelection very powerful and much more flexible than OPSR (however, accompanying papers only in Russian) and rather for advanced users - provide example.
 - How to compute standard errors for the 2-step procedure => regular OLS standard errors are not reliable since the regression includes an estimate as explanatory variable (see Cameron 16.5.4 for the binary selection).
-- Wald test on H0: rho1 == rho2 == ... (see stata paper)
+-[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper)
 -[ ] Predict without group arg => predict for all with the respective observed groups
   - GOF indicators R2 and stuff for whole model and submodels?
 - See also ssmrob package (and jss article => robust analysis of sample selection models in R)

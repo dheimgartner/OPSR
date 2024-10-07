@@ -139,13 +139,13 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
 
   ## check or generate starting values (theta)
   if (!is.null(start)) {
-    expected <- round(opsr_generate_start(W, Xs, Z, Ys), digits = 3)  # only do this, if runtime is relatively short
+    expected <- round(opsr_2step(W, Xs, Z, Ys), digits = 3)  # only do this, if runtime is relatively short
     if (is.null(names(start)) || !all(names(start) %in% names(expected))) {
       stop("'start' does not conform. Check '?opsr_generate_start'. Here are the",
            " auto-generated starting values: ", deparse(substitute(expected)))
     }
   } else {
-    start <- opsr_generate_start(W, Xs, Z, Ys)
+    start <- opsr_2step(W, Xs, Z, Ys)
   }
 
   fit <- opsr.fit(Ws, Xs, Ys, start, w,

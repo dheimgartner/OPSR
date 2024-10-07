@@ -8,7 +8,7 @@ dat <- sim_dat$data
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above
 system.time(
-  fit_nm <- opsr(formula, dat, method = "NM")
+  fit_nm <- opsr(formula, dat, method = "NM", iterlim = 10e3)
 )
 system.time(
   fit_bfgs <- opsr(formula, dat, method = "BFGS")
@@ -106,3 +106,8 @@ NumericVector test(int len) {
 "
 cppFunction(cpp)
 x <- test(100)
+
+
+
+
+
