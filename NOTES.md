@@ -13,6 +13,7 @@
   - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!
   - I think robust se and stuff should be computed in summary.opsr
   - default summary.maxLik() already useful => just wrap?
+  - => then write print.summary.opsr!
 -[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
 -[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper)
   - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
