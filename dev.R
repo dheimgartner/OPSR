@@ -108,6 +108,19 @@ cppFunction(cpp)
 x <- test(100)
 
 
+## factors seem to be handled nicely
+## (first level as reference)
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+dat$xo3 <- ifelse(dat$xo2 > 0, "a", "b")
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + factor(xo3), data = dat)
+model.frame(fit)
+model.matrix(fit)
 
-
-
+## what about other transformations
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + I(xo2**2) + log(xo1), data = dat)
+summary(fit)
+model.frame(fit)
+model.matrix(fit)
