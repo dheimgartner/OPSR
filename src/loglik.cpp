@@ -68,7 +68,7 @@ NumericVector loglik(NumericVector& theta, List& W, List& X, List& Y,
     for (int i = current; i < current + ll_j.size(); i++) {
       ll[i] = ll_j[i - current];
     }
-    current = ll_j.size();
+    current += ll_j.size();
   }
 
   for (int i = 0; i < ll.size(); i++) {
