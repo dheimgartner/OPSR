@@ -56,10 +56,11 @@
   - Maybe change in opsr() => must specify different processes (for selection and outcome)
 -[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
 - Mention switchSelection very powerful and much more flexible than OPSR (however, accompanying papers only in Russian) and rather for advanced users - provide example.
-- How to compute standard errors for the 2-step procedure (use sigma_hat_j) => then similar to regular OLS => i.e., sigma_hat^2 (X'X)^-1
+- How to compute standard errors for the 2-step procedure => regular OLS standard errors are not reliable since the regression includes an estimate as explanatory variable (see Cameron 16.5.4 for the binary selection).
 - Wald test on H0: rho1 == rho2 == ... (see stata paper)
 -[ ] Predict without group arg => predict for all with the respective observed groups
   - GOF indicators R2 and stuff for whole model and submodels?
+- See also ssmrob package (and jss article => robust analysis of sample selection models in R)
 
 
 Cameron is an excellent review!
@@ -71,5 +72,6 @@ Cameron is an excellent review!
 - A further generalization is then the switching regression, where the outcome is not only observed for a subsample but the population is partitioned into different groupes (regimes) and a separate process governs the observed outcome. E.g., originally known as the Roy model (also referred to as switching regression model in Maddala and Tobit type 5 model in Amemiya) which is a generalization of the bivariate sample selection model (where now the continuous outcome is observed for all individuals and not just the selected ones).
   - I think Tobit 5 is implemented in sampleSelection package.
 - So maybe at the conceptual highest level it is easiest to differentiate whether y censored or truncated, observed only for a subsample or observed for the full sample but stemming from separate processes.
+  - See also Amemya p. 384 table 10.2 => nice!
 - Many different variants can then be derived by either placing different distributional assumptions on the errors of these latent processes (e.g. multivariate normal) and/or how the latent process manifests into observed outcomes (e.g., continuous outcomes vs. binary outcomes). While originally the sample selection models were developed for binary selection, also the selection process can be extended even to the multivariate case.
 - All of these variantes have the same legitimization - namely that regular OLS is rendered inconsistent if the errors of the latent processes are correlated.
