@@ -23,18 +23,6 @@ opsr_2step <- function(W, Xs, Z, Ys) {
   gamma <- unname(fit_selection$coefficients)
   names(gamma) <- paste0("s_", colnames(W))
 
-  W_gamma <- W %*% gamma
-
-  ## lambda_j
-  lambda_hat_j <- function(j) {
-    nom <- dnorm(kappa_[j] - W_gamma) - dnorm(kappa_[j + 1] - W_gamma)
-    denom <- pnorm(kappa_[j + 1] - W_gamma) - pnorm(kappa_[j] - W_gamma)
-    lambda <- nom / denom
-    lambda[Z == j]
-  }
-
-  lambdas <- lapply(seq_len(nReg), function(j) lambda_hat_j(j))
-
   ## step 2
   step2 <- function(x, lambda, y, kappa1, kappa2, z) {
     fit <- suppressWarnings(
@@ -59,6 +47,18 @@ opsr_2step <- function(W, Xs, Z, Ys) {
     list(beta = beta, sigma = sigma, rho = rho)
   }
 
+  W_gamma <- W %*% gamma
+
+  ## lambda (inverse mills ratio)
+  lambda_hat_j <- function(j) {
+    nom <- dnorm(kappa_[j] - W_gamma) - dnorm(kappa_[j + 1] - W_gamma)
+    denom <- pnorm(kappa_[j + 1] - W_gamma) - pnorm(kappa_[j] - W_gamma)
+    lambda <- nom / denom
+    lambda[Z == j]
+  }
+
+  lambdas <- lapply(seq_len(nReg), function(j) lambda_hat_j(j))
+
   ## apply
   params_o <- lapply(seq_len(nReg), function(j) {
     x <- Xs[[j]]
@@ -70,7 +70,7 @@ opsr_2step <- function(W, Xs, Z, Ys) {
     step2(x, lambda, y, kappa1, kappa2, z)
   })
 
-  ## prepare
+  ## prepare output vector
   beta <- unlist(lapply(seq_len(nReg), function(j) {
     beta_j <- params_o[[j]]$beta
     names(beta_j) <- paste0("o", j, "_", colnames(Xs[[j]]))

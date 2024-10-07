@@ -47,8 +47,8 @@ double loglik(NumericVector& theta, List& W, List& X, List& Y,
   int max_z = nReg;
   List theta_, theta_j;
   NumericMatrix w, x;
-  NumericVector y, gamma, beta, ll_j, ll(nObs);
-  double kappa1, kappa2, sigma, rho, ll_weighted;
+  NumericVector y, ll_j, ll(nObs);
+  double ll_weighted;
 
   theta_ = opsr_prepare_coefs(theta, nReg);
 
@@ -60,14 +60,10 @@ double loglik(NumericVector& theta, List& W, List& X, List& Y,
     w = as<NumericMatrix>(W.at(j));
     x = as<NumericMatrix>(X.at(j));
     y = as<NumericVector>(Y.at(j));
-    gamma = theta_j["gamma"];
-    kappa1 = theta_j["kappa_j_1"];
-    kappa2 = theta_j["kappa_j"];
-    beta = theta_j["beta_j"];
-    sigma = theta_j["sigma_j"];
-    rho = theta_j["rho_j"];
 
-    ll_j = loglik_j(w, x, y, gamma, kappa1, kappa2, beta, sigma, rho, boundary);
+    ll_j = loglik_j(w, x, y, theta_j["gamma"], theta_j["kappa_j_1"],
+                    theta_j["kappa_j"], theta_j["beta_j"], theta_j["sigma_j"],
+                    theta_j["rho_j"], boundary);
 
     // append to ll
     for (int i = current; i < current + ll_j.size(); i++) {
