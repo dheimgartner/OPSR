@@ -51,10 +51,10 @@ opsr_2step <- function(W, Xs, Z, Ys) {
 
   ## lambda (inverse mills ratio)
   lambda_hat_j <- function(j) {
-    nom <- dnorm(kappa_[j] - W_gamma) - dnorm(kappa_[j + 1] - W_gamma)
-    denom <- pnorm(kappa_[j + 1] - W_gamma) - pnorm(kappa_[j] - W_gamma)
-    lambda <- nom / denom
-    lambda[Z == j]
+    z <- W_gamma[Z == j]
+    nom <- dnorm(kappa_[j] - z) - dnorm(kappa_[j + 1] - z)
+    denom <- pnorm(kappa_[j + 1] - z) - pnorm(kappa_[j] - z)
+    nom / denom
   }
 
   lambdas <- lapply(seq_len(nReg), function(j) lambda_hat_j(j))
