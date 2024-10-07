@@ -52,13 +52,13 @@ NumericVector loglik(NumericVector& theta, List& W, List& X, List& Y,
   theta_ = opsr_prepare_coefs(theta, nReg);
 
   for (int j = 0; j < nReg; j++) {
-    theta_j = theta_.at(j);
+    theta_j = theta_[j];
     boundary = (j + 1 == min_z) ? -1 : (j + 1 == max_z) ? 1 : 0;  // j + 1!
 
     // prepare inputs
-    w = as<NumericMatrix>(W.at(j));
-    x = as<NumericMatrix>(X.at(j));
-    y = as<NumericVector>(Y.at(j));
+    w = as<NumericMatrix>(W[j]);
+    x = as<NumericMatrix>(X[j]);
+    y = as<NumericVector>(Y[j]);
 
     ll_j = loglik_j(w, x, y, theta_j["gamma"], theta_j["kappa_j_1"],
                     theta_j["kappa_j"], theta_j["beta_j"], theta_j["sigma_j"],
