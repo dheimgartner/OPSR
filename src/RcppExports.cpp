@@ -11,7 +11,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // loglik
-double loglik(NumericVector& theta, List& W, List& X, List& Y, NumericVector& weights, int nReg, int nObs);
+NumericVector loglik(NumericVector& theta, List& W, List& X, List& Y, NumericVector& weights, int nReg, int nObs);
 RcppExport SEXP _OPSR_loglik(SEXP thetaSEXP, SEXP WSEXP, SEXP XSEXP, SEXP YSEXP, SEXP weightsSEXP, SEXP nRegSEXP, SEXP nObsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

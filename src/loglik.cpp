@@ -39,16 +39,15 @@ NumericVector loglik_j(NumericMatrix& W, NumericMatrix &X, NumericVector& y,
 }
 
 // [[Rcpp::export]]
-double loglik(NumericVector& theta, List& W, List& X, List& Y,
-              NumericVector& weights, int nReg, int nObs) {
+NumericVector loglik(NumericVector& theta, List& W, List& X, List& Y,
+                     NumericVector& weights, int nReg, int nObs) {
   int boundary;
   int current = 0;
   int min_z = 1;
   int max_z = nReg;
   List theta_, theta_j;
   NumericMatrix w, x;
-  NumericVector y, ll_j, ll(nObs);
-  double ll_weighted;
+  NumericVector y, ll_j, ll(nObs), ll_weighted(nObs);
 
   theta_ = opsr_prepare_coefs(theta, nReg);
 
@@ -63,7 +62,7 @@ double loglik(NumericVector& theta, List& W, List& X, List& Y,
 
     ll_j = loglik_j(w, x, y, theta_j["gamma"], theta_j["kappa_j_1"],
                     theta_j["kappa_j"], theta_j["beta_j"], theta_j["sigma_j"],
-                    theta_j["rho_j"], boundary);
+                            theta_j["rho_j"], boundary);
 
     // append to ll
     for (int i = current; i < current + ll_j.size(); i++) {
@@ -72,7 +71,9 @@ double loglik(NumericVector& theta, List& W, List& X, List& Y,
     current = ll_j.size();
   }
 
-  ll_weighted = dot(ll, weights);
+  for (int i = 0; i < ll.size(); i++) {
+    ll_weighted[i] = ll[i] * weights[i];
+  }
 
   return ll_weighted;
 }

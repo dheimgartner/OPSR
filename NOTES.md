@@ -72,6 +72,7 @@
 - Mention switchSelection very powerful and much more flexible than OPSR (however, accompanying papers only in Russian) and rather for advanced users - provide example.
 - How to compute standard errors for the 2-step procedure => regular OLS standard errors are not reliable since the regression includes an estimate as explanatory variable (see Cameron 16.5.4 for the binary selection).
 - See also ssmrob package (and jss article => robust analysis of sample selection models in R)
+- Use examples @example R/examples/example_script.R (see mixl)
 
 ## Literature
 

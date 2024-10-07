@@ -15,5 +15,6 @@ Imports:
     MASS,
     maxLik,
     mvtnorm,
-    Rcpp
+    Rcpp,
+    sandwich
 LinkingTo: Rcpp
