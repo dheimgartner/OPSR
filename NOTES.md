@@ -1,9 +1,27 @@
 # Notes
 
+## Keep in mind
+
 - Render vignette using devtools::build_vignettes() => renders to doc
   - Conform to jss-template.Rnw styleguide
   - This uses the Sweave engine and chunk options
+  
+## Next steps
 
+-[ ] Compute robust standard errors from maxLik output?
+  - Seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
+  - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!
+  - I think robust se and stuff should be computed in summary.opsr
+  - default summary.maxLik() already useful => just wrap?
+-[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
+-[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper)
+  - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
+-[ ] Think about what predict method should return
+  - Predict without group arg => predict for all with the respective observed groups
+-[ ] GOF indicators R2 and stuff for whole model and submodels?
+
+
+## General
 
 -[x] Generalization of own_loglik_imp => Formula (parsing) and preparing of inputs (in particular theta and its names => i.e. similar to mvProbitPrepareCoef() and mvProbitCoefNames()) => also implement some minimal checks of user input and try to conform to the suggestions below (e.g., first wrap Formula or metaprogramming for model.frame mf, etc.)
 -[x] Formula vignette (read printed from start)
@@ -14,8 +32,6 @@
     - mvProbit https://github.com/cran/mvProbit/blob/master/R/mvProbit.R
     - see mvProbitPrepareCoef() and mvProbitCoefNames() in mvProbit()
     - mvProbitLogLikInternal is more or less the idea of mvProbit.fit()
-
-
 
 - If we have no error correlation then OPSR should yield ordinal probit and lin reg estimates (write test case).
 -[x] What formula interface to use (list of formulas vs. Formula package https://www.jstatsoft.org/article/view/v034i01)
@@ -35,10 +51,7 @@
 -[x] First in opsr(formula, ...) => wrap f <- Formula(formula)
 -[x] How to create reasonable starting values? 2-step? For selection regular ordinal probit should do the trick, right? => how did Xinyi do it (also for sigma and rho)?
   - See maybe Chiburis and/or Jimenez (references in Xinyi)
--[ ] How to compute robust standard errors from maxLik output? => asked chat already => seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
-  - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!
-  - I think robust se and stuff should be computed in summary.opsr
-    - default summary.maxLik() already useful => just wrap?
+
 -[x] How to include weights => asked chat already => just multiply loglik (see also mixl)
 -[x] Check when to use intercepts (in particular for selection process)
 - Write test cases (e.g., hard-coded maxLik with simulated data should yield same)
@@ -47,23 +60,22 @@
 -[x] Formula 7 (conditional probability) => shouldn't it be W_j gamma (instead W gamma)?
   - otherwise you have a dimensionality missmatch W gamma is a vector of length n
   - And what about formula 8?
-- rho has to be positive, right? should we use log(rho) (or something) in max lik estimation? and then backtransform?
+-[x] rho has to be positive, right? should we use log(rho) (or something) in max lik estimation? and then backtransform?
   - Doesn't have to be! In Stata they censor rho to lie in [-0.85, 0.85] => so if in 2-step rho = 0.86 they use rho = 0.85
 -[x] Tobit-5 model (switching regression for binary regime) => see sampleSelection
   - make sense of terminology (general multiple process models or something => difference to heckman, hurdle, zero-inflated, tobit, simultaneous equation, etc.) => see Cameron
 -[x] Identification issues?
   - See page 551 in Cameron => could be due to same explanatory variables X in all processes! => note this in paper!
-  - Maybe change in opsr() => must specify different processes (for selection and outcome)
--[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
+  -[x] Maybe change in opsr() => must specify different processes (for selection and outcome)
+
 - Mention switchSelection very powerful and much more flexible than OPSR (however, accompanying papers only in Russian) and rather for advanced users - provide example.
 - How to compute standard errors for the 2-step procedure => regular OLS standard errors are not reliable since the regression includes an estimate as explanatory variable (see Cameron 16.5.4 for the binary selection).
--[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper)
--[ ] Predict without group arg => predict for all with the respective observed groups
-  - GOF indicators R2 and stuff for whole model and submodels?
 - See also ssmrob package (and jss article => robust analysis of sample selection models in R)
 
+## Literature
 
 Cameron is an excellent review!
+
 - Tobit models originally developed to handle truncated, censored or interval data
   - Only one latent process y* that determines both the censoring mechanism and the outcome
 - Then generalization of the original Tobit model => Two-part models (excessive zeros) and sample selection models (where we only observe an outcome for a subsample of the whole population)
