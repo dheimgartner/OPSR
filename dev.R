@@ -93,3 +93,16 @@ fit_lm <- lm(yo ~ xo1 + xo2, data = dat_lm)
 debugonce(model.matrix.lm)
 debugonce(model.frame)
 model.matrix(fit_lm)
+
+
+
+library(Rcpp)
+
+cpp <- "
+NumericVector test(int len) {
+  NumericVector x(len);
+  return x;
+}
+"
+cppFunction(cpp)
+x <- test(100)

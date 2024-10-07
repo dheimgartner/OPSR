@@ -11,8 +11,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // loglik
-double loglik(NumericVector& theta, List& W, List& X, List& Y, NumericVector& weights, int nReg);
-RcppExport SEXP _OPSR_loglik(SEXP thetaSEXP, SEXP WSEXP, SEXP XSEXP, SEXP YSEXP, SEXP weightsSEXP, SEXP nRegSEXP) {
+double loglik(NumericVector& theta, List& W, List& X, List& Y, NumericVector& weights, int nReg, int nObs);
+RcppExport SEXP _OPSR_loglik(SEXP thetaSEXP, SEXP WSEXP, SEXP XSEXP, SEXP YSEXP, SEXP weightsSEXP, SEXP nRegSEXP, SEXP nObsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -22,7 +22,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< List& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< NumericVector& >::type weights(weightsSEXP);
     Rcpp::traits::input_parameter< int >::type nReg(nRegSEXP);
-    rcpp_result_gen = Rcpp::wrap(loglik(theta, W, X, Y, weights, nReg));
+    Rcpp::traits::input_parameter< int >::type nObs(nObsSEXP);
+    rcpp_result_gen = Rcpp::wrap(loglik(theta, W, X, Y, weights, nReg, nObs));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -40,7 +41,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_OPSR_loglik", (DL_FUNC) &_OPSR_loglik, 6},
+    {"_OPSR_loglik", (DL_FUNC) &_OPSR_loglik, 7},
     {"_OPSR_opsr_prepare_coefs", (DL_FUNC) &_OPSR_opsr_prepare_coefs, 2},
     {NULL, NULL, 0}
 };

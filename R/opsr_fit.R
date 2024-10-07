@@ -24,8 +24,9 @@
 opsr.fit <- function(Ws, Xs, Ys, start, weights,
                      method, iterlim, printLevel, ...) {
   nReg <- length(Xs)
+  nObs <- length(Reduce(c, Ys))
 
-  ll2 <- function(theta) loglik(theta, Ws, Xs, Ys, weights, nReg)
+  ll2 <- function(theta) loglik(theta, Ws, Xs, Ys, weights, nReg, nObs)
 
   mL <- maxLik::maxLik(ll2, start = start, method = method, iterlim = iterlim,
                        printLevel = printLevel, ...)

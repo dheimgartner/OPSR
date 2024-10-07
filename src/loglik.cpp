@@ -40,25 +40,26 @@ NumericVector loglik_j(NumericMatrix& W, NumericMatrix &X, NumericVector& y,
 
 // [[Rcpp::export]]
 double loglik(NumericVector& theta, List& W, List& X, List& Y,
-              NumericVector& weights, int nReg) {
+              NumericVector& weights, int nReg, int nObs) {
   int boundary;
+  int current = 0;
   int min_z = 1;
   int max_z = nReg;
   List theta_, theta_j;
   NumericMatrix w, x;
-  NumericVector y, gamma, beta, ll_j, ll;
+  NumericVector y, gamma, beta, ll_j, ll(nObs);
   double kappa1, kappa2, sigma, rho, ll_weighted;
 
   theta_ = opsr_prepare_coefs(theta, nReg);
 
-  for (int i = 0; i < nReg; i++) {
-    theta_j = theta_.at(i);
-    boundary = (i + 1 == min_z) ? -1 : (i + 1 == max_z) ? 1 : 0;  // i + 1!
+  for (int j = 0; j < nReg; j++) {
+    theta_j = theta_.at(j);
+    boundary = (j + 1 == min_z) ? -1 : (j + 1 == max_z) ? 1 : 0;  // j + 1!
 
     // prepare inputs
-    w = as<NumericMatrix>(W.at(i));
-    x = as<NumericMatrix>(X.at(i));
-    y = as<NumericVector>(Y.at(i));
+    w = as<NumericMatrix>(W.at(j));
+    x = as<NumericMatrix>(X.at(j));
+    y = as<NumericVector>(Y.at(j));
     gamma = theta_j["gamma"];
     kappa1 = theta_j["kappa_j_1"];
     kappa2 = theta_j["kappa_j"];
@@ -67,10 +68,12 @@ double loglik(NumericVector& theta, List& W, List& X, List& Y,
     rho = theta_j["rho_j"];
 
     ll_j = loglik_j(w, x, y, gamma, kappa1, kappa2, beta, sigma, rho, boundary);
+
     // append to ll
-    for (int i = 0; i < ll_j.size(); i++) {
-      ll.push_back(ll_j[i]);
+    for (int i = current; i < current + ll_j.size(); i++) {
+      ll[i] = ll_j[i - current];
     }
+    current = ll_j.size();
   }
 
   ll_weighted = dot(ll, weights);
