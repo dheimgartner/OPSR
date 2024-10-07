@@ -39,11 +39,11 @@ errors <- function(Sigma, nobs = 1000) {
 }
 
 #' @export
-opsr_simulate <- function(sigma = NULL) {
+opsr_simulate <- function(nobs = 1000, sigma = NULL) {
   ## same regressors in selection and outcome might lead to identification issues
-  X <- obs_mat(p = 2, sd = 1)
+  X <- obs_mat(nobs, p = 2, sd = 1)
   colnames(X) <- paste0("xo", 1:ncol(X))
-  W <- obs_mat(p = 2, sd = 1)
+  W <- obs_mat(nobs, p = 2, sd = 1)
   colnames(W) <- paste0("xs", 1:ncol(X))
 
   if (is.null(sigma)) {
@@ -53,7 +53,7 @@ opsr_simulate <- function(sigma = NULL) {
       0.3, 0.4, 1.2, 0.6,
       0.4, 0.5, 0.6, 1.3), ncol = 4)  # J = 3
   }
-  err <- errors(sigma)
+  err <- errors(sigma, nobs)
 
   e <- err[, 1]
   eta1 <- err[, 2]
