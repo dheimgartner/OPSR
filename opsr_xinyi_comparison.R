@@ -40,3 +40,7 @@ fit <- OPSR::opsr(f,
                   data=telework_data)
 
 summary(fit)
+
+devtools::load_all()
+my_start <- opsr(f, telework_data, .get2step = TRUE)
+(comp <- data.frame(start, my_start))

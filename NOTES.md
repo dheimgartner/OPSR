@@ -9,7 +9,7 @@
 ## Next steps
 
 -[x] Write opsr_check_start
--[ ] Compare starting values (with Xinyi)
+-[x] Compare starting values (with Xinyi)
 -[ ] Compute robust standard errors from maxLik output?
   - Seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
   - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!
@@ -21,6 +21,7 @@
   - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
 -[ ] Think about what predict method should return (see also stata paper)
   - Predict without group arg => predict for all with the respective observed groups
+-[ ] Replicate treatment effects => see dev/xinyi/OPSR_treatment effect.R
 -[ ] GOF indicators R2 and stuff for whole model and submodels?
 
 

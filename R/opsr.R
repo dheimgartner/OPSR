@@ -66,7 +66,8 @@
 #' sim_dat$sigma
 #' }
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
-                 method = "BFGS", iterlim = 1000, printLevel = 2, ...) {
+                 method = "BFGS", iterlim = 1000, printLevel = 2,
+                 .get2step = FALSE, ...) {
   mf <- match.call(expand.dots = FALSE)
   m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
   mf <- mf[c(1, m)]
@@ -135,6 +136,10 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   Ys <- lapply(seq_len(nReg), function(i) {
     Y[Z == i]
   })
+
+  if (.get2step) {
+    return(opsr_2step(W, Xs, Z, Ys))
+  }
 
   ## check or generate starting values (theta)
   if (!is.null(start)) {

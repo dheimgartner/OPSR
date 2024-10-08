@@ -24,50 +24,33 @@ opsr_2step <- function(W, Xs, Z, Ys) {
   names(gamma) <- paste0("s_", colnames(W))
 
   ## step 2
-  step2 <- function(x, lambda, y, kappa1, kappa2, z) {
+  step2 <- function(x, imr, y) {
     fit <- suppressWarnings(
-      stats::lm(y ~ -1 + x + lambda)  # intercept already included in x
+      stats::lm(y ~ -1 + x + imr)  # intercept already included in x
     )
     params <- coefficients(fit)
-    beta <- unname(params[!(names(params) %in% "lambda")])
-    C <- params[["lambda"]]
-    RSS <- sum(residuals(fit)^2)
+    beta <- unname(params[!(names(params) %in% "imr")])
+    k <- length(params - 1)
+    SSE <- sum(residuals(fit)**2)
     n <- length(residuals(fit))
-
-    ## sigma
-    tmp1 <- ifelse(kappa1 == -Inf, 0, kappa1 - z)
-    tmp2 <- ifelse(kappa2 == Inf, 0, kappa2 - z)
-    nom <- tmp1 * dnorm(kappa1 - z) - tmp2 * dnorm(kappa2 - z)
-    denom <- pnorm(kappa2 - z) - pnorm(kappa1 - z)
-    sigma <- RSS / n - (C^2 / n) * sum(nom / denom - lambda^2)
-
-    ## rho
-    rho <- C / sigma
-
+    sigma <- sqrt(SSE / (n - (1 + k)))
+    rho <- params[["imr"]] / sigma
     list(beta = beta, sigma = sigma, rho = rho)
   }
 
+  ## inverse mills ratio
   W_gamma <- W %*% gamma
-
-  ## lambda (inverse mills ratio)
-  lambda_hat_j <- function(j) {
-    z <- W_gamma[Z == j]
-    nom <- dnorm(kappa_[j] - z) - dnorm(kappa_[j + 1] - z)
-    denom <- pnorm(kappa_[j + 1] - z) - pnorm(kappa_[j] - z)
-    nom / denom
-  }
-
-  lambdas <- lapply(seq_len(nReg), function(j) lambda_hat_j(j))
+  Tj_1 <- kappa_[Z]
+  Tj <- kappa_[Z + 1]
+  IMR <- -(dnorm(Tj-W_gamma) - dnorm(Tj_1-W_gamma))/(pnorm(Tj-W_gamma) - pnorm(Tj_1-W_gamma))
+  IMR_j <- lapply(seq_len(nReg), function(j) IMR[Z == j])
 
   ## apply
   params_o <- lapply(seq_len(nReg), function(j) {
     x <- Xs[[j]]
-    lambda <- lambdas[[j]]
+    imr <- IMR_j[[j]]
     y <- Ys[[j]]
-    kappa1 <- kappa_[j]
-    kappa2 <- kappa_[j + 1]
-    z <- W_gamma[Z == j]
-    step2(x, lambda, y, kappa1, kappa2, z)
+    step2(x, imr, y)
   })
 
   ## prepare output vector
