@@ -4,10 +4,10 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List opsr_prepare_coefs(NumericVector& theta, int& nReg) {
+List opsr_prepare_coefs(NumericVector& theta, int nReg) {
   CharacterVector theta_names = theta.names();
   NumericVector gamma, kappa, sigma, rho;
-  std::vector<NumericVector> beta(nReg);  // a vector of beta vectors for each region
+  std::vector<NumericVector> beta(nReg);  // a vector of beta vectors for each regime
 
   kappa.push_back(R_NegInf);  // first element of kappa is -Inf
 
@@ -23,9 +23,9 @@ List opsr_prepare_coefs(NumericVector& theta, int& nReg) {
     } else if (name.substr(0, 3) == "rho") {
       rho.push_back(theta[i]);
     } else if (name[0] == 'o' && std::isdigit(name[1]) && name[2] == '_') {
-      // extract beta elements, based on the region (e.g., o1_, o2_, etc.)
-      int region = name[1] - '0' - 1;  // convert '1', '2', etc. to 0-based index
-      beta[region].push_back(theta[i]);
+      // extract beta elements, based on the regime (e.g., o1_, o2_, etc.)
+      int regime = name[1] - '0' - 1;  // convert '1', '2', etc. to 0-based index
+      beta[regime].push_back(theta[i]);
     }
   }
 
@@ -44,8 +44,8 @@ List opsr_prepare_coefs(NumericVector& theta, int& nReg) {
       Named("kappa_j_1") = kappa_j_1,
       Named("kappa_j") = kappa_j,
       Named("beta_j") = beta[i],
-                            Named("sigma_j") = sigma_j,
-                            Named("rho_j") = rho_j
+      Named("sigma_j") = sigma_j,
+      Named("rho_j") = rho_j
     );
   }
   return theta_;

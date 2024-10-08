@@ -5,7 +5,7 @@
 
 using namespace Rcpp;
 
-arma::colvec loglik_j(arma::mat& W, arma::mat &X, arma::colvec& y,
+arma::colvec loglik_j(arma::mat& W, arma::mat& X, arma::colvec& y,
                       arma::colvec gamma, double kappa_j_1, double kappa_j,
                       arma::colvec beta_j, double sigma_j, double rho_j,
                       int boundary) {
@@ -48,7 +48,7 @@ arma::colvec loglik(NumericVector& theta, arma::field<arma::mat>& W,
   int min_z = 1;
   int max_z = nReg;
   List theta_, theta_j;
-  arma::colvec ll_j(nReg), ll, ll_weighted(nObs);
+  arma::colvec ll_j, ll;
 
   theta_ = opsr_prepare_coefs(theta, nReg);
 
@@ -65,7 +65,5 @@ arma::colvec loglik(NumericVector& theta, arma::field<arma::mat>& W,
   }
 
   // element-wise multiplication
-  ll_weighted = ll % weights;
-
-  return ll_weighted;
+  return ll % weights;
 }

@@ -29,13 +29,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // opsr_prepare_coefs
-List opsr_prepare_coefs(NumericVector& theta, int& nReg);
+List opsr_prepare_coefs(NumericVector& theta, int nReg);
 RcppExport SEXP _OPSR_opsr_prepare_coefs(SEXP thetaSEXP, SEXP nRegSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector& >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< int& >::type nReg(nRegSEXP);
+    Rcpp::traits::input_parameter< int >::type nReg(nRegSEXP);
     rcpp_result_gen = Rcpp::wrap(opsr_prepare_coefs(theta, nReg));
     return rcpp_result_gen;
 END_RCPP
