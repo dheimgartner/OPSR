@@ -16,8 +16,9 @@ Imports:
     maxLik,
     mvtnorm,
     Rcpp,
+    RcppArmadillo,
     sandwich
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppArmadillo
 Depends: 
     R (>= 2.10)
 LazyData: true

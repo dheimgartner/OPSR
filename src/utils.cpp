@@ -1,4 +1,4 @@
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
 #include "utils.h"
 
 using namespace Rcpp;
@@ -49,16 +49,6 @@ List opsr_prepare_coefs(NumericVector& theta, int& nReg) {
     );
   }
   return theta_;
-}
-
-// dot product
-double dot(NumericVector x, NumericVector y) {
-  int n_elem = x.size();
-  double dot = 0;
-  for (int i = 0; i < n_elem; i++) {
-    dot += x(i) * y(i);
-  }
-  return dot;
 }
 
 // wrapper around dnorm which expects and returns NumericVector

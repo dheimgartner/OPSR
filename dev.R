@@ -3,7 +3,7 @@ devtools::load_all()
 rm(list = ls())
 
 ## test opsr
-sim_dat <- opsr_simulate(n = 1000)
+sim_dat <- opsr_simulate(n = 10000)
 dat <- sim_dat$data
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above
@@ -151,14 +151,16 @@ fit <- opsr(f, data = dat, start = c(1, 2, 3))
 
 
 library(Rcpp)
+library(RcppArmadillo)
 cpp <- "
 arma::mat extract_mat(arma::field<arma::mat> X, int index) {
   return X[index];
 }
 "
 cppFunction(cpp, depends = "RcppArmadillo")
-
-
+x <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
+y <- x + 1
+extract_mat(list(x, y), 0)
 
 
 
