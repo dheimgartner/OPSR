@@ -21,11 +21,10 @@
 #'   contain `NA`s. The default is set by the `na.action` setting of [`options`],
 #'   and is [`na.fail`] if that is unset. The 'factory-fresh' default is [`na.omit`].
 #'   Another possible value is `NULL`, no action. Value [`na.exclude`] can be useful.
-#' @param start a named numeric vector with the starting values (passed to [`maxLik`]).
+#' @param start a numeric vector with the starting values (passed to [`maxLik`]).
 #'   If no starting values are provided, reasonable values are auto-generated via
-#'   the 2-step procedure. The structure of `start` has to conform with `opsr`'s
-#'   expectations. An example is included in the error message if this should not
-#'   be the case.
+#'   the 2-step procedure [`opsr_2step`]. The structure of `start` has to conform with `opsr`'s
+#'   expectations. See [`opsr_check_start`] for further details.
 #' @param method defaults to `"BFGS"` (see [`maxLik`]).
 #' @param iterlim defaults to 1000 (see [`maxLik`]).
 #' @param printLevel defaults to 2 (see [`maxLik`]).
@@ -103,9 +102,9 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   }
 
   if (nParts != 2 && nParts != nReg + 1) {  # +1 for W (selection)
-    stop("formula parts must match the number of selection outcomes + 1 (", nReg + 1,
-         ") or 2 (if the same specification is used for all continuous outcomes.",
-         " However, ", nParts, " were specified.")
+    stop("formula parts must be of length ", nReg + 1, " or 2 (if the same",
+         " specification is used for all continuous outcomes. However, ", nParts,
+         " were specified.")
   }
 
   w <- as.vector(model.weights(mf))
@@ -139,11 +138,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
 
   ## check or generate starting values (theta)
   if (!is.null(start)) {
-    expected <- round(opsr_2step(W, Xs, Z, Ys), digits = 3)  # only do this, if runtime is relatively short
-    if (is.null(names(start)) || !all(names(start) %in% names(expected))) {
-      stop("'start' does not conform. Check '?opsr_generate_start'. Here are the",
-           " auto-generated starting values: ", deparse(substitute(expected)))
-    }
+    start <- opsr_check_start(start, W, Xs)
   } else {
     start <- opsr_2step(W, Xs, Z, Ys)
   }

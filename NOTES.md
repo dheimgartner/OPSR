@@ -8,6 +8,8 @@
   
 ## Next steps
 
+-[x] Write opsr_check_start
+-[ ] Compare starting values (with Xinyi)
 -[ ] Compute robust standard errors from maxLik output?
   - Seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
   - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!

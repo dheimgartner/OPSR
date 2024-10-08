@@ -3,7 +3,7 @@ devtools::load_all()
 rm(list = ls())
 
 ## test opsr
-sim_dat <- opsr_simulate(n = 10e3)
+sim_dat <- opsr_simulate(n = 1000)
 dat <- sim_dat$data
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above
@@ -124,3 +124,33 @@ fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + I(xo2**2) + log(xo1), data = dat)
 summary(fit)
 model.frame(fit)
 model.matrix(fit)
+
+
+
+
+
+
+
+
+
+## opsr_check_start
+devtools::load_all()
+f <- ys | yo ~ xs1 | xo1 | xo1
+start <- c(1, 2, 3, 3, 4, 4, 5, 5, 6, 6)
+debugonce(opsr_check_start)
+opsr_check_start(f, start)
+
+
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+f <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
+debugonce(opsr_check_start)
+fit <- opsr(f, data = dat, start = c(1, 2, 3))
+
+
+
+
+
+
+
