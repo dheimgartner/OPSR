@@ -12,7 +12,7 @@ NumericVector loglik_j(NumericMatrix& W, NumericMatrix &X, NumericVector& y,
   NumericVector ll(n_elem);
   double ll_i;
 
-  RNGScope scope;  // set seed (necessary?)
+  RNGScope scope;  // set seed
 
   for (int i = 0; i < n_elem; i++) {
     res = y(i) - dot(X.row(i), beta_j);

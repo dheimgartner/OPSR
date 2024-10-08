@@ -150,6 +150,26 @@ fit <- opsr(f, data = dat, start = c(1, 2, 3))
 
 
 
+library(Rcpp)
+cpp <- "
+arma::mat extract_mat(arma::field<arma::mat> X, int index) {
+  return X[index];
+}
+"
+cppFunction(cpp, depends = "RcppArmadillo")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
