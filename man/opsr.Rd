@@ -16,7 +16,7 @@ opsr(
   iterlim = 1000,
   printLevel = 2,
   .get2step = FALSE,
-  .R = FALSE,
+  .useR = FALSE,
   ...
 )
 }

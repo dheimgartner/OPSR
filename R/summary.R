@@ -4,8 +4,8 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   varcov <- if (rob) sandwich::sandwich(model) else vcov(model)
 
   ## LL
-  LL_2step <- sum(model$objectiveFn(model$start))
-  LL_final <- model$maximum
+  LL2step <- sum(model$objectiveFn(model$start))
+  LLfinal <- model$maximum
 
 
 
@@ -74,18 +74,18 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   ms$message <- model$message
   ms$coef_table <- coef_table
   ms$varcov <- cofi$varcov
-  ms$n_params <- length(model$estimate) - sum(model$fixed)
-  ms$n_regimes <- model$nReg
-  ms$n_obs <- model$nObs
+  ms$nParams <- length(model$estimate) - sum(model$fixed)
+  ms$nReg <- model$nReg
+  ms$nObs <- model$nObs
 
   ms$GOF <- list(
-    LL_2step = LL_2step,
-    LL_final = LL_final,
+    LL2step = LL2step,
+    LLfinal = LLfinal,
     AIC = AIC(model),
     BIC = BIC(model)
   )
 
-  ms$wald_test <- list(
+  ms$wald <- list(
     null = wald_test_null,
     rho = wald_test_rho
   )

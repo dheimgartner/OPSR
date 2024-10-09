@@ -14,7 +14,7 @@ opsr.fit(
   method,
   iterlim,
   printLevel,
-  .R = FALSE,
+  .useR = FALSE,
   ...
 )
 }
