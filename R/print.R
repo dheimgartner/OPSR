@@ -1,5 +1,12 @@
 #' @export
 print.summary.opsr <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  ## output formatting for wald tests
+  cat_wald <- function(wald, note) {
+    r <- function(x) round(x, digits = digits)
+    cat("Wald chi2 (", note, "): ", r(wald$chisq), " on ", wald$df, " DF, ",
+        "p-value: < ", r(wald$pval), "\n", sep = "")
+  }
+
   with(x, {
     cat("--------------------------------------------\n")
     cat("Ordinal probit switching regression\n")
@@ -16,7 +23,8 @@ print.summary.opsr <- function(x, digits = max(3L, getOption("digits") - 3L), ..
     cat("Estimates:\n")
     stats::printCoefmat(coef_table, digits = digits)
     cat("\n")
-    cat("Wald test: TODO\n")
+    cat_wald(wald_test$null, "null")
+    cat_wald(wald_test$rho, "rho")
     cat("--------------------------------------------\n")
   })
   invisible(x)

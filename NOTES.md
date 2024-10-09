@@ -21,11 +21,12 @@
   - Predict without group arg => predict for all with the respective observed groups
 -[ ] Replicate treatment effects => see dev/xinyi/OPSR_treatment effect.R
 
--[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted() [which needs predict], etc.
+-[ ] Write (extractor) methods (if not already inherited) => e.g., update(), residuals(), fitted() [which needs predict], etc.
+  - Try whether anova works
 -[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
-  - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
+  - Stata paper there they compare to the Null model (all params == 0) Wald chi2(7) => how to do this?
 -[ ] Model where you fix rhoj = 0 and then wald test => separate function
--[ ] GOF indicators R2 and stuff for whole model and submodels?
+-[ ] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it?
 -[ ] Texreg stuff (compare regimes => wide table)
 -[ ] Write tests
 -[ ] Write paper (read jss.pdf and learn from others)

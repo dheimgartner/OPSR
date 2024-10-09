@@ -230,3 +230,26 @@ f <- y ~ x
 fit_lm <- lm(f, data = df)
 summary(fit_lm)
 debugonce(summary.lm)
+
+
+
+
+
+## wald test
+?waldtest
+model <- lm(mpg ~ disp + hp + wt, data = mtcars)
+wald_result <- waldtest(model, terms = c("disp", "hp"))
+## waldtest actually runs update() and then refits the model
+wald_result
+
+## using car
+linearHypothesis(fit, c("rho1 = 0", "rho2 = 0", "rho3 = 0"))
+
+coefs <- names(coef(fit))
+## test against the null model
+linearHypothesis(fit, coefs)
+linearHypothesis(fit, coefs, vcov. = sandwich::sandwich)
+## we probably should keep intercepts and cutoff params
+keep <- grepl("^kappa|^sigma|^rho|(Intercept)", coefs)
+coefs[keep]
+linearHypothesis(fit, coefs[!keep])

@@ -1,6 +1,7 @@
 #' @export
 summary.opsr <- function(object, rob = TRUE, ...) {
   model <- object
+  varcov <- if (rob) sandwich::sandwich(model) else vcov(model)
 
   ## LL
   LL_2step <- sum(model$objectiveFn(model$start))
@@ -8,9 +9,30 @@ summary.opsr <- function(object, rob = TRUE, ...) {
 
 
 
-  ## what about R2 stuff??
+  ## what about R2 stuff (see also Xinyi paper)
 
 
+
+  ## wald test
+  wald_test <- function(model, hypothesis, varcov) {
+    wt <- car::linearHypothesis(model, hypothesis, vcov. = varcov)
+    out <- list()
+    out$df <- wt[["Df"]][2]
+    out$chisq <- wt[["Chisq"]][2]
+    out$pval <- wt[["Pr(>Chisq)"]][2]
+    out
+  }
+
+  ## independent equations (rho = 0)
+  nm <- names(coef(model))
+  pattern <- "^rho"
+  h_rho <- nm[grepl(pattern, nm)]
+  wald_test_rho <- wald_test(model, h_rho, varcov)
+
+  ## constants only model
+  pattern <- "^kappa|^sigma|^rho|(Intercept)"
+  h_null <- nm[!grepl(pattern, nm)]
+  wald_test_null <- wald_test(model, h_null, varcov)
 
   coef_inf <- function(model, varcov) {
     varcov[, model$fixed] <- NA
@@ -31,14 +53,13 @@ summary.opsr <- function(object, rob = TRUE, ...) {
     out
   }
 
-  vc <- if (rob) sandwich::sandwich(model) else vcov(model)
-  cofi <- coef_inf(model, vc)
+  cofi <- coef_inf(model, varcov)
 
   coef_table <- data.frame(
     est = model$estimate,
     se = cofi$se,
-    t_val = cofi$trat_0,
-    p_val = cofi$pval_0
+    tval = cofi$trat_0,
+    pval = cofi$pval_0
   )
   colnames(coef_table) <- c("Estimate", "Std. error", "t value", "Pr(> t)")
 
@@ -62,6 +83,11 @@ summary.opsr <- function(object, rob = TRUE, ...) {
     LL_final = LL_final,
     AIC = AIC(model),
     BIC = BIC(model)
+  )
+
+  ms$wald_test <- list(
+    null = wald_test_null,
+    rho = wald_test_rho
   )
 
   class(ms) <- "summary.opsr"
