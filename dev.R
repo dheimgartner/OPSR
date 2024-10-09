@@ -253,3 +253,34 @@ linearHypothesis(fit, coefs, vcov. = sandwich::sandwich)
 keep <- grepl("^kappa|^sigma|^rho|(Intercept)", coefs)
 coefs[keep]
 linearHypothesis(fit, coefs[!keep])
+
+## no error correlation => wald (rho) => does not reject H0
+sigma <- diag(1, nrow = 4)
+sim_dat <- opsr_simulate(nobs = 1e3, sigma = sigma)
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
+fit$maximum
+summary(fit)
+
+
+
+## null model
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+dat$dummy1 <- rnorm(nrow(dat))
+dat$dummy2 <- rnorm(nrow(dat))
+start <- opsr(ys | yo ~ dummy1 + dummy2 | dummy1 + dummy2, data = dat, .get2step = TRUE)
+start <- sapply(start, function(x) 0)
+nm <- names(start)
+kappa <- nm[grepl("^kappa", nm)]
+start[kappa] <- 1:length(kappa)
+sigma <- nm[grepl("^sigma", nm)]
+start[sigma] <- 1
+fixed <- sapply(nm, function(x) !grepl("^kappa|^sigma|^rho|(Intercept)", x))
+fit_null <- opsr(ys | yo ~ dummy1 + dummy2 | dummy1 + dummy2, data = dat, start = start, fixed = fixed)
+fit_null$maximum
+
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
+fit$maximum
+summary(fit)
