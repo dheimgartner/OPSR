@@ -9,3 +9,8 @@ get_y <- function(object) {
   y_name <- attr(terms(object$formula), "term.labels")[2]
   mf[, y_name]
 }
+
+#' @export
+nobs.opsr <- function(object, ...) {
+  object$nObs[["Total"]]
+}

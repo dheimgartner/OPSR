@@ -16,6 +16,7 @@ system.time(
 summary(fit_nm)
 summary(fit_bfgs)
 class(fit_bfgs)
+sloop::s3_methods_class("opsr")
 
 ## ground truth
 sim_dat$params
@@ -166,13 +167,66 @@ extract_mat(list(x, y), 0)
 
 
 
+## sandwich
+devtools::load_all()
+library(sandwich)
+
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+fit <- opsr(formula, dat, method = "BFGS", weights = rep(1, 1000))
+summary(fit)
+sandwich(fit)
+?sandwich  # defaults to HC (heteroskedasticity consistent; Eicker-Huber-White estimator) of the covariance matrix S(theta)
+
+## bread
+debugonce()
+bread(fit)
+vcov(fit)
+bread(fit) == vcov(fit) * 1000
+my_bread <- vcov(fit) * 1000
+
+## meat
+dim(estfun(fit))
+estfun(fit) == fit$gradientObs
+meat(fit)
+my_meat <- 1 / 1000 * crossprod(as.matrix(fit$gradientObs))
+round(meat(fit), 5) == round(my_meat, 5)
+
+## sandwich
+sandwich(fit)  # robust
+vcov(fit)  # not robust
+lmtest::coeftest(fit, vcov(fit))
+lmtest::coeftest(fit, sandwich(fit))
+my_sandwich <- 1 / 1000 * (bread(fit) %*% meat(fit) %*% bread(fit))
+sandwich(fit) == my_sandwich
 
 
 
 
+## summary.opsr
+devtools::load_all()
+
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+fit <- opsr(formula, dat)
+summary(fit)
+maxLik:::summary.maxLik(fit)
+
+start <- fit$start
+start["rho1"] <- start["rho2"] <- start["rho3"] <- 0
+fit2 <- opsr(formula, dat, start = start, fixed = c("rho1", "rho2", "rho3"))
+summary(fit2)
+fit$finalLL
+fit2$finalLL
 
 
-
-
-
-
+n <- 1000
+x <- rnorm(n)
+y <- 1 + 2 * x + rnorm(n)
+df <- data.frame(x = x, y = y)
+f <- y ~ x
+fit_lm <- lm(f, data = df)
+summary(fit_lm)
+debugonce(summary.lm)

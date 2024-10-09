@@ -10,15 +10,17 @@
 
 -[x] Write opsr_check_start
 -[x] Compare starting values (with Xinyi)
--[ ] Compute robust standard errors from maxLik output?
+-[x] Compute robust standard errors from maxLik output? => see sandwich notes in dev.R
   - Seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
   - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!
   - I think robust se and stuff should be computed in summary.opsr
   - default summary.maxLik() already useful => just wrap?
   - => then write print.summary.opsr!
--[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted(), etc.
--[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper)
+-[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted() [which needs predict], etc.
+-[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
   - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
+  
+-[ ] Model where you fix rhoj = 0 and then wald test => separate function
 -[ ] Think about what predict method should return (see also stata paper)
   - Predict without group arg => predict for all with the respective observed groups
 -[ ] Replicate treatment effects => see dev/xinyi/OPSR_treatment effect.R

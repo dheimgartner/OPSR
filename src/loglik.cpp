@@ -41,9 +41,9 @@ arma::colvec loglik_j(arma::mat& W, arma::mat& X, arma::colvec& y,
 }
 
 // [[Rcpp::export]]
-arma::colvec loglik(NumericVector& theta, arma::field<arma::mat>& W,
-                    arma::field<arma::mat>& X, arma::field<arma::colvec>& Y,
-                    arma::colvec& weights, int nReg, int nObs) {
+arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
+                        arma::field<arma::mat>& X, arma::field<arma::colvec>& Y,
+                        arma::colvec& weights, int nReg) {
   int boundary;
   int min_z = 1;
   int max_z = nReg;

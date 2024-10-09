@@ -66,8 +66,10 @@
 #' sim_dat$sigma
 #' }
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
-                 method = "BFGS", iterlim = 1000, printLevel = 2,
-                 .get2step = FALSE, ...) {
+                 fixed = NULL, method = "BFGS", iterlim = 1000, printLevel = 2,
+                 .get2step = FALSE, .useR = FALSE, ...) {
+  start_time <- Sys.time()
+
   mf <- match.call(expand.dots = FALSE)
   m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
   mf <- mf[c(1, m)]
@@ -148,12 +150,15 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
     start <- opsr_2step(W, Xs, Z, Ys)
   }
 
-  fit <- opsr.fit(Ws, Xs, Ys, start, w,
-                  method, iterlim, printLevel, ...)
+  fit <- opsr.fit(Ws, Xs, Ys, start, fixed, w,
+                  method, iterlim, printLevel, .useR, ...)
+
+  runtime <- Sys.time() - start_time
 
   ## return also some other useful information
   fit$call <- match.call()
   fit$formula <- f
+  fit$runtime <- runtime
   fit$start <- start
   fit$nReg <- nReg
   fit$nObs <- c(Total = nObs, setNames(c(table(Z)), paste0("o", seq_len(nReg))))

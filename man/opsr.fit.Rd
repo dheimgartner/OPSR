@@ -4,7 +4,19 @@
 \alias{opsr.fit}
 \title{Fitter function for ordinal probit switching regression model}
 \usage{
-opsr.fit(Ws, Xs, Ys, start, weights, method, iterlim, printLevel, ...)
+opsr.fit(
+  Ws,
+  Xs,
+  Ys,
+  start,
+  fixed,
+  weights,
+  method,
+  iterlim,
+  printLevel,
+  .R = FALSE,
+  ...
+)
 }
 \arguments{
 \item{weights}{a vector of weights to be used in the fitting process. Has to

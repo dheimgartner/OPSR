@@ -21,14 +21,16 @@
 #' @export
 #'
 #' @seealso ['loglik'], Formula 6 (translates almost verbatim).
-opsr.fit <- function(Ws, Xs, Ys, start, weights,
-                     method, iterlim, printLevel, ...) {
+opsr.fit <- function(Ws, Xs, Ys, start, fixed, weights,
+                     method, iterlim, printLevel, .useR = FALSE, ...) {
   nReg <- length(Xs)
   nObs <- length(Reduce(c, Ys))
 
-  ll2 <- function(theta) loglik(theta, Ws, Xs, Ys, weights, nReg, nObs)
+  ll <- ifelse(.useR, loglik_R, loglik_cpp)
 
-  mL <- maxLik::maxLik(ll2, start = start, method = method, iterlim = iterlim,
+  ll2 <- function(theta) ll(theta, Ws, Xs, Ys, weights, nReg)
+
+  mL <- maxLik::maxLik(ll2, start = start, fixed = fixed, method = method, iterlim = iterlim,
                        printLevel = printLevel, ...)
 
   mL

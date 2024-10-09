@@ -11,9 +11,9 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// loglik
-arma::colvec loglik(NumericVector& theta, arma::field<arma::mat>& W, arma::field<arma::mat>& X, arma::field<arma::colvec>& Y, arma::colvec& weights, int nReg, int nObs);
-RcppExport SEXP _OPSR_loglik(SEXP thetaSEXP, SEXP WSEXP, SEXP XSEXP, SEXP YSEXP, SEXP weightsSEXP, SEXP nRegSEXP, SEXP nObsSEXP) {
+// loglik_cpp
+arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W, arma::field<arma::mat>& X, arma::field<arma::colvec>& Y, arma::colvec& weights, int nReg);
+RcppExport SEXP _OPSR_loglik_cpp(SEXP thetaSEXP, SEXP WSEXP, SEXP XSEXP, SEXP YSEXP, SEXP weightsSEXP, SEXP nRegSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,8 +23,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::field<arma::colvec>& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< arma::colvec& >::type weights(weightsSEXP);
     Rcpp::traits::input_parameter< int >::type nReg(nRegSEXP);
-    Rcpp::traits::input_parameter< int >::type nObs(nObsSEXP);
-    rcpp_result_gen = Rcpp::wrap(loglik(theta, W, X, Y, weights, nReg, nObs));
+    rcpp_result_gen = Rcpp::wrap(loglik_cpp(theta, W, X, Y, weights, nReg));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -42,7 +41,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_OPSR_loglik", (DL_FUNC) &_OPSR_loglik, 7},
+    {"_OPSR_loglik_cpp", (DL_FUNC) &_OPSR_loglik_cpp, 6},
     {"_OPSR_opsr_prepare_coefs", (DL_FUNC) &_OPSR_opsr_prepare_coefs, 2},
     {NULL, NULL, 0}
 };

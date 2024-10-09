@@ -11,9 +11,12 @@ opsr(
   weights,
   na.action,
   start = NULL,
+  fixed = NULL,
   method = "BFGS",
   iterlim = 1000,
   printLevel = 2,
+  .get2step = FALSE,
+  .R = FALSE,
   ...
 )
 }
@@ -42,11 +45,10 @@ contain \code{NA}s. The default is set by the \code{na.action} setting of \code{
 and is \code{\link{na.fail}} if that is unset. The 'factory-fresh' default is \code{\link{na.omit}}.
 Another possible value is \code{NULL}, no action. Value \code{\link{na.exclude}} can be useful.}
 
-\item{start}{a named numeric vector with the starting values (passed to \code{\link{maxLik}}).
+\item{start}{a numeric vector with the starting values (passed to \code{\link{maxLik}}).
 If no starting values are provided, reasonable values are auto-generated via
-the 2-step procedure. The structure of \code{start} has to conform with \code{opsr}'s
-expectations. An example is included in the error message if this should not
-be the case.}
+the 2-step procedure \code{\link{opsr_2step}}. The structure of \code{start} has to conform with \code{opsr}'s
+expectations. See \code{\link{opsr_check_start}} for further details.}
 
 \item{method}{defaults to \code{"BFGS"} (see \code{\link{maxLik}}).}
 
