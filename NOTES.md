@@ -26,7 +26,7 @@
   - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
 -[ ] Model where you fix rhoj = 0 and then wald test => separate function
 -[ ] GOF indicators R2 and stuff for whole model and submodels?
--[ ] Texreg stuff
+-[ ] Texreg stuff (compare regimes => wide table)
 -[ ] Write tests
 -[ ] Write paper (read jss.pdf and learn from others)
 -[ ] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
