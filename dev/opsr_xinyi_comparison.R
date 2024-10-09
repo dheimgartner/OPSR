@@ -33,13 +33,20 @@ f <- C9b_TWer | E53_ln ~
   FAC_A6_procarowning_sd +
   region_WAA
 
-fit <- OPSR::opsr(f,
-                  method = "Nelder-Mead",
-                  iterlim = 50e3,
-                  start = start,
-                  data=telework_data)
+fit_nm <- OPSR::opsr(f,
+                     method = "NM",
+                     iterlim = 50e3,
+                     start = start,
+                     data=telework_data)
 
-summary(fit)
+fit_bfgs <- OPSR::opsr(f, data = telework_data)
+summary(fit_bfgs)
+
+fit_R <- OPSR::opsr(f, telework_data, .useR = TRUE)
+fit_bfgs$runtime
+fit_R$runtime
+
+texreg::screenreg(list(fit_bfgs, fit_R))
 
 devtools::load_all()
 my_start <- opsr(f, telework_data, .get2step = TRUE)

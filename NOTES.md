@@ -16,15 +16,20 @@
   - I think robust se and stuff should be computed in summary.opsr
   - default summary.maxLik() already useful => just wrap?
   - => then write print.summary.opsr!
--[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted() [which needs predict], etc.
--[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
-  - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
   
--[ ] Model where you fix rhoj = 0 and then wald test => separate function
 -[ ] Think about what predict method should return (see also stata paper)
   - Predict without group arg => predict for all with the respective observed groups
 -[ ] Replicate treatment effects => see dev/xinyi/OPSR_treatment effect.R
+
+-[ ] Write extractor methods (if not already inherited) => e.g., residuals(), fitted() [which needs predict], etc.
+-[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
+  - Also in summary.opsr => should return object "summary.opsr" (inheriting from summary.maxLik => see summary.mvProbit)
+-[ ] Model where you fix rhoj = 0 and then wald test => separate function
 -[ ] GOF indicators R2 and stuff for whole model and submodels?
+-[ ] Texreg stuff
+-[ ] Write tests
+-[ ] Write paper (read jss.pdf and learn from others)
+-[ ] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
 
 
 ## General
