@@ -1,12 +1,11 @@
+devtools::load_all()
+
 library(questionr)
 
 rm(list = ls())
-setwd("~/OneDrive - Georgia Institute of Technology/01-Research/00-Working/PhD dissertation/Dissertation/ch6 OPSR/R package development")
-
-OPSR_data <- read.csv("OPSR_data.csv")
 
 # ==================== ordered probit + regression set-up ====================
-TW_VMD_SR_selection <- as.matrix(with(OPSR_data,
+TW_VMD_SR_selection <- as.matrix(with(telework_data,
                                       cbind.data.frame(edu_2, edu_3,
                                                        hhincome_2, hhincome_3,
                                                        B2b_6,
@@ -21,14 +20,14 @@ TW_VMD_SR_selection <- as.matrix(with(OPSR_data,
                                                        FAC_C7_tw_location_flex_sd)))
 
 W <- TW_VMD_SR_selection
-Z <- OPSR_data$C9b_TWer
+Z <- telework_data$C9b_TWer
 K <- c(1.2, 2.4)
 G <- c(0.2, 0.4, 0.1, 0.3, 0.3, 0.2, 0.1, 0.1, -0.1, 0.1, 0.1, 0.3, 0.1, 0.1)
 
-Y <- OPSR_data$E53_ln
-VMD <- OPSR_data$E53
+Y <- telework_data$E53_ln
+VMD <- telework_data$E53
 
-X_NTW <- as.matrix(with(OPSR_data,
+X_NTW <- as.matrix(with(telework_data,
                         cbind.data.frame(1, # intercept
                                          sex_imp_mf,
                                          age_mean, age_mean_sq,
@@ -42,7 +41,7 @@ X_NTW <- as.matrix(with(OPSR_data,
 B_NTW <- c(3.744, -0.208, 0.010, 0.000, -0.392, -0.019, 0.130, 0.010, 0.415, 0.494, 0.437, 0.186, 0.124, -0.240)
 
 
-X_NUTW <- as.matrix(with(OPSR_data,
+X_NUTW <- as.matrix(with(telework_data,
                          cbind.data.frame(1, # intercept
                                           edu_2, edu_3,
                                           D2_2, D2_3, D2_4,
@@ -53,7 +52,7 @@ X_NUTW <- as.matrix(with(OPSR_data,
 B_NUTW <- c(2.420, 0.224, 0.670, 0.445, 0.219, 0.824, 0.704, 0.164, -0.176, 0.171)
 
 
-X_UTW <- as.matrix(with(OPSR_data,
+X_UTW <- as.matrix(with(telework_data,
                         cbind.data.frame(1, # intercept
                                          sex_imp_mf,
                                          hhincome_2, hhincome_3,
@@ -147,7 +146,7 @@ E53_NUTW <- VMD_exp(nLL.par = MLE.par, nLL.Z = Z, nLL.W = W, nLL.Y = Y, nLL.X_NT
 E53_UTW <- VMD_exp(nLL.par = MLE.par, nLL.Z = Z, nLL.W = W, nLL.Y = Y, nLL.X_NTW = X_NTW, nLL.X_NUTW = X_NUTW, nLL.X_UTW = X_UTW, jp = 3)[,2]
 
 VMD_matrix <- matrix(nrow = 16, ncol = 3)
-wt_new_county_trim_pop <- OPSR_data$wt_new_county_trim_pop
+wt_new_county_trim_pop <- telework_data$wt_new_county_trim_pop
 
 for (i in 1:3) {
   cond <- Z==i

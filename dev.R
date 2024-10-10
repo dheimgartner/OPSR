@@ -308,3 +308,11 @@ f <- C9b_TWer | E53_ln ~
   region_WAA
 
 fit_xinyi <- opsr(f, OPSR::telework_data)
+
+## predict
+devtools::load_all()
+
+p <- predict(fit_xinyi, group = 1)
+p_log <- predict(fit_xinyi, group = 1, log = TRUE)
+p_log_counterfact <- predict(fit_xinyi, group = 1, counterfact = 2, log = TRUE)
+p_log$prob == p_log_counterfact$prob
