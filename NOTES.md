@@ -17,9 +17,12 @@
   - default summary.maxLik() already useful => just wrap? => learned from it (e.g., stats::printCoefMat)
   - => then write print.summary.opsr!
   
--[ ] Think about what predict method should return (see also stata paper)
+-[x] Think about what predict method should return (see also stata paper)
+  - => oriented on stata but omitted some stuff (because I don't see an obvious usecase to return these values...) added unlog-response
   - Predict without group arg => predict for all with the respective observed groups?
 -[ ] Replicate treatment effects => see dev/xinyi/OPSR_treatment effect.R
+  - => ask Xinyi (I can't run OPSR_treatment effect)
+  
 -[ ] Write (extractor) methods (if not already inherited) => e.g., update(), residuals(), fitted() [which needs predict], etc.
   - Try whether anova works
   

@@ -312,7 +312,21 @@ fit_xinyi <- opsr(f, OPSR::telework_data)
 ## predict
 devtools::load_all()
 
-p <- predict(fit_xinyi, group = 1)
-p_log <- predict(fit_xinyi, group = 1, log = TRUE)
-p_log_counterfact <- predict(fit_xinyi, group = 1, counterfact = 2, log = TRUE)
-p_log$prob == p_log_counterfact$prob
+p <- predict(fit_xinyi, group = 1, type = "response")
+p_unlog <- predict(fit_xinyi, group = 1, type = "unlog-response")
+p_unlog_counterfact <- predict(fit_xinyi, group = 1, counterfact = 2, type = "unlog-response")
+plot(p_unlog, p_unlog_counterfact)
+p_prob <- predict(fit_xinyi, group = 1, type = "prob")  # abbr. are allowed for type
+p_prob_1 <- predict(fit_xinyi, group = 1, counterfact = 1, type = "prob")
+all(p_prob == p_prob_1, na.rm = TRUE)
+p_prob_2 <- predict(fit_xinyi, group = 1, counterfact = 2, type = "prob")
+p_prob_3 <- predict(fit_xinyi, group = 1, counterfact = 3, type = "prob")
+test <- data.frame(cbind(p_prob_1, p_prob_2, p_prob_3))
+test$sum <- rowSums(test)
+all(round(test$sum, 4) == 1, na.rm = TRUE)
+mills <- predict(fit_xinyi, group = 1, type = "mills")
+newdat <- telework_data[1, ]
+p_new <- predict(fit_xinyi, newdat, group = 3, type = "response")
+p_new_unlog <- predict(fit_xinyi, newdat, group = 3, type = "unlog-response")
+p_new_unlog == predict(fit_xinyi, group = 3, type = "unlog-response")[1]
+

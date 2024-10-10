@@ -4,7 +4,14 @@
 \alias{predict.opsr}
 \title{Predict method for OPSR model fits}
 \usage{
-\method{predict}{opsr}(object, newdata, group, counterfact = NULL, ...)
+\method{predict}{opsr}(
+  object,
+  newdata,
+  group,
+  counterfact = NULL,
+  type = c("response", "unlog-response", "prob", "mills"),
+  ...
+)
 }
 \arguments{
 \item{object}{an object of class \code{"opsr"}.}
@@ -16,6 +23,12 @@ also \code{\link{model.matrix.opsr}}.}
 \item{group}{predict outcome of this group.}
 
 \item{counterfact}{counterfactual group.}
+}
+\value{
+data frame of dimension 'nobs in \code{group}' x 2. The first column is the
+predicted probability of belonging to \code{group} and the second column is the
+predicted continuous outcome either under treatment \code{group} or \code{counterfact}
+if specified.
 }
 \description{
 Computes the conditional expectation \eqn{E[y_j | Z = j]} or
