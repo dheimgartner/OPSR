@@ -67,7 +67,7 @@
 #' }
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
                  fixed = NULL, method = "BFGS", iterlim = 1000, printLevel = 2,
-                 .get2step = FALSE, .useR = FALSE, ...) {
+                 .get2step = FALSE, .useR = FALSE, .censorRho = TRUE, ...) {
   start_time <- Sys.time()
 
   mf <- match.call(expand.dots = FALSE)
@@ -121,6 +121,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   ## reorder weights to match with shuffling in opsr.fit() where we compute
   ## likelihood values for all elements Z == 1, then Z == 2, etc. and then
   ## stack them
+  weights <- w  # keep a copy to attach to output
   w <- w[order(Z)]
 
   W <- model.matrix(update(f, ~ . -1), mf, rhs = 1)  # no intercept (identification threshold)!
@@ -148,6 +149,11 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
     start <- opsr_check_start(start, W, Xs)
   } else {
     start <- opsr_2step(W, Xs, Z, Ys)
+    ## censor rho to [-0.85, 0.85]
+    if (.censorRho) {
+      rho <- grepl("^rho", names(start))
+      start[rho] <- censor(start[rho], lower = -0.85, upper = 0.85)
+    }
   }
 
   fit <- opsr.fit(Ws, Xs, Ys, start, fixed, w,
@@ -163,6 +169,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   fit$nReg <- nReg
   fit$nObs <- c(Total = nObs, setNames(c(table(Z)), paste0("o", seq_len(nReg))))
   fit$nParts <- nParts
+  fit$weights <- weights
 
   class(fit) <- c("opsr", class(fit))
 
