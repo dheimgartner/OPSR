@@ -273,6 +273,38 @@ fit$maximum
 summary(fit)
 
 fit_null <- opsr_null_model(fit)
-summary(fit_null)  # errors because of wald test
+summary(fit_null)
 fit_null$maximum
 
+mean(dat[dat$ys == 1, "yo"])
+mean(dat[dat$ys == 2, "yo"])
+
+
+
+
+## xinyi's model
+f <- C9b_TWer | E53_ln ~
+  # selection model specification
+  edu_2 + edu_3 + hhincome_2 + hhincome_3 +
+  B2b_6 + worker_ft_B3b_binary + C5min_month +
+  FAC_A4_proactivemode_sd + FAC_A6_procarowning_sd +
+  FAC_B1_WIF_sd + FAC_B2_proteamwork_sd +
+  FAC_C1_tw_effective_teamwork_sd + FAC_C5_tw_enthusiasm_sd + FAC_C7_tw_location_flex_sd |
+  # outcome model NTW specification
+  sex_imp_mf + age_mean + age_mean_sq +
+  race_3_imp_mf_2 + race_3_imp_mf_3 +
+  E2 + D2_2 + D2_3 + D2_4 +
+  worker_ft_B3b_binary +
+  FAC_A2_prolargehouse_sd + FAC_A6_procarowning_sd +
+  region_WAA |
+  # outcome model NUTW specification
+  edu_2 + edu_3 + D2_2 + D2_3 +  D2_4 +
+  worker_ft_B3b_binary +
+  FAC_A2_prolargehouse_sd + FAC_A4_proactivemode_sd + FAC_A6_procarowning_sd |
+  # outcome model UTW specification
+  sex_imp_mf + hhincome_2 + hhincome_3 +
+  D11bcd + D2_2 + D2_3 + D2_4 +
+  FAC_A6_procarowning_sd +
+  region_WAA
+
+fit_xinyi <- opsr(f, OPSR::telework_data)

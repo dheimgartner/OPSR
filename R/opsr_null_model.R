@@ -1,6 +1,12 @@
-## returns class opsr.null (to avoid summary issues)
+## returns class opsr.null (wald tests not meaningful in summary.opsr)
 opsr_null_model <- function(object) {
   pattern <- "^kappa|^sigma|^rho|(Intercept)"
+  pattern <- "^kappa|^sigma|(Intercept)"
+
+  warning("Which pattern should we use? With or without rho? If without =>",
+          " Intercepts match conditional mean... and no identification issues.",
+          " I think it should be consistent with Wald test in 'summary.opsr'")
+
   start <- object$estimate
   nm <- names(start)
   start[!grepl(pattern, nm)] <- 0

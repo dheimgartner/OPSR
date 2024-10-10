@@ -13,20 +13,22 @@
 -[x] Compute robust standard errors from maxLik output? => see sandwich notes in dev.R
   - Seems pretty easy (based on hessian and gradient which is returned by maxLik) => see also sandwich R package (maybe read JSS paper)
   - stdev <- sqrt(abs(diag(solve(fit$hessian)))) as in OPSR MLE produces the same standard errors as in summary(fit) => these are note robust!
-  - I think robust se and stuff should be computed in summary.opsr
-  - default summary.maxLik() already useful => just wrap?
+  - I think robust se and stuff should be computed in summary.opsr => yes, summary is conventionally for all the inference stuff
+  - default summary.maxLik() already useful => just wrap? => learned from it (e.g., stats::printCoefMat)
   - => then write print.summary.opsr!
   
 -[ ] Think about what predict method should return (see also stata paper)
-  - Predict without group arg => predict for all with the respective observed groups
+  - Predict without group arg => predict for all with the respective observed groups?
 -[ ] Replicate treatment effects => see dev/xinyi/OPSR_treatment effect.R
-
 -[ ] Write (extractor) methods (if not already inherited) => e.g., update(), residuals(), fitted() [which needs predict], etc.
   - Try whether anova works
--[ ] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
+  
+-[x] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
   - Stata paper there they compare to the Null model (all params == 0) Wald chi2(7) => how to do this?
--[ ] Model where you fix rhoj = 0 and then wald test => separate function
+  -[ ] Model where you fix rhoj = 0 and then wald test => separate function
+  -[ ] Maybe try making lmtest::waldtest and/or anova to work and compare to car::linearHypothesis (implemented in summary).
 -[ ] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it?
+
 -[ ] Texreg stuff (compare regimes => wide table)
 -[ ] Write tests
 -[ ] Write paper (read jss.pdf and learn from others)

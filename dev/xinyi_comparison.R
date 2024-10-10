@@ -48,6 +48,12 @@ fit_R$runtime
 
 texreg::screenreg(list(fit_bfgs, fit_R))
 
+## comparing starting values
 devtools::load_all()
 my_start <- opsr(f, telework_data, .get2step = TRUE)
 (comp <- data.frame(start, my_start))
+
+
+## null model
+fit_null <- OPSR::opsr_null_model(fit_bfgs)
+summary(fit_null)
