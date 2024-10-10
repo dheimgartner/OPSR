@@ -17,6 +17,7 @@ opsr(
   printLevel = 2,
   .get2step = FALSE,
   .useR = FALSE,
+  .censorRho = TRUE,
   ...
 )
 }

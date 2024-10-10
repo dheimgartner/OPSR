@@ -13,6 +13,6 @@ Tow-step estimation procedure to generate reasonable starting values.
 
 Since the Heckman two-step estimator includes an estimate in the second step
 regression, the resulting OLS standard errors and heteroskedasticity-robust
-standard errors are incorrect.
+standard errors are incorrect (see Greene, 2002).
 }
 

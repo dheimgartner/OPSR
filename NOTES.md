@@ -23,6 +23,7 @@
 -[ ] Replicate treatment effects => see dev/xinyi/OPSR_treatment effect.R
   - => ask Xinyi (I can't run OPSR_treatment effect)
   
+## proceed => see dev proceed ##
 -[ ] Write (extractor) methods (if not already inherited) => e.g., update(), residuals(), fitted() [which needs predict], etc.
   - Try whether anova works
   

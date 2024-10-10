@@ -25,14 +25,15 @@ also \code{\link{model.matrix.opsr}}.}
 \item{counterfact}{counterfactual group.}
 }
 \value{
-data frame of dimension 'nobs in \code{group}' x 2. The first column is the
-predicted probability of belonging to \code{group} and the second column is the
-predicted continuous outcome either under treatment \code{group} or \code{counterfact}
-if specified.
+a vector of length \code{nrow(newdata)} (or data used during estimation).
 }
 \description{
 Computes the conditional expectation \eqn{E[y_j | Z = j]} or
 counterfactual conditional expectation \eqn{E[y_{j'} | Z = j]}.
+}
+\details{
+Elements are \code{NA_real_} if the \code{group} does not correspond to the observed
+regime (selection outcome). This ensures consistent output length.
 }
 \section{Outlook}{
 

@@ -330,3 +330,61 @@ p_new <- predict(fit_xinyi, newdat, group = 3, type = "response")
 p_new_unlog <- predict(fit_xinyi, newdat, group = 3, type = "unlog-response")
 p_new_unlog == predict(fit_xinyi, group = 3, type = "unlog-response")[1]
 
+
+
+
+## some extractor methods
+## fitted and residuals
+n <- 1000
+x <- rnorm(n)
+y <- 1 + 2 * x + rnorm(n)
+df <- data.frame(x = x, y = y)
+f <- y ~ x
+fit_lm <- lm(f, data = df)
+summary(fit_lm)
+all.equal(fitted(fit_lm), predict(fit_lm))
+debugonce(fitted)
+fitted(fit_lm)
+
+residuals(fit_lm)
+my_res <- df$y - fitted(fit_lm)
+all.equal(residuals(fit_lm), my_res)
+
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
+fitted(fit)
+residuals(fit)
+plot(fitted(fit), residuals(fit))
+
+test <- data.frame(
+  group = get_z(fit_xinyi),
+  f = fitted(fit_xinyi),
+  r = residuals(fit_xinyi)
+)
+
+plot(r ~ f, data = test, col = test$group)
+legend("bottomleft", legend = unique(test$group), col = unique(test$group), pch = 1)
+
+## update
+update(fit_lm, . ~ . -1) -> test
+debugonce(opsr)
+fit_updated <- update(fit, ~ . | . -1)
+
+
+
+## PROCEED HERE ##
+## anova
+debugonce(anova)
+stats:::anova.lm
+stats:::anova.lmlist
+anova(fit_lm, test)
+anova(fit, fit_updated)
+
+## TODO: compare to wald test
+
+
+
+
+

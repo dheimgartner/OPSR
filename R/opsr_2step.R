@@ -5,7 +5,7 @@
 #' @section Note:
 #' Since the Heckman two-step estimator includes an estimate in the second step
 #' regression, the resulting OLS standard errors and heteroskedasticity-robust
-#' standard errors are incorrect.
+#' standard errors are incorrect (see Greene, 2002).
 #'
 #' @export
 opsr_2step <- function(W, Xs, Z, Ys) {
