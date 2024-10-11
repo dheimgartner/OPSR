@@ -376,15 +376,66 @@ fit_updated <- update(fit, ~ . | . -1)
 
 ## PROCEED HERE ##
 ## anova
+?anova
+?anova.lm
+?anova.glm
+## => should we use analysis of residual deviance or residual sum of squares for opsr?
+## what does sampleSelection do? => no anova method
+## => use likelihood based metric (residual deviance) to test the full model!
+## => so anova.glm seems more relevant
 debugonce(anova)
 stats:::anova.lm
 stats:::anova.lmlist
 anova(fit_lm, test)
 anova(fit, fit_updated)
 
-## TODO: compare to wald test
+## example probit
+data(mtcars)
+mtcars$am <- as.factor(mtcars$am)
+model1 <- glm(am ~ hp, family = binomial(link = "probit"), data = mtcars)  # reduced model
+model2 <- glm(am ~ hp + wt, family = binomial(link = "probit"), data = mtcars)  # full model
+anova(model1, model2, test = "Chisq")
+## => so residual deviance is smaller by 31.547 units in model2 and H0 is this is
+## not different from 0. However, the Pr(>Chi) value indicates that we reject H0
+## i.e., model2 is the preferred one!
 
+## => take-away: will implement deviance based Chisq test
+s <- summary(model1)
+s$deviance
+s$dispersion
 
+## TODO:
+## compute these (deviance, dispersion) in summary.opsr
+## maybe update residuals.opsr(object, type, ...) to allow for type = "deviance"
+## implement in similar architecture: anova.opsr, anova.opsrlist, stat.anova
+## conform to the returned object classes
 
+debugonce(stats:::anova.glm)
+anova(model1)
+## => anova prepares the table input for stat.anova (where the main magic happens)
+debugonce(stats:::anova.glmlist)
+anova(model1, model2, test = "Chisq")
+## => anova simply intersects if more than one model is passed (via ...) and then
+## forwards to anova.glmlist which again prepares the table input for stat.anova
+debugonce(stats:::stat.anova)
+## => chisq test seems pretty trivial => call to pchisq
+anova(model1)
+debugonce(stats:::stat.anova)
+anova(model1, model2)
 
+anova(model1, model2)
 
+## compare to wald test => but deviance based test (LRT) and tests on model coefficients are not the same!
+anova(model1)
+h <- coefficients(model1)
+h <- h[names(h) != "(Intercept)"]
+car::linearHypothesis(model1, names(h), vcov. = sandwich::sandwich(model1))
+model3 <- glm(am ~ 1, family = binomial(link = "probit"), data = mtcars)
+anova(model3, model1)
+lmtest::waldtest(model3, model1)
+lmtest::waldtest(model1)
+
+anova(model1)  # Pr(>Chi) = 0.1771
+lmtest::waldtest(model1)  # Pr(>Chisq) = 0.2253
+car::linearHypothesis(model1, "hp")  # Pr(>Chisq) = 0.2157
+## => waldtest and linearHypothesis should (approx.) yield the same which they do...

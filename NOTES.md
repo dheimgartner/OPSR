@@ -23,14 +23,17 @@
 -[ ] Replicate treatment effects => see dev/xinyi/OPSR_treatment effect.R
   - => ask Xinyi (I can't run OPSR_treatment effect)
   
-## proceed => see dev proceed ##
--[ ] Write (extractor) methods (if not already inherited) => e.g., update(), residuals(), fitted() [which needs predict], etc.
+-[x] Write (extractor) methods (if not already inherited) => e.g., update(), residuals(), fitted() [which needs predict], etc.
   - Try whether anova works
-  
+
+## proceed => see dev proceed ##
+-[ ] Implement anova.opsr
+
 -[x] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
   - Stata paper there they compare to the Null model (all params == 0) Wald chi2(7) => how to do this?
   -[ ] Model where you fix rhoj = 0 and then wald test => separate function
   -[ ] Maybe try making lmtest::waldtest and/or anova to work and compare to car::linearHypothesis (implemented in summary).
+    - But waldtest and anova do different things: waldtest is test on coefficient restrictions and anova is comparison of difference in deviance... (see discussion in dev.R)
 -[ ] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it?
 
 -[ ] Texreg stuff (compare regimes => wide table)
