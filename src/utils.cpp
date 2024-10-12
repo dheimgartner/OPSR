@@ -50,16 +50,3 @@ List opsr_prepare_coefs(NumericVector& theta, int nReg) {
   }
   return theta_;
 }
-
-// wrapper around dnorm which expects and returns NumericVector
-double dnorm_double(double x) {
-  NumericVector y = NumericVector::create(x);
-  NumericVector res = dnorm(y);
-  return res[0];
-}
-
-double pnorm_double(double x) {
-  NumericVector y = NumericVector::create(x);
-  NumericVector res = pnorm(y);
-  return res[0];
-}

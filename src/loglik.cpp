@@ -10,35 +10,29 @@ arma::colvec loglik_j(arma::mat& W, arma::mat& X, arma::colvec& y,
                       arma::colvec beta_j, double sigma_j, double rho_j,
                       int boundary) {
   int n_elem = y.size();
-  double res, low, high, part1, part2, part3;
-  arma::colvec ll(n_elem);
-  double ll_i;
+  arma::colvec res(n_elem), low(n_elem), high(n_elem), part1(n_elem), part2(n_elem), part3(n_elem);
 
   RNGScope scope;  // set seed
 
-  for (int i = 0; i < n_elem; i++) {
-    res = y(i) - arma::dot(X.row(i), beta_j);
-    low = kappa_j_1 - arma::dot(W.row(i), gamma);
-    high = kappa_j - arma::dot(W.row(i), gamma);
-    // part1
-    part1 = 1.0 / sigma_j * dnorm_double(res / sigma_j);
-    // part2
-    if (boundary == 1)
-      part2 = 1.0;
-    else
-      part2 = pnorm_double((sigma_j * high - rho_j * res) / (sigma_j * sqrt(1.0 - pow(rho_j, 2))));
-    // part3
-    if (boundary == -1)
-      part3 = 0.0;
-    else
-      part3 = pnorm_double((sigma_j * low - rho_j * res) / (sigma_j * sqrt(1.0 - pow(rho_j, 2))));
+  res = y - X * beta_j;
+  low = kappa_j_1 - W * gamma;
+  high = kappa_j - W * gamma;
 
-    ll_i = log(part1) + log(part2 - part3);
-    ll[i] = ll_i;
-  }
+  part1 = 1.0 / sigma_j * arma::normpdf(res/ sigma_j);
 
-  return ll;
+  if (boundary == 1)
+    part2.ones();
+  else
+    part2 = arma::normcdf((sigma_j * high - rho_j * res) / (sigma_j * sqrt(1.0 - pow(rho_j, 2))));
+
+  if (boundary == -1)
+    part3.zeros();
+  else
+    part3 = arma::normcdf((sigma_j * low - rho_j * res) / (sigma_j * sqrt(1.0 - pow(rho_j, 2))));
+
+  return log(part1) + log(part2 - part3);
 }
+
 
 // [[Rcpp::export]]
 arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
