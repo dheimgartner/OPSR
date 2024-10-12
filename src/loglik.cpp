@@ -44,8 +44,6 @@ arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
                         arma::colvec& weights, int nReg, int nThreads) {
 
 #ifdef _OPENMP
-  if (nThreads > omp_get_max_threads())
-    stop("'nThreads' > maximum number of available threads.");
   omp_set_num_threads(nThreads);
 #endif
 

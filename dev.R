@@ -14,7 +14,7 @@ system.time(
   fit_nm <- opsr(formula, dat, method = "NM", iterlim = 10e3)
 )
 system.time(
-  fit_bfgs <- opsr(formula, dat, method = "BFGS", nThreads = 1)
+  fit_bfgs <- opsr(formula, dat, method = "BFGS", nThreads = 3)
 )
 summary(fit_nm)
 summary(fit_bfgs)
