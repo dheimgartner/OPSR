@@ -1,4 +1,7 @@
-devtools::load_all()
+Sys.setenv("PKG_CXXFLAGS" = "-fopenmp")
+Sys.setenv("PKG_LIBS" = "-fopenmp")
+
+devtools::load_all(recompile = TRUE)
 
 rm(list = ls())
 

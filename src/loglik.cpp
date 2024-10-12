@@ -1,6 +1,10 @@
 #include <RcppArmadillo.h>
 #include "utils.h"
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 // [[Rcpp::depends(RcppArmadillo)]]
 
 using namespace Rcpp;
@@ -37,7 +41,12 @@ arma::colvec loglik_j(arma::mat& W, arma::mat& X, arma::colvec& y,
 // [[Rcpp::export]]
 arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
                         arma::field<arma::mat>& X, arma::field<arma::colvec>& Y,
-                        arma::colvec& weights, int nReg) {
+                        arma::colvec& weights, int nReg, int nThreads=3) {
+
+#ifdef _OPENMP
+  omp_set_num_threads(nThreads);
+#endif
+
   int boundary;
   int min_z = 1;
   int max_z = nReg;
@@ -54,10 +63,10 @@ arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
                     theta_j["kappa_j"], theta_j["beta_j"], theta_j["sigma_j"],
                             theta_j["rho_j"], boundary);
 
-    // append to ll
     ll = arma::join_cols(ll, ll_j);
   }
 
   // element-wise multiplication
   return ll % weights;
 }
+
