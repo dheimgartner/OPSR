@@ -41,7 +41,7 @@ arma::colvec loglik_j(arma::mat& W, arma::mat& X, arma::colvec& y,
 // [[Rcpp::export]]
 arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
                         arma::field<arma::mat>& X, arma::field<arma::colvec>& Y,
-                        arma::colvec& weights, int nReg, int nThreads=3) {
+                        arma::colvec& weights, int nReg, int nThreads=2) {
 
 #ifdef _OPENMP
   omp_set_num_threads(nThreads);
@@ -55,6 +55,12 @@ arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
 
   theta_ = opsr_prepare_coefs(theta, nReg);
 
+
+
+#pragma omp parallel private(theta_j, boundary, ll_j)
+{
+
+#pragma omp for
   for (int j = 0; j < nReg; j++) {
     theta_j = theta_[j];
     boundary = (j + 1 == min_z) ? -1 : (j + 1 == max_z) ? 1 : 0;  // j + 1!
@@ -63,10 +69,18 @@ arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
                     theta_j["kappa_j"], theta_j["beta_j"], theta_j["sigma_j"],
                             theta_j["rho_j"], boundary);
 
-    ll = arma::join_cols(ll, ll_j);
+#pragma omp critical
+{
+  ll = arma::join_cols(ll, ll_j);
+}
   }
 
-  // element-wise multiplication
-  return ll % weights;
+}  // omp parallel
+
+
+
+
+// element-wise multiplication
+return ll % weights;
 }
 
