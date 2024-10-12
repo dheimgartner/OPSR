@@ -95,10 +95,3 @@ int opsr_max_threads() {
 #endif
 }
 
-// [[Rcpp::export]]
-void opsr_set_threads(int nThreads) {
-#ifdef _OPENMP
-  omp_set_num_threads(nThreads);
-#endif
-}
-

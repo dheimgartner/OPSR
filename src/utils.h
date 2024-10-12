@@ -24,6 +24,5 @@ Theta* make_theta_array(Rcpp::List theta);
 Rcpp::List opsr_prepare_coefs(Rcpp::NumericVector& theta, int nReg);
 bool opsr_check_omp();
 int opsr_max_threads();
-void opsr_set_threads();
 
 #endif

@@ -17,7 +17,3 @@ opsr_max_threads <- function() {
     .Call(`_OPSR_opsr_max_threads`)
 }
 
-opsr_set_threads <- function(nThreads) {
-    invisible(.Call(`_OPSR_opsr_set_threads`, nThreads))
-}
-
