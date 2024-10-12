@@ -57,3 +57,14 @@ my_start <- opsr(f, telework_data, .get2step = TRUE)
 ## null model
 fit_null <- OPSR::opsr_null_model(fit_bfgs)
 summary(fit_null)
+
+## multithreaded
+system.time(
+  opsr(f, telework_data, nThreads = 1)
+)
+system.time(
+  fit <- opsr(f, telework_data, nThreads = 3)
+)
+system.time(
+  opsr(f, telework_data, nThreads = 10)
+)

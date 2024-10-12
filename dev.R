@@ -1,12 +1,12 @@
-Sys.setenv("PKG_CXXFLAGS" = "-fopenmp")
-Sys.setenv("PKG_LIBS" = "-fopenmp")
-
 devtools::load_all(recompile = TRUE)
 
 rm(list = ls())
 
+opsr_max_threads()
+opsr_set_threads(16)
+
 ## test opsr
-sim_dat <- opsr_simulate(n = 1e3)
+sim_dat <- opsr_simulate(n = 1e5)
 dat <- sim_dat$data
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above
@@ -14,7 +14,7 @@ system.time(
   fit_nm <- opsr(formula, dat, method = "NM", iterlim = 10e3)
 )
 system.time(
-  fit_bfgs <- opsr(formula, dat, method = "BFGS")
+  fit_bfgs <- opsr(formula, dat, method = "BFGS", nThreads = 1)
 )
 summary(fit_nm)
 summary(fit_bfgs)

@@ -67,7 +67,7 @@
 #' }
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
                  fixed = NULL, method = "BFGS", iterlim = 1000, printLevel = 2,
-                 .get2step = FALSE, .useR = FALSE, .censorRho = TRUE, ...) {
+                 nThreads = 1, .get2step = FALSE, .useR = FALSE, .censorRho = TRUE, ...) {
   start_time <- Sys.time()
 
   mf <- match.call(expand.dots = FALSE)
@@ -157,7 +157,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   }
 
   fit <- opsr.fit(Ws, Xs, Ys, start, fixed, w,
-                  method, iterlim, printLevel, .useR, ...)
+                  method, iterlim, printLevel, nThreads, .useR, ...)
 
   runtime <- Sys.time() - start_time
 

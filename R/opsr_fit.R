@@ -22,13 +22,13 @@
 #'
 #' @seealso ['loglik'], Formula 6 (translates almost verbatim).
 opsr.fit <- function(Ws, Xs, Ys, start, fixed, weights,
-                     method, iterlim, printLevel, .useR = FALSE, ...) {
+                     method, iterlim, printLevel, nThreads, .useR = FALSE, ...) {
   nReg <- length(Xs)
   nObs <- length(Reduce(c, Ys))
 
   ll <- ifelse(.useR, loglik_R, loglik_cpp)
 
-  ll2 <- function(theta) ll(theta, Ws, Xs, Ys, weights, nReg)
+  ll2 <- function(theta) ll(theta, Ws, Xs, Ys, weights, nReg, nThreads)
 
   mL <- maxLik::maxLik(ll2, start = start, fixed = fixed, method = method, iterlim = iterlim,
                        printLevel = printLevel, ...)

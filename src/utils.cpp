@@ -1,4 +1,9 @@
 #include <RcppArmadillo.h>
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 #include "utils.h"
 
 using namespace Rcpp;
@@ -50,3 +55,50 @@ List opsr_prepare_coefs(NumericVector& theta, int nReg) {
   }
   return theta_;
 }
+
+Theta make_theta(arma::colvec gamma, double kappa_j_1, double kappa_j,
+                 arma::colvec beta_j, double sigma_j, double rho_j) {
+  Theta theta = {
+    gamma, kappa_j_1, kappa_j, beta_j, sigma_j, rho_j
+  };
+
+  return theta;
+}
+
+Theta* make_theta_array(List theta) {
+  int nReg = theta.size();
+  List theta_j;
+  Theta* theta_array = new Theta[nReg];
+  for (int j = 0; j < nReg; j++) {
+    theta_j = theta[j];
+    theta_array[j] = make_theta(theta_j["gamma"], theta_j["kappa_j_1"], theta_j["kappa_j"],
+                                theta_j["beta_j"], theta_j["sigma_j"], theta_j["rho_j"]);
+  }
+  return theta_array;
+}
+
+// [[Rcpp::export]]
+bool opsr_check_omp() {
+#ifdef _OPENMP
+  return true;
+#else
+  return false;
+#endif
+}
+
+// [[Rcpp::export]]
+int opsr_max_threads() {
+#ifdef _OPENMP
+  return omp_get_max_threads();
+#else
+  return 1;
+#endif
+}
+
+// [[Rcpp::export]]
+void opsr_set_threads(int nThreads) {
+#ifdef _OPENMP
+  omp_set_num_threads(nThreads);
+#endif
+}
+

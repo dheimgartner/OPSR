@@ -40,10 +40,43 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// opsr_check_omp
+bool opsr_check_omp();
+RcppExport SEXP _OPSR_opsr_check_omp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(opsr_check_omp());
+    return rcpp_result_gen;
+END_RCPP
+}
+// opsr_max_threads
+int opsr_max_threads();
+RcppExport SEXP _OPSR_opsr_max_threads() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(opsr_max_threads());
+    return rcpp_result_gen;
+END_RCPP
+}
+// opsr_set_threads
+void opsr_set_threads(int nThreads);
+RcppExport SEXP _OPSR_opsr_set_threads(SEXP nThreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type nThreads(nThreadsSEXP);
+    opsr_set_threads(nThreads);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_OPSR_loglik_cpp", (DL_FUNC) &_OPSR_loglik_cpp, 7},
     {"_OPSR_opsr_prepare_coefs", (DL_FUNC) &_OPSR_opsr_prepare_coefs, 2},
+    {"_OPSR_opsr_check_omp", (DL_FUNC) &_OPSR_opsr_check_omp, 0},
+    {"_OPSR_opsr_max_threads", (DL_FUNC) &_OPSR_opsr_max_threads, 0},
+    {"_OPSR_opsr_set_threads", (DL_FUNC) &_OPSR_opsr_set_threads, 1},
     {NULL, NULL, 0}
 };
 
