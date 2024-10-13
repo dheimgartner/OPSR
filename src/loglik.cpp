@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "loglik.h"
 #include "utils.h"
 
 #ifdef _OPENMP
@@ -6,6 +7,7 @@
 #endif
 
 // [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::plugins(openmp)]]
 
 using namespace Rcpp;
 
@@ -56,24 +58,25 @@ arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
   arma::colvec ll;
 
   theta_ = opsr_prepare_coefs(theta, nReg);
-  // theta_ is a list type which is badly handled in openmp
-  // Theta is a typedef which contains only arma types or base types
+  // theta_ is an Rcpp::List which is badly handled in openmp
+  // Theta is a typedef which contains only arma or base types
   Theta* theta_array = make_theta_array(theta_);
 
+#ifdef _OPENMP
 #pragma omp parallel for private(theta_j, boundary)
+#endif
   for (int j = 0; j < nReg; j++) {
     theta_j = theta_array[j];
     boundary = (j + 1 == min_z) ? -1 : (j + 1 == max_z) ? 1 : 0;  // j + 1!
 
     ll_j[j] = loglik_j(W[j], X[j], Y[j], theta_j.gamma, theta_j.kappa_j_1,
                        theta_j.kappa_j, theta_j.beta_j, theta_j.sigma_j,
-                               theta_j.rho_j, boundary);
+                       theta_j.rho_j, boundary);
   }
 
   for (int j = 0; j < nReg; j++) {
     ll = arma::join_cols(ll, ll_j[j]);
   }
-
 
   // element-wise multiplication
   return ll % weights;

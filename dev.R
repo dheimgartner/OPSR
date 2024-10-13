@@ -3,10 +3,9 @@ devtools::load_all(recompile = TRUE)
 rm(list = ls())
 
 opsr_max_threads()
-opsr_set_threads(16)
 
 ## test opsr
-sim_dat <- opsr_simulate(n = 1e5)
+sim_dat <- opsr_simulate(n = 1e6)
 dat <- sim_dat$data
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above

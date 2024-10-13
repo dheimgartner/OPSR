@@ -3,10 +3,6 @@
 
 #include <RcppArmadillo.h>
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 typedef struct theta {
   arma::colvec gamma;
   double kappa_j_1;
