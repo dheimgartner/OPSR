@@ -52,15 +52,15 @@ arma::colvec loglik_cpp(NumericVector& theta, arma::field<arma::mat>& W,
   int boundary;
   int min_z = 1;
   int max_z = nReg;
-  List theta_;
+  List theta_list;
   Theta theta_j;
   arma::field<arma::colvec> ll_j(nReg);
   arma::colvec ll;
 
-  theta_ = opsr_prepare_coefs(theta, nReg);
-  // theta_ is an Rcpp::List which is badly handled in openmp
+  theta_list = opsr_prepare_coefs(theta, nReg);
+  // theta_list is an Rcpp::List which is badly handled in openmp
   // Theta is a typedef which contains only arma or base types
-  Theta* theta_array = make_theta_array(theta_);
+  Theta* theta_array = make_theta_array(theta_list);
 
 #ifdef _OPENMP
 #pragma omp parallel for private(theta_j, boundary)
