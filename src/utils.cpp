@@ -39,18 +39,13 @@ List opsr_prepare_coefs(NumericVector& theta, int nReg) {
   // construct the list of lists for each ordinal category
   List theta_(nReg);
   for (int i = 0; i < nReg; i++) {
-    double kappa_j_1 = kappa[i];
-    double kappa_j = kappa[i + 1];
-    double sigma_j = sigma[i];
-    double rho_j = rho[i];
-
     theta_[i] = List::create(
       Named("gamma") = gamma,
-      Named("kappa_j_1") = kappa_j_1,
-      Named("kappa_j") = kappa_j,
+      Named("kappa_j_1") = kappa[i],
+      Named("kappa_j") = kappa[i + 1],
       Named("beta_j") = beta[i],
-      Named("sigma_j") = sigma_j,
-      Named("rho_j") = rho_j
+      Named("sigma_j") = sigma[i],
+      Named("rho_j") = rho[i]
     );
   }
   return theta_;

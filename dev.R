@@ -10,7 +10,7 @@ dat <- sim_dat$data
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
 formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above
 system.time(
-  fit_nm <- opsr(formula, dat, method = "NM", iterlim = 10e3)
+  fit_nm <- opsr(formula, dat, method = "NM", iterlim = 10e3, nThreads = 3)
 )
 system.time(
   fit_bfgs <- opsr(formula, dat, method = "BFGS", nThreads = 3)

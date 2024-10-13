@@ -24,7 +24,7 @@ arma::colvec loglik_j(arma::mat& W, arma::mat& X, arma::colvec& y,
   low = kappa_j_1 - W * gamma;
   high = kappa_j - W * gamma;
 
-  part1 = 1.0 / sigma_j * arma::normpdf(res/ sigma_j);
+  part1 = 1.0 / sigma_j * arma::normpdf(res / sigma_j);
 
   if (boundary == 1)
     part2.ones();
