@@ -31,15 +31,15 @@
 
 -[x] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
   - Stata paper there they compare to the Null model (all params == 0) Wald chi2(7) => how to do this?
-  -[ ] Model where you fix rhoj = 0 and then wald test => separate function
-  -[ ] Maybe try making lmtest::waldtest and/or anova to work and compare to car::linearHypothesis (implemented in summary).
+  -[x] Model where you fix rhoj = 0 and then wald test (=> separate function [part of summary.opsr])
+  -[x] Maybe try making lmtest::waldtest and/or anova to work and compare to car::linearHypothesis (implemented in summary).
     - But waldtest and anova do different things: waldtest is test on coefficient restrictions and anova is comparison of difference in deviance... (see discussion in dev.R)
--[ ] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it?
+-[ ] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it? => check out her GOF script
 
 -[ ] Texreg stuff (compare regimes => wide table)
 -[ ] Write tests
 -[ ] Write paper (read jss.pdf and learn from others)
--[ ] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
+-[x] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
 
 
 ## General
