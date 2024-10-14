@@ -178,3 +178,34 @@ rownames(VMD_matrix) <- c('logVMD_non-wt_obs', 'logVMD_non-wt_NTWing', 'logVMD_n
                           'VMD_wt_obs', 'VMD_wt_NTWing', 'VMD_wt_NUTWing', 'VMD_wt_UTWing')
 colnames(VMD_matrix) <- c('NTWer', 'NUTWer', 'UTWer')
 VMD_matrix
+
+# ==================== model fit ====================
+
+# ordered probit
+N <- nrow(OPSR_data)
+loglik_EL <- N*log(1/3)
+MS_count <- table(OPSR_data$C9b_TWer)
+MS_prob <- table(OPSR_data$C9b_TWer)/N
+loglik_MS <- MS_count[1] * log(MS_prob[1]) + MS_count[2] * log(MS_prob[2]) + MS_count[3] * log(MS_prob[3])
+
+prob <- VMD_exp(nLL.par = MLE.par, nLL.Z = Z, nLL.W = W, nLL.Y = Y, nLL.X_NTW = X_NTW, nLL.X_NUTW = X_NUTW, nLL.X_UTW = X_UTW, jp = 1)[,3]
+loglik_beta <-sum(log(prob))
+
+1-loglik_beta/loglik_EL # equal-likely base psedo R2
+1-loglik_beta/loglik_MS # market-share base psedo R2
+
+
+# regression
+E53_ln_pred <- ifelse(OPSR_data$C9b_TWer==1, E53_ln_NTW, ifelse(OPSR_data$C9b_TWer==2, E53_ln_NUTW, E53_ln_UTW))
+
+r2 <- function(s) {
+  cond <- OPSR_data$C9b_TWer %in% s
+  RSS <- sum((OPSR_data$E53_ln[cond] - E53_ln_pred[cond])^2)
+  TSS <- sum((OPSR_data$E53_ln[cond] - mean(OPSR_data$E53_ln[cond]))^2)
+  return(1-RSS/TSS)
+}
+
+r2(1) # R2 for NTWer
+r2(2) # R2 for NUTWer
+r2(3) # R2 for UTWer
+r2(c(1,2,3))  # R2 for all groups
