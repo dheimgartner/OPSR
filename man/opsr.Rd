@@ -15,6 +15,7 @@ opsr(
   method = "BFGS",
   iterlim = 1000,
   printLevel = 2,
+  nThreads = 1,
   .get2step = FALSE,
   .useR = FALSE,
   .censorRho = TRUE,

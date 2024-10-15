@@ -14,6 +14,7 @@ opsr.fit(
   method,
   iterlim,
   printLevel,
+  nThreads,
   .useR = FALSE,
   ...
 )

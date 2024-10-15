@@ -4,7 +4,7 @@
 \alias{loglik_R}
 \title{R-based log-likelihood implementation}
 \usage{
-loglik_R(theta, W, X, Y, weights, nReg)
+loglik_R(theta, W, X, Y, weights, nReg, ...)
 }
 \description{
 Only kept as an internal reference; for pedagogical purposes...

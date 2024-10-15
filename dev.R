@@ -374,9 +374,6 @@ update(fit_lm, . ~ . -1) -> test
 debugonce(opsr)
 fit_updated <- update(fit, ~ . | . -1)
 
-
-
-## PROCEED HERE ##
 ## anova
 ?anova
 ?anova.lm
@@ -396,6 +393,8 @@ data(mtcars)
 mtcars$am <- as.factor(mtcars$am)
 model1 <- glm(am ~ hp, family = binomial(link = "probit"), data = mtcars)  # reduced model
 model2 <- glm(am ~ hp + wt, family = binomial(link = "probit"), data = mtcars)  # full model
+anova(model1, test = "Chisq")
+anova(model2, test = "Chisq")
 anova(model1, model2, test = "Chisq")
 ## => so residual deviance is smaller by 31.547 units in model2 and H0 is this is
 ## not different from 0. However, the Pr(>Chi) value indicates that we reject H0
@@ -441,3 +440,23 @@ anova(model1)  # Pr(>Chi) = 0.1771
 lmtest::waldtest(model1)  # Pr(>Chisq) = 0.2253
 car::linearHypothesis(model1, "hp")  # Pr(>Chisq) = 0.2157
 ## => waldtest and linearHypothesis should (approx.) yield the same which they do...
+
+
+## anova.opsr
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
+test <- anova(fit)
+print.anova.opsr(test)
+
+## test with updated models
+
+## PROCEED HERE ##
+## bug if more than two models
+## also null model should be passable
+## also remove tmp, anova_glm, etc.
+fit2 <- update(fit, ~ . | . -1)
+fit_null <- opsr_null_model(fit)
+test <- anova(fit, fit, fit)
+print.anova.opsr(test)

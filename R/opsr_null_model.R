@@ -1,11 +1,7 @@
 ## returns class opsr.null (wald tests not meaningful in summary.opsr)
 opsr_null_model <- function(object) {
-  pattern <- "^kappa|^sigma|^rho|(Intercept)"
-  pattern <- "^kappa|^sigma|(Intercept)"
-
-  warning("Which pattern should we use? With or without rho? If without =>",
-          " Intercepts match conditional mean... and no identification issues.",
-          " I think it should be consistent with Wald test in 'summary.opsr'")
+  # pattern <- "^kappa|^sigma|^rho|(Intercept)"  !! not identified
+  pattern <- "^kappa|^sigma|(Intercept)"  # separate models
 
   start <- object$estimate
   nm <- names(start)
@@ -17,6 +13,7 @@ opsr_null_model <- function(object) {
   fixed <- sapply(nm, function(x) !grepl(pattern, x))
   dat <- model.frame(object)
   fit_null <- opsr(object$formula, dat, start = start, fixed = fixed)
+  fit_null$formula <- ~Nullmodel
   class(fit_null) <- c("opsr.null", "maxLik", "maxim")
   fit_null
 }

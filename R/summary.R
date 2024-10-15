@@ -74,9 +74,10 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   ms$message <- model$message
   ms$coef_table <- coef_table
   ms$varcov <- cofi$varcov
-  ms$nParams <- length(model$estimate) - sum(model$fixed)
   ms$nReg <- model$nReg
   ms$nObs <- model$nObs
+  ms$nParams <- model$nParams
+  ms$df <- model$df
 
   ms$GOF <- list(
     LL2step = LL2step,
