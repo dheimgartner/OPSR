@@ -26,7 +26,6 @@
 -[x] Write (extractor) methods (if not already inherited) => e.g., update(), residuals(), fitted() [which needs predict], etc.
   - Try whether anova works
 
-## proceed => see dev proceed ##
 -[x] Implement anova.opsr
   -[x] Understand anova.glm (for one model => in particular construction of table passed to stat.anova) => key: these statistics (columns in table)
     - `object$df.residual` and `object$deviance` are key!
@@ -39,6 +38,8 @@
   -[x] Model where you fix rhoj = 0 and then wald test (=> separate function [part of summary.opsr])
   -[x] Maybe try making lmtest::waldtest and/or anova to work and compare to car::linearHypothesis (implemented in summary).
     - But waldtest and anova do different things: waldtest is test on coefficient restrictions and anova is comparison of difference in deviance... (see discussion in dev.R)
+
+## proceed ##
 -[ ] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it? => check out her GOF script (OPSR_treatment effect.R)
 
 -[ ] Texreg stuff (compare regimes => wide table)
