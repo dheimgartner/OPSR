@@ -64,10 +64,15 @@ anova(fit_null, fit_updated, fit)
 vmd <- predict(fit_xinyi, group = 1, type = "unlog-response")
 vmd_counterfact <- predict(fit_xinyi, group = 1, counterfact = 2, type = "unlog-response")
 plot(vmd, vmd_counterfact,
-     main = "Non-TW => Non-usual TW")
+     main = "Non-TW => Non-usual TW",
+     xlab = "VMD [km]",
+     ylab = "Counterfactual VMD [km]")
 abline(a = 0, b = 1, col = "red", lwd = 2)
 
 ## TODO:
 ## tex output tables
 ## write some tests
 ## JSS
+
+## DISCUSS:
+## author
