@@ -27,12 +27,12 @@
   - Try whether anova works
 
 ## proceed => see dev proceed ##
--[ ] Implement anova.opsr
-  -[ ] Understand anova.glm (for one model => in particular construction of table passed to stat.anova) => key: these statistics (columns in table)
+-[x] Implement anova.opsr
+  -[x] Understand anova.glm (for one model => in particular construction of table passed to stat.anova) => key: these statistics (columns in table)
     - `object$df.residual` and `object$deviance` are key!
-  -[ ] Implement parsing logic in anova.opsr (until call to anova.opsrlist)
-  -[ ] Generate table passed to stat.anova(.opsr) for one model in anova.opsr
-  -[ ] Refactor for multiple models in anova.opsrlist
+  -[x] Implement parsing logic in anova.opsr (until call to anova.opsrlist)
+  -[x] Generate table passed to stat.anova(.opsr) for one model in anova.opsr
+  -[x] Refactor for multiple models in anova.opsrlist
 
 -[x] Wald test on H0: rho1 == rho2 == ... (see stata paper) => see also lmtest which has waldtest() function (hint from sandwich paper)
   - Stata paper there they compare to the Null model (all params == 0) Wald chi2(7) => how to do this?

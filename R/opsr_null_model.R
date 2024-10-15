@@ -14,7 +14,7 @@ opsr_null_model <- function(object) {
   dat <- model.frame(object)
   fit_null <- opsr(object$formula, dat, start = start, fixed = fixed)
   fit_null$formula <- ~Nullmodel
-  class(fit_null) <- c("opsr.null", "maxLik", "maxim")
+  class(fit_null) <- c("opsr.null", class(object))
   fit_null
 }
 

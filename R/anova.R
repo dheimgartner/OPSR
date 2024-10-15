@@ -1,21 +1,5 @@
 #' @export
 anova.opsr <- function(object, ...) {
-
-  ## essentially object$df.residual and object$deviance are key!
-  ## what is the null model and what the fully saturated model in the opsr context?
-
-  ## just use log-lik instead of deviance!
-  ## make null model work
-  ## anova(model) would then simply compare to the null model
-  ## maybe don't call it anova but lrtest (still use architecture of anova)
-
-  ## print method?
-
-  ## table passed to stat.anova.opsr should have one row per model
-
-  ## dots parsing mostly taken from anova.glm
-
-  ## how to plot nice stars => print.anova.opsr
   dotargs <- list(...)
   named <- if (is.null(names(dotargs)))
     rep_len(FALSE, length(dotargs))
@@ -78,7 +62,7 @@ stat.anova.opsr <- function(table, test = "LRT", ...) {  # could be extended wit
     row2 <- row2 + 1
   }
 
-  test_stats <- as.data.frame(lrpairs, row.names = NULL)
+  test_stats <- do.call(rbind, lapply(lrpairs, as.data.frame))
   test_stats <- rbind(rep(NA, 3), test_stats)
 
   ## combine in one table
@@ -92,7 +76,7 @@ stat.anova.opsr <- function(table, test = "LRT", ...) {  # could be extended wit
 print.anova.opsr <- function (x, digits = max(getOption("digits") - 2L, 3L), signif.stars = getOption("show.signif.stars"),
                               ...) {
   cat("Likelihood Ratio Test\n\n")
-  for (i in seq_along(x)) {
+  for (i in seq_along(x$formulas)) {
     cat("Model ", i, ": ", deparse(x$formulas[[i]]), "\n", sep = "")
   }
   stats::printCoefmat(x$table, digits = digits, signif.stars = signif.stars, na.print = "", ...)

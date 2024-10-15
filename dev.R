@@ -452,11 +452,11 @@ print.anova.opsr(test)
 
 ## test with updated models
 
-## PROCEED HERE ##
-## bug if more than two models
 ## also null model should be passable
 ## also remove tmp, anova_glm, etc.
 fit2 <- update(fit, ~ . | . -1)
 fit_null <- opsr_null_model(fit)
-test <- anova(fit, fit, fit)
+test <- anova(fit_null, fit2, fit)
 print.anova.opsr(test)
+
+test <- anova(fit_null, fit)
