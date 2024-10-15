@@ -24,7 +24,6 @@
 opsr.fit <- function(Ws, Xs, Ys, start, fixed, weights,
                      method, iterlim, printLevel, nThreads, .useR = FALSE, ...) {
   nReg <- length(Xs)
-  nObs <- length(Reduce(c, Ys))
 
   ll <- ifelse(.useR, loglik_R, loglik_cpp)
 
