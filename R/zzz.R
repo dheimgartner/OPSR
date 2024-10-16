@@ -1,7 +1,7 @@
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
     paste0( "\nPlease cite the 'OPSR' package as:\n",
-            "Heimgartner, D, Xinyi, W., Mokhtarian P. L. and K. W. Axhausen (2024) ",
+            "Heimgartner, D. and X. Wang (2024) ",
             "OPSR: A package for estimating ordinal probit switching regression models in R. tbc.\n\n",
             "Wang, X. and P. L. Mokhtarian (2024) ",
             "Examining the treatment effect of teleworking on vehicle-miles driven: Applying an ordered probit selection model and incorporating the role of travel stress, ",
