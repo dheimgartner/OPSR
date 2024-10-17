@@ -68,11 +68,3 @@ plot(vmd, vmd_counterfact,
      xlab = "VMD [km]",
      ylab = "Counterfactual VMD [km]")
 abline(a = 0, b = 1, col = "red", lwd = 2)
-
-## TODO:
-## tex output tables
-## write some tests
-## JSS
-
-## DISCUSS:
-## author

@@ -167,6 +167,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   ## return also some other useful information
   fit$call <- match.call()
   fit$formula <- f
+  fit$loglik <- function(theta) fit$objectiveFn(theta)[order(Z)] ## ll func with correct order
   fit$runtime <- runtime
   fit$start <- start
   fit$nReg <- nReg
