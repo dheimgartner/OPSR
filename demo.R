@@ -68,3 +68,5 @@ plot(vmd, vmd_counterfact,
      xlab = "VMD [km]",
      ylab = "Counterfactual VMD [km]")
 abline(a = 0, b = 1, col = "red", lwd = 2)
+
+texreg::screenreg(fit_xinyi, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE, include.structural = FALSE)

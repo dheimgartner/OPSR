@@ -43,6 +43,7 @@
 -[x] Think about reordering the output of ll2 (original order)
 
 -[x] Texreg stuff (compare regimes => set beside = TRUE)
+  -[ ] Maybe include R^2 for regimes... => R^2 (1), R^2 (2), ...
 -[ ] Write tests (first think about what to test)
 -[ ] Write paper (read jss.pdf and learn from others)
 -[ ] Update documentation (outsource examples [see mixl]) => how to document texreg extract?
