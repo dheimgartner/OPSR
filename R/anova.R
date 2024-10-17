@@ -75,9 +75,10 @@ stat.anova.opsr <- function(table, test = "LRT", ...) {  # could be extended wit
 #' @export
 print.anova.opsr <- function (x, digits = max(getOption("digits") - 2L, 3L), signif.stars = getOption("show.signif.stars"),
                               ...) {
+  parse_formula <- function(f) paste(deparse(f), collapse = "\n")
   cat("Likelihood Ratio Test\n\n")
   for (i in seq_along(x$formulas)) {
-    cat("Model ", i, ": ", deparse(x$formulas[[i]]), "\n", sep = "")
+    cat("Model ", i, ": ", parse_formula(x$formulas[[i]]), "\n", sep = "")
   }
   stats::printCoefmat(x$table, digits = digits, signif.stars = signif.stars, na.print = "", ...)
   invisible(x)

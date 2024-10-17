@@ -405,7 +405,6 @@ s <- summary(model1)
 s$deviance
 s$dispersion
 
-## TODO:
 ## compute these (deviance, dispersion) in summary.opsr
 ## maybe update residuals.opsr(object, type, ...) to allow for type = "deviance"
 ## implement in similar architecture: anova.opsr, anova.opsrlist, stat.anova
@@ -460,3 +459,13 @@ test <- anova(fit_null, fit2, fit)
 print.anova.opsr(test)
 
 test <- anova(fit_null, fit)
+
+
+## GOF components
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
+summary(fit)
+sum(fit$loglik(fit$estimate))
+logLik(fit)

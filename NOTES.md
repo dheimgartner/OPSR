@@ -41,9 +41,10 @@
 
 ## proceed ##
 -[ ] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it? => check out her GOF script (OPSR_treatment effect.R)
+-[x] Think about reordering the output of ll2 (original order)
 
 -[ ] Texreg stuff (compare regimes => wide table)
--[ ] Write tests
+-[ ] Write tests (first think about what to test)
 -[ ] Write paper (read jss.pdf and learn from others)
 -[x] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
 

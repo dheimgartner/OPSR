@@ -42,3 +42,28 @@ residuals.opsr <- function(object, ...) {
 update.opsr <- function(object, ...) {
   NextMethod("update", object)
 }
+
+## returns loglik of ordinal probit model
+ll_probit <- function(object) {
+  probs <- lapply(seq_len(object$nReg), function(i) {
+    predict(object, group = i, type = "prob")
+  })
+  probs <- rowSums(Reduce(cbind, probs), na.rm = TRUE)
+  sum(log(probs))
+}
+
+r2 <- function(object) {
+  z <- get_z(object)
+  y <- get_y(object)
+  RS <- residuals(object)**2
+  TS <- (y - mean(y))**2
+  R2o <- unlist(lapply(seq_len(object$nReg), function(i) {
+    RSS <- sum(RS[z == i])
+    TSS <- sum(TS[z == i])
+    1 - RSS / TSS
+  }))
+  R2total <- 1 - sum(RS) / sum(TS)
+  R2 <- c(R2total, R2o)
+  names(R2) <- c("Total", paste0("o", 1:object$nReg))
+  R2
+}

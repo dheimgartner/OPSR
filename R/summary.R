@@ -7,11 +7,19 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   LL2step <- sum(model$objectiveFn(model$start))
   LLfinal <- model$maximum
 
+  ## R2
+  ## selection
+  ## equally-likely & market share
+  LLprobit <- ll_probit(model)
+  LLprobitEl <- nobs(model) * log(1 / model$nReg)
+  ms <- model$nObs[-1] / nobs(model)
+  LLprobitMs <- as.numeric(model$nObs[-1] %*% log(ms))
+  pseudoR2el <- 1 - LLprobit / LLprobitEl
+  pseudoR2ms <- 1 - LLprobit / LLprobitMs
 
-
-  ## what about R2 stuff (see also Xinyi paper)
-
-
+  ## outcome
+  ## for each group & for all groups
+  R2 <- r2(model)
 
   ## wald test
   wald_test <- function(model, hypothesis, varcov) {
@@ -84,6 +92,15 @@ summary.opsr <- function(object, rob = TRUE, ...) {
     LLfinal = LLfinal,
     AIC = AIC(model),
     BIC = BIC(model)
+  )
+
+  ms$GOFcomponents <- list(
+    LLprobit = LLprobit,
+    LLprobitEl = LLprobitEl,
+    LLprobitMs = LLprobitMs,
+    pseudoR2el = pseudoR2el,
+    pseudoR2ms = pseudoR2ms,
+    R2 = R2
   )
 
   ms$wald <- list(
