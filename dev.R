@@ -466,6 +466,71 @@ devtools::load_all()
 sim_dat <- opsr_simulate()
 dat <- sim_dat$data
 fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
-summary(fit)
-sum(fit$loglik(fit$estimate))
-logLik(fit)
+s <- summary(fit)
+s$GOFcomponents
+
+
+## texreg
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+model <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
+
+texreg::screenreg(model)
+texreg::screenreg(model, include.pseudoR2 = TRUE, include.R2 = TRUE)
+
+texreg::screenreg(model, beside = TRUE)
+texreg::screenreg(model, beside = TRUE, include.structural = FALSE)
+texreg::screenreg(model, beside = TRUE, include.structural = FALSE,
+                  include.pseudoR2 = TRUE, include.R2 = TRUE)
+
+
+null_model <- opsr_null_model(model)
+texreg::screenreg(list(null_model, model), include.pseudoR2 = TRUE, include.R2 = TRUE)
+
+library(pscl)
+
+data("bioChemists", package = "pscl")
+fm_zinb2 <- zeroinfl(art ~ . | ., data = bioChemists, dist = "negbin")
+
+debugonce(texreg:::extract.zeroinfl)
+texreg::screenreg(fm_zinb2)
+texreg::screenreg(fm_zinb2, beside = TRUE)
+texreg::screenreg(list(fm_zinb2, fm_zinb2), beside = TRUE)
+texreg::screenreg(list(m1 = fm_zinb2, m2 = fm_zinb2), beside = TRUE)  # buggy
+texreg::screenreg(list(fm_zinb2, fm_zinb2), custom.model.names = c("m1 count", "m1 zero", "m2 count", "m2 zero"))  # complains about 4 names passed but only two models
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

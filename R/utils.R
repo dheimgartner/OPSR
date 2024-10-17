@@ -67,3 +67,18 @@ r2 <- function(object) {
   names(R2) <- c("Total", paste0("o", 1:object$nReg))
   R2
 }
+
+#' @export
+coef.opsr <- function(object, component = c("all", "structural", "selection", "outcome"), ...) {
+  component <- match.arg(component)
+  all_coefs <- maxLik:::coef.maxLik(object, ...)
+  nm <- names(all_coefs)
+  out <-
+    switch(component,
+           "all" = all_coefs,
+           "structural" = all_coefs[grepl("^kappa|^sigma|^rho", nm)],
+           "selection" = all_coefs[grepl("^s_", nm)],
+           "outcome" = all_coefs[grepl("^o[0-9]_", nm)])
+
+  out
+}

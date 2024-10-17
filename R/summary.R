@@ -9,16 +9,14 @@ summary.opsr <- function(object, rob = TRUE, ...) {
 
   ## R2
   ## selection
-  ## equally-likely & market share
   LLprobit <- ll_probit(model)
   LLprobitEl <- nobs(model) * log(1 / model$nReg)
   ms <- model$nObs[-1] / nobs(model)
   LLprobitMs <- as.numeric(model$nObs[-1] %*% log(ms))
-  pseudoR2el <- 1 - LLprobit / LLprobitEl
-  pseudoR2ms <- 1 - LLprobit / LLprobitMs
+  pseudoR2el <- 1 - LLprobit / LLprobitEl  # equally likely
+  pseudoR2ms <- 1 - LLprobit / LLprobitMs  # market share
 
   ## outcome
-  ## for each group & for all groups
   R2 <- r2(model)
 
   ## wald test

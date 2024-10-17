@@ -18,7 +18,8 @@ Imports:
     mvtnorm,
     Rcpp,
     RcppArmadillo,
-    sandwich
+    sandwich,
+    texreg
 LinkingTo: Rcpp, RcppArmadillo
 Depends: 
     R (>= 2.10)

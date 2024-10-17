@@ -39,13 +39,13 @@
   -[x] Maybe try making lmtest::waldtest and/or anova to work and compare to car::linearHypothesis (implemented in summary).
     - But waldtest and anova do different things: waldtest is test on coefficient restrictions and anova is comparison of difference in deviance... (see discussion in dev.R)
 
-## proceed ##
--[ ] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it? => check out her GOF script (OPSR_treatment effect.R)
+-[x] GOF indicators R2 and stuff for whole model and submodels? => How did Xinyi do it? => check out her GOF script (OPSR_treatment effect.R)
 -[x] Think about reordering the output of ll2 (original order)
 
--[ ] Texreg stuff (compare regimes => wide table)
+-[x] Texreg stuff (compare regimes => set beside = TRUE)
 -[ ] Write tests (first think about what to test)
 -[ ] Write paper (read jss.pdf and learn from others)
+-[ ] Update documentation (outsource examples [see mixl]) => how to document texreg extract?
 -[x] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
 
 
