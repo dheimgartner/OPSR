@@ -4,7 +4,7 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   varcov <- if (rob) sandwich::sandwich(model) else vcov(model)
 
   ## LL
-  LL2step <- sum(model$objectiveFn(model$start))
+  LL2step <- sum(model$loglik(model$start))
   LLfinal <- model$maximum
 
   ## R2

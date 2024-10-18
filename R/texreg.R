@@ -80,25 +80,25 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
       out
     })
     if (include.structural) {
-      tr <- createTexreg(coef.names = str.names, coef = str.co, se = str.se,
-                         pvalues = str.pval, gof.names = gof.names, gof = gof,
-                         gof.decimal = gof.decimal, model.name = "Structural")
+      tr <- texreg::createTexreg(coef.names = str.names, coef = str.co, se = str.se,
+                                 pvalues = str.pval, gof.names = gof.names, gof = gof,
+                                 gof.decimal = gof.decimal, model.name = "Structural")
       trList[[length(trList) + 1]] <- tr
     }
     if (include.selection) {
-      tr <- createTexreg(coef.names = sel.names, coef = sel.co, se = sel.se,
-                         pvalues = sel.pval, gof.names = gof.names, gof = gof,
-                         gof.decimal = gof.decimal, model.name = "Selection")
+      tr <- texreg::createTexreg(coef.names = sel.names, coef = sel.co, se = sel.se,
+                                 pvalues = sel.pval, gof.names = gof.names, gof = gof,
+                                 gof.decimal = gof.decimal, model.name = "Selection")
       trList[[length(trList) + 1]] <- tr
     }
     if (include.outcome) {
       for (i in seq_along(out.all)) {
         out.i <- out.all[[i]]
-        tr <- createTexreg(coef.names = out.i$out.names, coef = out.i$out.co,
-                           se = out.i$out.se, pvalues = out.i$out.pval,
-                           gof.names = gof.names, gof = gof,
-                           gof.decimal = gof.decimal,
-                           model.name = paste0("Outcome ", i))
+        tr <- texreg::createTexreg(coef.names = out.i$out.names, coef = out.i$out.co,
+                                   se = out.i$out.se, pvalues = out.i$out.pval,
+                                   gof.names = gof.names, gof = gof,
+                                   gof.decimal = gof.decimal,
+                                   model.name = paste0("Outcome ", i))
         trList[[length(trList) + 1]] <- tr
       }
     }
