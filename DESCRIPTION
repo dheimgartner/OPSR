@@ -1,12 +1,15 @@
 Package: OPSR
-Title: What the Package Does (One Line, Title Case)
+Title: Ordinal Probit Switching Regression
 Version: 0.0.0.9007
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R: c(person("Daniel", "Heimgartner", email = "d.heimgartners@gmail.com", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0002-0643-8690")),
+    person("Xinyi", "Wang", email = "email@gmail.com", role = c("aut"), comment = c(ORCID = "1234")))
+Author: Daniel Heimgartner [aut, cre], Xinyi Wang [aut]
+Maintainer: Daniel Heimgartner <d.heimgartners@gmail.com>
+Description: Estimates ordinal probit switching regression models - a Heckman
+    type selection model with an ordinal selection and continous outcomes.
+    Different model specifications are allowed for each treatment/regime.
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
@@ -19,8 +22,10 @@ Imports:
     Rcpp,
     RcppArmadillo,
     sandwich,
+    stats,
     texreg
 LinkingTo: Rcpp, RcppArmadillo
 Depends: 
     R (>= 2.10)
 LazyData: true
+BugReports: https://github.com/dheimgartner/OPSR/issues

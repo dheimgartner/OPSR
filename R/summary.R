@@ -10,8 +10,8 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   ## R2
   ## selection
   LLprobit <- ll_probit(model)
-  LLprobitEl <- nobs(model) * log(1 / model$nReg)
-  ms <- model$nObs[-1] / nobs(model)
+  LLprobitEl <- stats::nobs(model) * log(1 / model$nReg)
+  ms <- model$nObs[-1] / stats::nobs(model)
   LLprobitMs <- as.numeric(model$nObs[-1] %*% log(ms))
   pseudoR2el <- 1 - LLprobit / LLprobitEl  # equally likely
   pseudoR2ms <- 1 - LLprobit / LLprobitMs  # market share

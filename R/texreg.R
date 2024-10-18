@@ -32,7 +32,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
   gof.names <- c(gof.names, "BIC")
   gof.decimal <- c(gof.decimal, TRUE)
 
-  lik <- logLik(model)
+  lik <- stats::logLik(model)
   gof <- c(gof, lik)
   gof.names <- c(gof.names, "Log Likelihood")
   gof.decimal <- c(gof.decimal, TRUE)
@@ -52,7 +52,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
     gof.decimal <- c(gof.decimal, TRUE)
   }
 
-  n <- nobs(model)
+  n <- stats::nobs(model)
   gof <- c(gof, n)
   gof.names <- c(gof.names, "Num. obs.")
   gof.decimal <- c(gof.decimal, FALSE)

@@ -2,8 +2,7 @@
 #'
 #' Some description of what the package does and pointing to resources/references.
 #'
-#' @name OPSR
-#' @aliases OPSR-package
+#' @name OPSR-package
 "_PACKAGE"
 
 ## I think this exportPattern exports all functions (maybe remove it...)

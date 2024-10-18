@@ -14,6 +14,7 @@ censor <- function(x, lower, upper) {
   pmin(pmax(x, lower), upper)
 }
 
+#' @importFrom stats nobs
 #' @export
 nobs.opsr <- function(object, ...) {
   object$nObs[["Total"]]
@@ -71,7 +72,7 @@ r2 <- function(object) {
 #' @export
 coef.opsr <- function(object, component = c("all", "structural", "selection", "outcome"), ...) {
   component <- match.arg(component)
-  all_coefs <- maxLik:::coef.maxLik(object, ...)
+  all_coefs <- object$estimate
   nm <- names(all_coefs)
   out <-
     switch(component,
