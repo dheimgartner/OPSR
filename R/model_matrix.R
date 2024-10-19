@@ -11,7 +11,7 @@ model.matrix.opsr <- function(object, data, filter = NULL, ...) {
   W <- lapply(seq_len(nReg), function(i) {
     j <- filter %||% i
     z_not_present <- ifelse (all(isFALSE(z == j)), TRUE, FALSE)
-    if (z_not_present) NULL else w[z == j, ]
+    if (z_not_present) NULL else as.matrix(w[z == j, ])
   })
 
   X <- lapply(seq_len(nReg), function(i) {
@@ -19,7 +19,7 @@ model.matrix.opsr <- function(object, data, filter = NULL, ...) {
     x <- model.matrix(f, mf, rhs = rhs)
     j <- filter %||% i
     z_not_present <- ifelse (all(isFALSE(z == j)), TRUE, FALSE)
-    if (z_not_present) NULL else x[z == j, ]
+    if (z_not_present) NULL else as.matrix(x[z == j, ])
   })
 
   list(W = W, X = X)

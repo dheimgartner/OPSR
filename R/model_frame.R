@@ -11,7 +11,7 @@ model.frame.opsr <- function(formula, ...) {
     mf[[1]] <- as.name("model.frame")
     mf[names(nargs)] <- nargs  # overwrite
     mf$formula <- object$formula
-    mf <- eval(mf, environment(object))
+    mf <- eval(mf, environment(object$formula))  # if fun is a function or a formula then environment(fun) returns the environment associated with that function or formula.
     mf
   } else {
     object$model
