@@ -1,7 +1,7 @@
 obs_mat <- function(nobs = 1000, p, sd = 1) {
   obs_mat <- matrix(nrow = nobs, ncol = p)
   for (i in seq(p)) {
-    obs_mat[, i] <- rnorm(nobs, sd = sd)
+    obs_mat[, i] <- stats::rnorm(nobs, sd = sd)
   }
   obs_mat
 }

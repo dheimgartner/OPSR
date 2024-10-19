@@ -4,9 +4,9 @@
 \name{OPSR-package}
 \alias{OPSR}
 \alias{OPSR-package}
-\title{Fitting ordinal probit switching regression (OPSR) models}
+\title{OPSR: Ordinal Probit Switching Regression}
 \description{
-Some description of what the package does and pointing to resources/references.
+Estimates ordinal probit switching regression models - a Heckman type selection model with an ordinal selection and continous outcomes. Different model specifications are allowed for each treatment/regime.
 }
 \seealso{
 Useful links:

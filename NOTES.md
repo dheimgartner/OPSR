@@ -6,9 +6,14 @@
   - Conform to jss-template.Rnw styleguide
   - This uses the Sweave engine and chunk options
 
+## Steps (to submit to CRAN)
+
+**Read and follow chapter 22 (https://r-pkgs.org/release.html)**
+
 >Run `devtools::check()` early and often (`R CMD check .`)
 >Use `usethis::use_github_action("check-standard")` for cross-platform checks.
 > `usethis::use_readme_rmd()` and `devtools::build_readme()`
+> `devtools::submit_cran()`
   
 ## Next steps
 
@@ -51,6 +56,7 @@
 -[ ] Write tests (first think about what to test)
 -[ ] Write paper (read jss.pdf and learn from others)
 -[ ] Update documentation (outsource examples [see mixl]) => how to document texreg extract?
+  - [ ] consider what to export (e.g., should S3 methods be exported => I don't think so, right?)
 -[x] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
 
 

@@ -4,8 +4,6 @@ Version: 0.0.0.9007
 Authors@R: c(person("Daniel", "Heimgartner", email = "d.heimgartners@gmail.com", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-0643-8690")),
     person("Xinyi", "Wang", email = "email@gmail.com", role = c("aut"), comment = c(ORCID = "1234")))
-Author: Daniel Heimgartner [aut, cre], Xinyi Wang [aut]
-Maintainer: Daniel Heimgartner <d.heimgartners@gmail.com>
 Description: Estimates ordinal probit switching regression models - a Heckman
     type selection model with an ordinal selection and continous outcomes.
     Different model specifications are allowed for each treatment/regime.
@@ -18,12 +16,14 @@ Imports:
     Formula,
     MASS,
     maxLik,
+    methods,
     mvtnorm,
     Rcpp,
     RcppArmadillo,
     sandwich,
     stats,
-    texreg
+    texreg,
+    utils
 LinkingTo: Rcpp, RcppArmadillo
 Depends: 
     R (>= 2.10)

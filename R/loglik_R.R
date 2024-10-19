@@ -12,9 +12,9 @@ loglik_R <- function(theta, W, X, Y, weights, nReg, ...) {
       res <- y_j[i] - X_j[i, ] %*% beta_j
       low <- kappa_j_1 - W_j[i, ] %*% gamma
       high <- kappa_j - W_j[i, ] %*% gamma
-      part1 <- 1 / sigma_j * dnorm(res / sigma_j)
-      part2 <- if (boundary == 1) 1 else pnorm((sigma_j * high - rho_j * res) / (sigma_j * sqrt(1 - rho_j^2)))
-      part3 <- if (boundary == -1) 0 else pnorm((sigma_j * low - rho_j * res) / (sigma_j * sqrt(1 - rho_j^2)))
+      part1 <- 1 / sigma_j * stats::dnorm(res / sigma_j)
+      part2 <- if (boundary == 1) 1 else stats::pnorm((sigma_j * high - rho_j * res) / (sigma_j * sqrt(1 - rho_j^2)))
+      part3 <- if (boundary == -1) 0 else stats::pnorm((sigma_j * low - rho_j * res) / (sigma_j * sqrt(1 - rho_j^2)))
       ll_j[i] <- log(part1) + log(part2 - part3)
     }
     ll_j

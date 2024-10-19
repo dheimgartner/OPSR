@@ -42,7 +42,7 @@ opsr_2step <- function(W, Xs, Z, Ys) {
   W_gamma <- W %*% gamma
   Tj_1 <- kappa_[Z]
   Tj <- kappa_[Z + 1]
-  IMR <- -(dnorm(Tj-W_gamma) - dnorm(Tj_1-W_gamma))/(pnorm(Tj-W_gamma) - pnorm(Tj_1-W_gamma))
+  IMR <- -(stats::dnorm(Tj-W_gamma) - stats::dnorm(Tj_1-W_gamma))/(stats::pnorm(Tj-W_gamma) - stats::pnorm(Tj_1-W_gamma))
   IMR_j <- lapply(seq_len(nReg), function(j) IMR[Z == j])
 
   ## apply

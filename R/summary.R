@@ -1,7 +1,7 @@
 #' @export
 summary.opsr <- function(object, rob = TRUE, ...) {
   model <- object
-  varcov <- if (rob) sandwich::sandwich(model) else vcov(model)
+  varcov <- if (rob) sandwich::sandwich(model) else stats::vcov(model)
 
   ## LL
   LL2step <- sum(model$loglik(model$start))

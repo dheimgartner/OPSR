@@ -134,7 +134,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
     rhs <- ifelse(nParts == 2, 2, i + 1)  # first is for selection process
     X <- model.matrix(f, mf, rhs = rhs)
     x_mat <- as.matrix(X[Z == i, ])
-    intercept_only <- length(attr(terms(f, rhs = rhs), "term.labels")) == 2
+    intercept_only <- length(attr(stats::terms(f, rhs = rhs), "term.labels")) == 2
     if (intercept_only) colnames(x_mat) <- "(Intercept)"
     x_mat
   })
@@ -171,7 +171,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   fit$runtime <- runtime
   fit$start <- start
   fit$nReg <- nReg
-  fit$nObs <- c(Total = nObs, setNames(c(table(Z)), paste0("o", seq_len(nReg))))
+  fit$nObs <- c(Total = nObs, stats::setNames(c(table(Z)), paste0("o", seq_len(nReg))))
   fit$nParams <- length(fit$estimate) - sum(fit$fixed)
   fit$df <- fit$nObs[["Total"]] - fit$nParams
   fit$nParts <- nParts

@@ -29,7 +29,7 @@ summary.opsr.null <- function(object, ...) {
 
 #' @export
 print.summary.opsr.null <- function(x, ...) {
-  ps <- capture.output(NextMethod("print", x))
+  ps <- utils::capture.output(NextMethod("print", x))
   ps[2] <- "Ordinal probit switching regression (null model)"
   cat(ps, sep = "\n")
   invisible(x)

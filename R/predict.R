@@ -31,8 +31,8 @@ predict.opsr <- function(object, newdata, group, counterfact = NULL,
     Wg <- W_j %*% gamma  # xbsel
     kappa_j_Wg <- kappa_j - Wg
     kappa_j_1_Wg <- kappa_j_1 - Wg
-    nom <- dnorm(kappa_j_Wg) - dnorm(kappa_j_1_Wg)
-    denom <- pnorm(kappa_j_Wg) - pnorm(kappa_j_1_Wg)
+    nom <- stats::dnorm(kappa_j_Wg) - stats::dnorm(kappa_j_1_Wg)
+    denom <- stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)
     imr <- nom / denom  # (negative) inverse mills ratio millsif(j)
 
     out <-
@@ -42,10 +42,10 @@ predict.opsr <- function(object, newdata, group, counterfact = NULL,
              ),
              "unlog-response" = as.vector(
                exp(Xb + (sigma_j**2) / 2) *
-                 (pnorm(kappa_j_Wg - rho_j * sigma_j) - pnorm(kappa_j_1_Wg - rho_j * sigma_j)) /
-                 (pnorm(kappa_j_Wg) - pnorm(kappa_j_1_Wg)) - 1
+                 (stats::pnorm(kappa_j_Wg - rho_j * sigma_j) - stats::pnorm(kappa_j_1_Wg - rho_j * sigma_j)) /
+                 (stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)) - 1
              ),
-             "prob" = as.vector(pnorm(kappa_j_Wg) - pnorm(kappa_j_1_Wg)),
+             "prob" = as.vector(stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)),
              "mills" = as.vector(imr)
       )
 

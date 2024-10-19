@@ -18,8 +18,6 @@ arma::colvec loglik_j(arma::mat& W, arma::mat& X, arma::colvec& y,
   int n_elem = y.size();
   arma::colvec res(n_elem), low(n_elem), high(n_elem), part1(n_elem), part2(n_elem), part3(n_elem);
 
-  RNGScope scope;  // set seed
-
   res = y - X * beta_j;
   low = kappa_j_1 - W * gamma;
   high = kappa_j - W * gamma;

@@ -14,7 +14,7 @@ anova.opsr <- function(object, ...) {
   if (length(dotargs))
     return(anova.opsrlist(c(list(object), dotargs)))
   ## else create null model and then call anova.opsrlist
-  x <- capture.output(
+  x <- utils::capture.output(
     null_model <- opsr_null_model(object)
   )
 
@@ -50,7 +50,7 @@ stat.anova.opsr <- function(table, test = "LRT", ...) {  # could be extended wit
     out <- list()
     out$test <- as.numeric(2 * abs(table[row1, "logLik"] - table[row2, "logLik"]))
     out$restrictions <- abs(table[row1, "Df"] - table[row2, "Df"])
-    out$p_value <- 1 - pchisq(out$test, df = out$restrictions)
+    out$p_value <- 1 - stats::pchisq(out$test, df = out$restrictions)
     out
   }
   lrpairs <- vector("list", nModels - 1)
