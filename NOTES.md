@@ -5,6 +5,9 @@
 - Render vignette using devtools::build_vignettes() => renders to doc
   - Conform to jss-template.Rnw styleguide
   - This uses the Sweave engine and chunk options
+
+>Run `devtools::check()` early and often (`R CMD check .`)
+>Use `usethis::use_github_action("check-standard")` for cross-platform checks.
   
 ## Next steps
 

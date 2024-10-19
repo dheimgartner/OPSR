@@ -8,6 +8,13 @@
 \description{
 Some description of what the package does and pointing to resources/references.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item Report bugs at \url{https://github.com/dheimgartner/OPSR/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Daniel Heimgartner \email{d.heimgartners@gmail.com} (\href{https://orcid.org/0000-0002-0643-8690}{ORCID})
 
