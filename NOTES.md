@@ -21,6 +21,9 @@
 
 - Good practice to keep `R/` and `tests/testthat/` aligned (i.e., for each file write a testsuit with the `test-` filename)
 - `usethis::use_test("foo")`
+- `devtools::test_coverage()`
+- If necessary, use `skip_on_cran()` (preferably nested in `test_thath()`)
+- `expect_equal()` accepts a tolerance argument (`expect_identical()` not)
 
 ## Next steps
 
@@ -61,7 +64,8 @@
 -[x] Texreg stuff (compare regimes => set beside = TRUE)
   -[ ] Maybe include R^2 for regimes... => R^2 (1), R^2 (2), ...
 -[ ] Write tests (first think about what to test)
-  -[ ] Write fixture with simulated data (s.t. it is always the same data)
+  -[x] Write fixture with simulated data (s.t. it is always the same data)
+  -[ ] Init for each (important) file in `R/` a test file with `usethis::use_test()` and write what to test with ## => see also `dev.R` for insp
 -[ ] Write paper (read jss.pdf and learn from others)
 -[ ] Update documentation (outsource examples [see mixl]) => how to document texreg extract?
   - [ ] consider what to export (e.g., should S3 methods be exported => I don't think so, right?)
