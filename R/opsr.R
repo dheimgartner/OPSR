@@ -31,7 +31,6 @@
 #' @param ... passed to [`maxLik`].
 #'
 #' @return an object of class `"opsr" "maxLik" "maxim"`.
-#' @export
 #'
 #' @details
 #' Models for `opsr` are specified symbolically. A typical model has the form
@@ -45,26 +44,8 @@
 #' Note that the model is poorly identifyable if `terms_s == terms_o` (same regressors
 #' are used in selection and outcome processes).
 #'
-#' @examples
-#' \dontrun{
-#' sim_dat <- opsr_simulate()
-#' dat <- sim_dat$data
-#' formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2
-#' formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2  # equivalent to above
-#' system.time(
-#'   fit_nm <- opsr(formula, dat, method = "NM")
-#' )
-#' system.time(
-#'   fit_bfgs <- opsr(formula, dat, method = "BFGS")
-#' )
-#' summary(fit_nm)
-#' summary(fit_bfgs)
-#' class(fit_bfgs)
-#'
-#' ## ground truth
-#' sim_dat$params
-#' sim_dat$sigma
-#' }
+#' @example R/examples/basic_workflow.R
+#' @export
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
                  fixed = NULL, method = "BFGS", iterlim = 1000, printLevel = 2,
                  nThreads = 1, .get2step = FALSE, .useR = FALSE, .censorRho = TRUE, ...) {
