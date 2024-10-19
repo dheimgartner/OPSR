@@ -29,3 +29,6 @@ Depends:
     R (>= 2.10)
 LazyData: true
 BugReports: https://github.com/dheimgartner/OPSR/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
