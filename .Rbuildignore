@@ -5,3 +5,5 @@
 ^data-raw$
 ^LICENSE\.md$
 ^dev/*$
+^\.github$
+^README\.Rmd$

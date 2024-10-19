@@ -8,6 +8,7 @@
 
 >Run `devtools::check()` early and often (`R CMD check .`)
 >Use `usethis::use_github_action("check-standard")` for cross-platform checks.
+> `usethis::use_readme_rmd()` and `devtools::build_readme()`
   
 ## Next steps
 
