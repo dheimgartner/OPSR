@@ -63,6 +63,7 @@
 
 -[x] Texreg stuff (compare regimes => set beside = TRUE)
   -[ ] Maybe include R^2 for regimes... => R^2 (1), R^2 (2), ...
+## proceed => test-texreg.R
 -[ ] Write tests (first think about what to test)
   -[x] Write fixture with simulated data (s.t. it is always the same data)
   -[x] Init for each (important) file in `R/` a test file with `usethis::use_test()` and write what to test with ## => see also `dev.R` for insp
