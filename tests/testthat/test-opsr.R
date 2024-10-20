@@ -77,7 +77,7 @@ test_that("accepts subset", {
 })
 
 test_that("runs on machines without OpenMP", {
-  skip_if_not(!opsr_check_omp())
+  skip_if(opsr_check_omp())
 
   sim_dat <- load_sim_dat()
   dat <- sim_dat$data
