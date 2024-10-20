@@ -38,7 +38,7 @@ Xs <- lapply(seq_len(nReg), function(i) {
 Ys <- lapply(seq_len(nReg), function(i) {
   Y[Z == i]
 })
-opsr_generate_start(W, Xs, Z, Ys)
+opsr_2step(W, Xs, Z, Ys)
 
 ## test predict
 devtools::load_all()
@@ -47,13 +47,13 @@ summary(fit_bfgs)
 group <- 1
 p_pred <- predict(fit_bfgs, group = group)
 p_true <- dat$yo[dat$ys == group]
-plot(p_pred, p_true)
+plot(na.omit(p_pred), p_true)
 
-counterfact <- 3
+counterfact <- 2
 p_counterfact <- predict(fit_bfgs, group = group, counterfact = counterfact)
 ref <- dat$yo[dat$ys == counterfact]
 mean(ref)
-mean(p_counterfact)
+mean(p_counterfact, na.rm = TRUE)
 
 ## with new data
 newdat <- dat[dat$ys == group, ][1, ]
@@ -74,7 +74,7 @@ fit_lm <- lm(yo ~ xo1 + xo2, data = dat, subset = idx)
 summary(fit_lm)
 p_lm <- predict(fit_lm)
 
-df <- data.frame(p_opsr = p_no_cor, p_lm = p_lm)
+df <- data.frame(p_opsr = na.omit(p_no_cor), p_lm = p_lm)
 plot(df)
 
 ## model.matrix.opsr
@@ -86,7 +86,6 @@ formula <- ys | yo ~ xs1 + xs2 | xo1 + xo2
 fit <- opsr(formula, data = dat, subset = TRUE)
 summary(fit)
 
-debugonce(opsr_model_matrices)
 test <- dat[1:10, ]
 model.matrix(fit, filter = 3)
 
@@ -136,12 +135,12 @@ model.matrix(fit)
 
 
 
-## opsr_check_start
-devtools::load_all()
-f <- ys | yo ~ xs1 | xo1 | xo1
-start <- c(1, 2, 3, 3, 4, 4, 5, 5, 6, 6)
-debugonce(opsr_check_start)
-opsr_check_start(f, start)
+# ## opsr_check_start
+# devtools::load_all()
+# f <- ys | yo ~ xs1 | xo1 | xo1
+# start <- c(1, 2, 3, 3, 4, 4, 5, 5, 6, 6)
+# debugonce(opsr_check_start)
+# opsr_check_start(f, start)
 
 
 devtools::load_all()

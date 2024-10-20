@@ -10,16 +10,16 @@ model.matrix.opsr <- function(object, data, filter = NULL, ...) {
   w <- model.matrix(update(f, ~ . -1), mf, rhs = 1)  # no intercept (identification threshold)!
   W <- lapply(seq_len(nReg), function(i) {
     j <- filter %||% i
-    z_not_present <- ifelse (all(isFALSE(z == j)), TRUE, FALSE)
-    if (z_not_present) NULL else as.matrix(w[z == j, ])
+    z_not_present <- all(z != j)
+    if (z_not_present) NULL else w[z == j, , drop = FALSE]
   })
 
   X <- lapply(seq_len(nReg), function(i) {
     rhs <- ifelse(nParts == 2, 2, i + 1)  # first is for selection process
     x <- model.matrix(f, mf, rhs = rhs)
     j <- filter %||% i
-    z_not_present <- ifelse (all(isFALSE(z == j)), TRUE, FALSE)
-    if (z_not_present) NULL else as.matrix(x[z == j, ])
+    z_not_present <- all(z != j)
+    if (z_not_present) NULL else x[z == j, , drop = FALSE]
   })
 
   list(W = W, X = X)

@@ -132,3 +132,5 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 ## register
 methods::setMethod(texreg::extract, signature = className("opsr", "OPSR"),
                    definition = extract.opsr)
+methods::setMethod(texreg::extract, signature = className("opsr.null", "OPSR"),
+                   definition = extract.opsr)

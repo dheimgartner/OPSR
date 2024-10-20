@@ -1,5 +1,5 @@
 ## returns class opsr.null (wald tests not meaningful in summary.opsr)
-opsr_null_model <- function(object) {
+opsr_null_model <- function(object, ...) {
   # pattern <- "^kappa|^sigma|^rho|(Intercept)"  !! not identified
   pattern <- "^kappa|^sigma|(Intercept)"  # separate models
 
@@ -12,20 +12,18 @@ opsr_null_model <- function(object) {
   }
   fixed <- sapply(nm, function(x) !grepl(pattern, x))
   dat <- model.frame(object)
-  fit_null <- opsr(object$formula, dat, start = start, fixed = fixed)
-  fit_null$formula <- ~Nullmodel
+  fit_null <- opsr(object$formula, dat, start = start, fixed = fixed, ...)
   class(fit_null) <- c("opsr.null", class(object))
   fit_null
 }
 
-
 #' @export
 summary.opsr.null <- function(object, ...) {
   ms <- NextMethod("summary", object)
+  ms$formula <- ~Nullmodel
   class(ms) <- c("summary.opsr.null", class(ms))
   ms
 }
-
 
 #' @export
 print.summary.opsr.null <- function(x, ...) {
