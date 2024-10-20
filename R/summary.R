@@ -21,7 +21,7 @@ summary.opsr <- function(object, rob = TRUE, ...) {
 
   ## wald test
   wald_test <- function(model, hypothesis, varcov) {
-    if (is(model, "opsr.null")) {  # not meaningful for null model
+    if (is_opsr_null(model)) {  # not meaningful for null model
       return(list(df = NA_real_, chisq = NA_real_, pval = NA_real_))
     }
     wt <- car::linearHypothesis(model, hypothesis, vcov. = varcov)
@@ -37,7 +37,6 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   pattern <- "^rho"
   h_rho <- nm[grepl(pattern, nm)]
   wald_test_rho <- wald_test(model, h_rho, varcov)
-
 
   ## constants only model
   pattern <- "^kappa|^sigma|^rho|(Intercept)"

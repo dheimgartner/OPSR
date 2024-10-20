@@ -82,3 +82,7 @@ coef.opsr <- function(object, component = c("all", "structural", "selection", "o
 
   out
 }
+
+is_opsr_null <- function(object) {
+  is(object, "opsr.null")
+}

@@ -37,7 +37,7 @@ anova.opsrlist <- function(object, ...) {
   ## add stuff for print.anova.opsr
   anova_opsr <- list()
   anova_opsr$formulas <- lapply(object, function(x) {
-    if (is(x, "opsr.null")) { ~Nullmodel } else x$formula
+    if (is_opsr_null(x)) { ~Nullmodel } else x$formula
   })
   anova_opsr$table <- table
   class(anova_opsr) <- c("anova.opsr")
