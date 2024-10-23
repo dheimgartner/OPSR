@@ -128,6 +128,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #'
 #' This is the main method called when using functions from the [`texreg-package`].
 #'
+#' @rdname extract.opsr
 #' @aliases extract.opsr
 #'
 #' @param model an object of class `"opsr"`
