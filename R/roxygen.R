@@ -76,3 +76,17 @@ NULL
 #' @seealso [`opsr_check_omp`]
 #' @export
 NULL
+
+## Data
+## see here for documentation example: https://github.com/tidyverse/nycflights13/blob/main/R/flights.R
+
+#' Telework data
+#'
+#' @source tbc
+#'
+#' @format Data frame with columns
+#' \describe{
+#' \item{variable1}{Description.}
+#' \item{variable2}{Description.}
+#' }
+"telework_data"

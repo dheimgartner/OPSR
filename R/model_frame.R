@@ -1,4 +1,4 @@
-#' Extracting the Model Frame from an OPSR Model Fit
+#' Extracting the Model Frame from OPSR Model Fits
 #'
 #' @param formula an object of class `"opsr"`.
 #' @param ... a mix of further arguments such as `data`, `na.action` or `subset`,

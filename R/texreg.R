@@ -1,4 +1,4 @@
-## documented below setMethod
+## documented below
 extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
                          include.selection = TRUE, include.outcome = TRUE,
                          include.pseudoR2 = FALSE, include.R2 = FALSE, ...) {

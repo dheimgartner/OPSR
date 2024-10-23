@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_frame.R
 \name{model.frame.opsr}
 \alias{model.frame.opsr}
-\title{Extracting the Model Frame from an OPSR Model Fit}
+\title{Extracting the Model Frame from OPSR Model Fits}
 \usage{
 \method{model.frame}{opsr}(formula, ...)
 }
@@ -16,7 +16,7 @@ passed to the default method.}
 A \code{\link{data.frame}} containing the variables used in \code{formula$formula}.
 }
 \description{
-Extracting the Model Frame from an OPSR Model Fit
+Extracting the Model Frame from OPSR Model Fits
 }
 \seealso{
 \code{\link[stats:model.frame]{stats::model.frame}}
