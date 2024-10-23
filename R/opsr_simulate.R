@@ -38,6 +38,25 @@ errors <- function(Sigma, nobs = 1000) {
   errors
 }
 
+
+#' Simulate Data from an OPSR Process
+#'
+#' Simulates data from an ordinal probit process and separate (for each regime)
+#' OLS process where the errors follow a multivariate normal distribution.
+#'
+#' @param nobs number of observations to simulate.
+#' @param sigma the covariance matrix of the multivariate normal.
+#'
+#' @return Named list.
+#'
+#' @details
+#' The named list contains the ground truth parameters `params`, the simulated
+#' `data`, the error draws `errors` and the assumed covariance matrix `sigma`.
+#' Three ordinal outcomes are simulated and the distinct design matrices (`W` and
+#' `X`) are used (if `W == X` the model is poorely identified). Variables `ys` and
+#' `xs` in `data` correspond to the selection process and `yo`, `xo` to the outcome
+#' process.
+#'
 #' @export
 opsr_simulate <- function(nobs = 1000, sigma = NULL) {
   ## same regressors in selection and outcome might lead to identification issues

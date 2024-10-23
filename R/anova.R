@@ -15,10 +15,10 @@
 #' test is conducted for each pair of neighboring models. It is conventional to
 #' list the models from smallest to largest, but this is up to the user.
 #'
-#'
-#' @example R/examples/anova.R
+#' @example R/examples/ex-anova.R
 #' @export
 anova.opsr <- function(object, ...) {
+  ## general architecture inspired by anova.glm and anova.glmlist
   dotargs <- list(...)
   named <- if (is.null(names(dotargs)))
     rep_len(FALSE, length(dotargs))

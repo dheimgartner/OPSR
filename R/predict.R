@@ -25,7 +25,7 @@
 #' `"prob"` returns the probability vector of belonging to `group` and `"mills"`
 #' returns the inverse mills ratio.
 #'
-#' @example R/examples/predict.R
+#' @example R/examples/ex-predict.R
 #' @export
 predict.opsr <- function(object, newdata, group, counterfact = NULL,
                          type = c("response", "unlog-response", "prob", "mills"),
@@ -68,7 +68,7 @@ predict.opsr <- function(object, newdata, group, counterfact = NULL,
   ## for the counterfactuals we pass beta_j', rho_j' and sigma_j'
   ## if type == prob we even pass kappa_j', kappa_j_1'
   if (!is.null(counterfact)) {
-    mm <- model.matrix(object, data = newdata, filter = group)
+    mm <- model.matrix(object, data = newdata, .filter = group)
     coefs_j_<- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[counterfact]]
     X <- mm$X[[counterfact]]
     W <- mm$W[[counterfact]]

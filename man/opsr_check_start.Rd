@@ -6,7 +6,15 @@
 \usage{
 opsr_check_start(start, W, Xs)
 }
+\arguments{
+\item{start}{vector of starting values.}
+
+\item{W}{matrix with explanatory variables for selection process.}
+
+\item{Xs}{of matrices with expalanatory varialbes for outcome process for each regime.}
+}
 \description{
+This is a utility function, used in \code{\link{opsr}} and should not be used directly.
 Makes sure, the start vector conforms to the expected structure. Adds the
 expected parameter names to the numeric vector. Therefore the user has to
 conform to the expected order. See 'Details' for further explanation.
@@ -18,4 +26,7 @@ Expected order: 1. kappa threshold parameters (for ordinal probit model),
 \code{formula}, the starting values have to be repeated (i.e., the length of the
 \code{start} vector has to correspond to the total number of estimated parameters
 in the model).
+}
+\seealso{
+\code{\link{opsr_2step}}
 }

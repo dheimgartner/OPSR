@@ -1,4 +1,14 @@
-## returns class opsr.null (wald tests not meaningful in summary.opsr)
+#' Null Model for OPSR Model fit
+#'
+#' Intercept-only model with no error correlation.
+#'
+#' @param object an object of class `"opsr"`.
+#' @param ... further arguments passed to [`opsr`].
+#'
+#' @return An object of class `"opsr.null" "opsr"`.
+#'
+#' @example R/examples/ex-opsr_null_model.R
+#' @export
 opsr_null_model <- function(object, ...) {
   # pattern <- "^kappa|^sigma|^rho|(Intercept)"  !! not identified
   pattern <- "^kappa|^sigma|(Intercept)"  # separate models
@@ -19,7 +29,7 @@ opsr_null_model <- function(object, ...) {
 
 #' @export
 summary.opsr.null <- function(object, ...) {
-  ms <- NextMethod("summary", object)
+  ms <- NextMethod("summary", object)  # opsr
   ms$formula <- ~Nullmodel
   class(ms) <- c("summary.opsr.null", class(ms))
   ms

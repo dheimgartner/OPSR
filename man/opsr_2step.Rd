@@ -2,17 +2,36 @@
 % Please edit documentation in R/opsr_2step.R
 \name{opsr_2step}
 \alias{opsr_2step}
-\title{Heckman two-step estimation}
+\title{Heckman Two-Step Estimation}
 \usage{
 opsr_2step(W, Xs, Z, Ys)
 }
+\arguments{
+\item{W}{matrix with explanatory variables for selection process.}
+
+\item{Xs}{of matrices with expalanatory varialbes for outcome process for each regime.}
+
+\item{Z}{list of vectors with ordinal outcomes for each regime (in integer increasing fashion).}
+
+\item{Ys}{list of vectors with continuous outcomes for each regime.}
+}
+\value{
+Named vector with starting values passed to \code{\link{opsr.fit}}.
+}
 \description{
+This is a utility function, used in \code{\link{opsr}} and should not be used directly.
 Tow-step estimation procedure to generate reasonable starting values.
 }
-\section{Note}{
+\details{
+These estimates can be retrieved by specifying \code{.get2step = TRUE} in \code{\link{opsr}}.
+}
+\section{Remark}{
 
 Since the Heckman two-step estimator includes an estimate in the second step
 regression, the resulting OLS standard errors and heteroskedasticity-robust
 standard errors are incorrect (see Greene, 2002).
 }
 
+\seealso{
+\code{\link{opsr.fit}}, \code{\link{opsr_prepare_coefs}}
+}

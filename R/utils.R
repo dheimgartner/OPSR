@@ -36,8 +36,6 @@ residuals.opsr <- function(object, ...) {
   y - fitted(object)
 }
 
-#' Model updating
-#' @seealso [update.formula]
 #' @export
 update.opsr <- function(object, ...) {
   NextMethod("update", object)

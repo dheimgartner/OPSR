@@ -1,26 +1,31 @@
-#' Fitter function for ordinal probit switching regression model
+#' Fitter Function for Ordinal Probit Switching Regression Models
 #'
 #' This is the basic computing engine called by [`opsr`] used to fit ordinal
-#' probit switching regression models. Should usually *not* be used directly.
-#' Log-likelihood function is implemented in C++ which yields a considerable
-#' speed-up. However, gradient and Hessian is currently numerically determined.
+#' probit switching regression models. Should usually *not* be called directly.
+#' The log-likelihood function is implemented in C++ which yields a considerable
+#' speed-up. Parallel computation is implemented using `OpenMP`.
 #'
-#' @param Ws
-#' @param Xs
-#' @param Ys
-#' @param start
+#' @param Ws list of matrices with explanatory variables for selection process for each regime.
+#' @param Xs list of matrices with expalanatory varialbes for outcome process for each regime.
+#' @param Ys list of vectors with continuous outcomes for each regime.
+#' @param start a numeric vector with the starting values (passed to [`maxLik`]).
+#' @param fixed parameters to be treated as constants at their `start` values. If
+#'   present, it is treated as an index vector of `start` parameters (passed to [`maxLik`]).
 #' @param weights a vector of weights to be used in the fitting process. Has to
 #'   conform with order (`w <- weights[order(Z)]`, where Z is the ordinal
 #'   outcome).
-#' @param method
-#' @param iterlim
-#' @param printLevel
-#' @param ...
+#' @param method maximzation method (passed to [`maxLik`]).
+#' @param iterlim maximum number of iterations (passed to [`maxLik`]).
+#' @param printLevel larger number prints more working information (passed to [`maxLik`]).
+#' @param nThreads number of threads to be used. Do not pass higher number than
+#'   number of ordinal outcomes. See also [`opsr_check_omp`] and [`opsr_max_threads`].
+#' @param .useR if `TRUE` usese [`loglik_R`]. Go grab a coffe.
+#' @param ... further arguments passed to [`maxLik`].
 #'
 #' @return object of class `"maxLik" "maxim"`.
-#' @export
 #'
-#' @seealso ['loglik'], Formula 6 (translates almost verbatim).
+#' @seealso [`maxLik`], [`loglik_cpp`], [`opsr`]
+#' @export
 opsr.fit <- function(Ws, Xs, Ys, start, fixed, weights,
                      method, iterlim, printLevel, nThreads, .useR = FALSE, ...) {
   nReg <- length(Xs)

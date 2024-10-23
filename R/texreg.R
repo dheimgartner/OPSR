@@ -152,7 +152,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #' `include.pseudoR2` reports both the "equally likely" (EL) and "market share" (MS)
 #' pseudo R2.
 #'
-#' @example R/examples/texreg.R
+#' @example R/examples/ex-texreg.R
 #' @export
 methods::setMethod("extract", signature = className("opsr", "OPSR"),
                    definition = extract.opsr)

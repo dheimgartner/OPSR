@@ -54,7 +54,7 @@ NULL
 #' @usage opsr_preare_coefs(theta, nReg)
 #' @name opsr_prepare_coefs
 #'
-#' @example R/examples/opsr_prepare_coefs.R
+#' @example R/examples/ex-opsr_prepare_coefs.R
 #' @export
 NULL
 

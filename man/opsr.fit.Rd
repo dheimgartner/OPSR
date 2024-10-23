@@ -2,7 +2,7 @@
 % Please edit documentation in R/opsr_fit.R
 \name{opsr.fit}
 \alias{opsr.fit}
-\title{Fitter function for ordinal probit switching regression model}
+\title{Fitter Function for Ordinal Probit Switching Regression Models}
 \usage{
 opsr.fit(
   Ws,
@@ -20,21 +20,43 @@ opsr.fit(
 )
 }
 \arguments{
+\item{Ws}{list of matrices with explanatory variables for selection process for each regime.}
+
+\item{Xs}{list of matrices with expalanatory varialbes for outcome process for each regime.}
+
+\item{Ys}{list of vectors with continuous outcomes for each regime.}
+
+\item{start}{a numeric vector with the starting values (passed to \code{\link{maxLik}}).}
+
+\item{fixed}{parameters to be treated as constants at their \code{start} values. If
+present, it is treated as an index vector of \code{start} parameters (passed to \code{\link{maxLik}}).}
+
 \item{weights}{a vector of weights to be used in the fitting process. Has to
 conform with order (\code{w <- weights[order(Z)]}, where Z is the ordinal
 outcome).}
 
-\item{...}{}
+\item{method}{maximzation method (passed to \code{\link{maxLik}}).}
+
+\item{iterlim}{maximum number of iterations (passed to \code{\link{maxLik}}).}
+
+\item{printLevel}{larger number prints more working information (passed to \code{\link{maxLik}}).}
+
+\item{nThreads}{number of threads to be used. Do not pass higher number than
+number of ordinal outcomes. See also \code{\link{opsr_check_omp}} and \code{\link{opsr_max_threads}}.}
+
+\item{.useR}{if \code{TRUE} usese \code{\link{loglik_R}}. Go grab a coffe.}
+
+\item{...}{further arguments passed to \code{\link{maxLik}}.}
 }
 \value{
 object of class \verb{"maxLik" "maxim"}.
 }
 \description{
 This is the basic computing engine called by \code{\link{opsr}} used to fit ordinal
-probit switching regression models. Should usually \emph{not} be used directly.
-Log-likelihood function is implemented in C++ which yields a considerable
-speed-up. However, gradient and Hessian is currently numerically determined.
+probit switching regression models. Should usually \emph{not} be called directly.
+The log-likelihood function is implemented in C++ which yields a considerable
+speed-up. Parallel computation is implemented using \code{OpenMP}.
 }
 \seealso{
-\link{'loglik'}, Formula 6 (translates almost verbatim).
+\code{\link{maxLik}}, \code{\link{loglik_cpp}}, \code{\link{opsr}}
 }

@@ -1,8 +1,13 @@
 #' Check the user-specified starting values
 #'
+#' This is a utility function, used in [`opsr`] and should not be used directly.
 #' Makes sure, the start vector conforms to the expected structure. Adds the
 #' expected parameter names to the numeric vector. Therefore the user has to
 #' conform to the expected order. See 'Details' for further explanation.
+#'
+#' @param start vector of starting values.
+#' @param W matrix with explanatory variables for selection process.
+#' @param Xs of matrices with expalanatory varialbes for outcome process for each regime.
 #'
 #' @details
 #' Expected order: 1. kappa threshold parameters (for ordinal probit model),
@@ -12,6 +17,7 @@
 #' `start` vector has to correspond to the total number of estimated parameters
 #' in the model).
 #'
+#' @seealso [`opsr_2step`]
 #' @export
 opsr_check_start <- function(start, W, Xs) {
   nReg <- length(Xs)

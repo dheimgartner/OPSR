@@ -1,3 +1,13 @@
+#' Extracting the Model Frame from an OPSR Model Fit
+#'
+#' @param formula an object of class `"opsr"`.
+#' @param ... a mix of further arguments such as `data`, `na.action` or `subset`,
+#'   passed to the default method.
+#'
+#' @return A [`data.frame`] containing the variables used in `formula$formula`.
+#' @method model.frame opsr
+#' @seealso [`stats::model.frame`]
+#'
 #' @export
 model.frame.opsr <- function(formula, ...) {
   ## almost identical to model.frame.lm

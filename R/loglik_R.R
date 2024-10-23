@@ -3,7 +3,6 @@
 #' @keywords internal
 #' @seealso [`loglik_cpp`], [`opsr.fit`]
 loglik_R <- function(theta, W, X, Y, weights, nReg, ...) {
-  ## formula 6 in paper
   ## boundary: -1 for min(Z) and 1 for max(Z)
   loglik_j <- function(W_j, X_j, y_j, gamma, kappa_j_1, kappa_j, beta_j, sigma_j, rho_j, boundary) {
     ll_j <- numeric(length = length(y_j))

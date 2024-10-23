@@ -1,3 +1,33 @@
+#' Summarizing OPSR Model Fits
+#'
+#' Follows the convention that [`opsr`] does the bare minimum model fitting and
+#' inference is performed in `summary`.
+#'
+#' @param object an object of class `"opsr"`.
+#' @param rob if `TRUE` the [`sandwich::sandwich`] covariance matrix extimator is used.
+#' @param ... further arguments passed to or from other methods.
+#'
+#' @return An object of class `"summary.opsr"`.
+#' In particular the elements `GOF`, `GOFcomponents` and `wald` require further
+#' explanation:
+#' \item{GOF}{Contains the conventional \emph{goodness of fit} indicators for the full
+#'   model. `LL2step` is the log-likelihood of the Heckman two-step solution (if
+#'   the default starting values were used). `LLfinal` is the log-likelihood at
+#'   final convergence and `AIC`, `BIC` the corresponding information critereon.}
+#' \item{GOFcomponents}{Contains the \emph{goodness of fit}  for the model components.
+#'   `LLprobit` is the log-likelihood (LL) contribution of the ordinal probit model.
+#'   `LLprobitEl` the LL of the "equally likely" and `LLprobitMs` the LL of the
+#'   "market share" model. With these three metrics the pseudo R2 is computed and
+#'   returned as `pseudoR2el` and `pseudoR2ms`. `R2` reports the usual coefficient
+#'   of determination (for the continuous outcomes jointly and for each regime
+#'   separately).}
+#' \item{wald}{Contains the results of two \emph{Wald-tests} as conducted with help
+#'   of [`car::linearHypothesis`]. The two H0 hypothesis are 1. All coefficients
+#'   of the explanatory variables are 0 and 2. The rho parameters (capturing error
+#'   correlation) are zero.}
+#'
+#' @method summary opsr
+#'
 #' @export
 summary.opsr <- function(object, rob = TRUE, ...) {
   model <- object
