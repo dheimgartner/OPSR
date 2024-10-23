@@ -2,10 +2,14 @@
 % Please edit documentation in R/loglik_R.R
 \name{loglik_R}
 \alias{loglik_R}
-\title{R-based log-likelihood implementation}
+\title{R-based Log-Likelihood Implementation}
 \usage{
 loglik_R(theta, W, X, Y, weights, nReg, ...)
 }
 \description{
-Only kept as an internal reference; for pedagogical purposes...
+R-based Log-Likelihood Implementation
 }
+\seealso{
+\code{\link{loglik_cpp}}, \code{\link{opsr.fit}}
+}
+\keyword{internal}

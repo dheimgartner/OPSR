@@ -1,3 +1,22 @@
+#' ANOVA for OPSR Model Fits
+#'
+#' Conducts likelihood ratio tests for one or more OPSR model fits.
+#'
+#' @param object an object of class `"opsr"`.
+#' @param ... additional objects of class `"opsr"`. See also the 'Details' section.
+#'
+#' @return An object of class `"anova.opsr"`.
+#' @method anova opsr
+#' @seealso [`stats::anova`]
+#'
+#' @details
+#' If only a single object is passed then the model is compared to the null model
+#' ([`opsr_null_model`]). If more than one object is specified, a likelihood ratio
+#' test is conducted for each pair of neighboring models. It is conventional to
+#' list the models from smallest to largest, but this is up to the user.
+#'
+#'
+#' @example R/examples/anova.R
 #' @export
 anova.opsr <- function(object, ...) {
   dotargs <- list(...)
@@ -74,8 +93,20 @@ stat.anova.opsr <- function(table, test = "LRT", ...) {  # could be extended wit
   lrtest_table
 }
 
+#' Print method for ANOVA OPSR objects
+#'
+#' @param x an object of class `"anova.opsr"`.
+#' @param digits minimal number of *significant* digits, see [`print.default`].
+#' @param signif.stars logical; if `TRUE`, P-values are additionally encoded visually
+#'   as 'significance stars' in order to help scanning of long coefficient tables.
+#'   It defaults to the `show.signif.stars` slot of [`options`].
+#' @param ... further arguments passed to [`stats::printCoefmat`].
+#'
+#' @method print anova.opsr
+#'
+#' @seealso [`stats::printCoefmat`]
 #' @export
-print.anova.opsr <- function (x, digits = max(getOption("digits") - 2L, 3L), signif.stars = getOption("show.signif.stars"),
+print.anova.opsr <- function(x, digits = max(getOption("digits") - 2L, 3L), signif.stars = getOption("show.signif.stars"),
                               ...) {
   parse_formula <- function(f) paste(deparse(f), collapse = "\n")
   cat("Likelihood Ratio Test\n\n")

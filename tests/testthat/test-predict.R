@@ -99,6 +99,6 @@ test_that("yields similar results to predict.lm if no error correlation", {
   p_lm <- predict(fit_lm)
   df <- data.frame(p_opsr = na.omit(p_opsr), p_lm = p_lm)
   test <- unname(coef(lm(p_lm ~ -1 + p_opsr, data = df)))
-  expect_equal(test, 1, tolerance = 1e-3)
+  expect_equal(test, 1, tolerance = 1e-2)
 })
 

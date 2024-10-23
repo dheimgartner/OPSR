@@ -1,9 +1,4 @@
-## use $$ for mathematical notation (e.g., R2)
-## any new extract function should retrieve the data in table 7
-## conform to pscl beside = TRUE (see dev.R) => see texreg:::extract.zeroinfl
-## as.opsr.beside() and then extract.opsr.beside?
-
-#' @export
+## documented below setMethod
 extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
                          include.selection = TRUE, include.outcome = TRUE,
                          include.pseudoR2 = FALSE, include.R2 = FALSE, ...) {
@@ -129,8 +124,38 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
   }
 }
 
-## register
-methods::setMethod(texreg::extract, signature = className("opsr", "OPSR"),
+#' Extract Method for OPSR Model Fits
+#'
+#' This is the main method called when using functions from the [`texreg-package`].
+#'
+#' @name extract.opsr
+#'
+#' @param model an object of class `"opsr"`
+#' @param beside if `TRUE` prints structural, selection and outcome coefficients side-by-side.
+#' @param include.structural whether or not structural coefficients should be printed.
+#' @param include.selection whether or not selection coefficients should be printed.
+#' @param include.outcome whether or not outcome coefficients should be printed.
+#' @param include.pseudoR2 whether or not the pseudo R2 statistic for the selection
+#'   component should be printed. See also the 'Details' section.
+#' @param include.R2 whether or not the R2 statistic for the outcome component
+#'   should be printed.
+#' @param ... additional arguments passed to [`summary.opsr`].
+#'
+#' @return A [`texreg-class`] object representing the statistical model.
+#' @method extract opsr
+#' @seealso [`texreg-package`], [`texreg::texreg`], [`texreg::screenreg`] and related functions.
+#'
+#' @details
+#' The `extract` method is called internally. Higher-level functions from the
+#' [`texreg-package`] pass arguments via `...` to `extract`.
+#'
+#' `include.pseudoR2` reports both the "equally likely" (EL) and "market share" (MS)
+#' pseudo R2.
+#'
+#' @example R/examples/texreg.R
+#' @export
+methods::setMethod("extract", signature = className("opsr", "OPSR"),
                    definition = extract.opsr)
-methods::setMethod(texreg::extract, signature = className("opsr.null", "OPSR"),
+
+methods::setMethod("extract", signature = className("opsr.null", "OPSR"),
                    definition = extract.opsr)

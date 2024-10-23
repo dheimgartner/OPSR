@@ -1,25 +1,32 @@
-#' Predict method for OPSR model fits
+#' Predict Method for OPSR Model Fits
 #'
-#' Computes the conditional expectation \eqn{E[y_j | Z = j]} or
-#' counterfactual conditional expectation \eqn{E[y_{j'} | Z = j]}.
-#'
-#' @section Outlook:
-#' Could be extended with an argument `se.fit`, computing the standard errors
-#' of the predictions with the delta method.
+#' Obtains predictions for the outcome process, the selection process (probabilities),
+#' or returns the inverse mills ratio. Handles also log-transformed outcomes.
 #'
 #' @param object an object of class `"opsr"`.
 #' @param newdata an optional data frame in which to look for variables used in
-#'   `object$formula`. If omitted, `environment(object$formula)` is used. See
-#'   also [`model.matrix.opsr`].
-#' @param group predict outcome of this group.
+#'   `object$formula`. See also [`model.matrix.opsr`].
+#' @param group predict outcome of this group (regime).
 #' @param counterfact counterfactual group.
+#' @param type type of prediction. Can be abbreviated. See 'Details' section for
+#'   more information.
+#' @param ... further arguments passed to or from other methods.
 #'
 #' @return a vector of length `nrow(newdata)` (or data used during estimation).
-#' @export
+#' @method predict opsr
+#' @seealso [`stats::predict`]
 #'
 #' @details
 #' Elements are `NA_real_` if the `group` does not correspond to the observed
 #' regime (selection outcome). This ensures consistent output length.
+#'
+#' If the `type` argument is `"response"` then the continuous outcome is predicted.
+#' Use `"unlog-response"` if the outcome response was log-transformed during estimation.
+#' `"prob"` returns the probability vector of belonging to `group` and `"mills"`
+#' returns the inverse mills ratio.
+#'
+#' @example R/examples/predict.R
+#' @export
 predict.opsr <- function(object, newdata, group, counterfact = NULL,
                          type = c("response", "unlog-response", "prob", "mills"),
                          ...) {

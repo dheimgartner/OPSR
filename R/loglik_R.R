@@ -1,8 +1,7 @@
-#' R-based log-likelihood implementation
+#' R-based Log-Likelihood Implementation
 #'
-#' Only kept as an internal reference; for pedagogical purposes...
-#'
-#' @export
+#' @keywords internal
+#' @seealso [`loglik_cpp`], [`opsr.fit`]
 loglik_R <- function(theta, W, X, Y, weights, nReg, ...) {
   ## formula 6 in paper
   ## boundary: -1 for min(Z) and 1 for max(Z)

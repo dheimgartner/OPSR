@@ -66,10 +66,15 @@
 -[x] Write tests (first think about what to test)
   -[x] Write fixture with simulated data (s.t. it is always the same data)
   -[x] Init for each (important) file in `R/` a test file with `usethis::use_test()` and write what to test with ## => see also `dev.R` for insp
--[ ] Write paper (read jss.pdf and learn from others)
--[ ] Update documentation (outsource examples [see mixl]) => how to document texreg extract?
-  - [ ] consider what to export (e.g., should S3 methods be exported => I don't think so, right?)
+
+-[ ] Update documentation (outsource examples [see mixl])
+  - [ ] how to document texreg extract?
+  - [ ] consider what to export (e.g., should S3 methods be exported => yes they should! => see for example `help(package = "stats")`)
+  - [ ] cross references (e.g. seealso seem to complain) => use separate `[]` for each function!
+  - [ ] update README and compile
 -[ ] `devtools::submit_cran()`: Read and follow chapter 22 (https://r-pkgs.org/release.html)
+-[ ] Write paper (read jss.pdf and learn from others)
+
 -[x] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
 
 
