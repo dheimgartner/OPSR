@@ -1,6 +1,6 @@
 Package: OPSR
 Title: Ordinal Probit Switching Regression
-Version: 0.0.0.9008
+Version: 0.0.0.9009
 Authors@R: c(person("Daniel", "Heimgartner", email = "d.heimgartners@gmail.com", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-0643-8690")),
     person("Xinyi", "Wang", email = "email@gmail.com", role = c("aut"), comment = c(ORCID = "1234")))
