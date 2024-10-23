@@ -51,7 +51,7 @@ NULL
 #' @param nReg integer number of regimes.
 #'
 #' @return Named list of length `nReg`
-#' @usage opsr_preare_coefs(theta, nReg)
+#' @usage opsr_prepare_coefs(theta, nReg)
 #' @name opsr_prepare_coefs
 #'
 #' @example R/examples/ex-opsr_prepare_coefs.R

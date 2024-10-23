@@ -4,7 +4,7 @@
 \alias{opsr_prepare_coefs}
 \title{Prepares Coefficients for Likelihood Function}
 \usage{
-opsr_preare_coefs(theta, nReg)
+opsr_prepare_coefs(theta, nReg)
 }
 \arguments{
 \item{theta}{named coefficient vector as parsed from formula interface \code{\link{opsr}}.}

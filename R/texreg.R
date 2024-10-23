@@ -128,7 +128,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #'
 #' This is the main method called when using functions from the [`texreg-package`].
 #'
-#' @name extract.opsr
+#' @aliases extract.opsr
 #'
 #' @param model an object of class `"opsr"`
 #' @param beside if `TRUE` prints structural, selection and outcome coefficients side-by-side.
@@ -153,7 +153,6 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #' pseudo R2.
 #'
 #' @example R/examples/ex-texreg.R
-#' @export
 methods::setMethod("extract", signature = className("opsr", "OPSR"),
                    definition = extract.opsr)
 
