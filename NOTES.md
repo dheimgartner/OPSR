@@ -76,7 +76,7 @@
   - https://cran.r-project.org/web/packages/Rdpack/vignettes/Inserting_bibtex_references.pdf
   - [x] update README and compile
   - [ ] create auto package doc - print it and check it (all functions / methods documented?)
-    - `devtools::build_manual()`
+    - `devtools::build_manual()` (this fails because of Rdpack stuff...)
   - [ ] use @inheritParams
 -[ ] `devtools::submit_cran()`: Read and follow chapter 22 (https://r-pkgs.org/release.html)
 -[ ] Write paper (read jss.pdf and learn from others)
