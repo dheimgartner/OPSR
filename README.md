@@ -11,7 +11,7 @@ fast.
 
 ## Installation
 
-You can install the development version of OPSR from
+You can install the development version of `OPSR` from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -28,15 +28,16 @@ install.packages("OPSR")
 ## Example
 
 `OPSR` can be used whenever the ordinal treatment is not assigned
-exogenously but self-selected and one is interested in a continuous
-outcome. The motivating example is telework frequency and vehicle miles
-driven. We assume that two distinct processes lead people to choose a
-certain telework frequency and another process how mobile they are.
-Further and most importantly, the possibility of selection on
-unobservables exist. I.e., unobserved factors (as part of the errors of
-the two processes) might influence both the ordinal and continuous
-outcome. This leads to error correlation which we need to account for in
-our modeling effort and ultimately estimate unbiased treatment effects!
+exogenously but self-selected and one is interested in the treatment
+effect on a continuous outcome. The motivating example is telework
+frequency (conceptually, the treatment) and vehicle miles driven (the
+outcome of interest). We assume that two distinct processes lead people
+to choose a certain telework frequency and how mobile they are. Further
+and most importantly, the possibility of selection on unobservables
+exists. I.e., unobserved factors (as part of the errors of the two
+processes) might influence both the ordinal and continuous outcome. This
+leads to error correlation which needs to be accounted for in the
+modeling effort in spirit of Heckman.
 
 ``` r
 library(OPSR)
