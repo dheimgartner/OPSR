@@ -2,7 +2,7 @@
 % Please edit documentation in R/roxygen.R
 \name{opsr_check_omp}
 \alias{opsr_check_omp}
-\title{Check Whether OpenMP is Available}
+\title{Check Whether \code{OpenMP} is Available}
 \usage{
 opsr_check_omp()
 }
@@ -10,5 +10,5 @@ opsr_check_omp()
 boolean
 }
 \description{
-Check Whether OpenMP is Available
+Check Whether \code{OpenMP} is Available
 }

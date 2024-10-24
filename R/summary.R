@@ -4,7 +4,7 @@
 #' inference is performed in `summary`.
 #'
 #' @param object an object of class `"opsr"`.
-#' @param rob if `TRUE` the [`sandwich::sandwich`] covariance matrix extimator is used.
+#' @param rob if `TRUE`, the [`sandwich::sandwich`] covariance matrix extimator is used.
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @return An object of class `"summary.opsr"`.

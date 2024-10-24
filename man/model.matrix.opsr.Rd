@@ -10,9 +10,9 @@
 \item{object}{an object of class \code{"opsr"}.}
 
 \item{data}{a data frame containing the terms from \code{object$formula}. Passed to
-\code{\link{model.frame.opsr}}.}
+\code{\link{model.frame.opsr}}. Can be omitted.}
 
-\item{.filter}{used internally in \code{\link{predict.opsr}} for counterfactual prediction.}
+\item{.filter}{used internally in \code{\link{predict.opsr}} for counterfactual predictions.}
 
 \item{...}{further arguments passed to or from other methods.}
 }

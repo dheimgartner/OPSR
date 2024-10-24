@@ -2,7 +2,7 @@
 % Please edit documentation in R/anova.R
 \name{print.anova.opsr}
 \alias{print.anova.opsr}
-\title{Print method for ANOVA OPSR objects}
+\title{Print Method for ANOVA OPSR objects}
 \usage{
 \method{print}{anova.opsr}(
   x,
@@ -16,15 +16,15 @@
 
 \item{digits}{minimal number of \emph{significant} digits, see \code{\link{print.default}}.}
 
-\item{signif.stars}{logical; if \code{TRUE}, P-values are additionally encoded visually
+\item{signif.stars}{if \code{TRUE}, P-values are additionally encoded visually
 as 'significance stars' in order to help scanning of long coefficient tables.
 It defaults to the \code{show.signif.stars} slot of \code{\link{options}}.}
 
 \item{...}{further arguments passed to \code{\link[stats:printCoefmat]{stats::printCoefmat}}.}
 }
 \description{
-Print method for ANOVA OPSR objects
+Print Method for ANOVA OPSR objects
 }
 \seealso{
-\code{\link[stats:printCoefmat]{stats::printCoefmat}}
+\code{\link[stats:printCoefmat]{stats::printCoefmat}}, \code{\link{anova.opsr}}
 }

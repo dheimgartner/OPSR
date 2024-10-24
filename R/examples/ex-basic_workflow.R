@@ -30,3 +30,4 @@ abline(a = 0, b = 1, col = "red")
 
 ## produce formatted tables
 texreg::screenreg(fit, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE)
+

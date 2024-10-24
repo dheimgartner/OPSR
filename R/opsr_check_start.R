@@ -1,13 +1,14 @@
 #' Check the user-specified starting values
 #'
 #' This is a utility function, used in [`opsr`] and should not be used directly.
+#' It is included here to document the expected structure of [`opsr`]'s `start` argument.
 #' Makes sure, the start vector conforms to the expected structure. Adds the
 #' expected parameter names to the numeric vector. Therefore the user has to
 #' conform to the expected order. See 'Details' for further explanation.
 #'
 #' @param start vector of starting values.
 #' @param W matrix with explanatory variables for selection process.
-#' @param Xs of matrices with expalanatory varialbes for outcome process for each regime.
+#' @param Xs list of matrices with expalanatory varialbes for outcome process for each regime.
 #'
 #' @details
 #' Expected order: 1. kappa threshold parameters (for ordinal probit model),

@@ -17,9 +17,9 @@
 )
 }
 \arguments{
-\item{model}{an object of class \code{"opsr"}}
+\item{model}{an object of class \code{"opsr"}.}
 
-\item{beside}{if \code{TRUE} prints structural, selection and outcome coefficients side-by-side.}
+\item{beside}{if \code{TRUE}, prints structural, selection and outcome coefficients side-by-side.}
 
 \item{include.structural}{whether or not structural coefficients should be printed.}
 

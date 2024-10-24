@@ -1,7 +1,7 @@
 #' Fitter Function for Ordinal Probit Switching Regression Models
 #'
 #' This is the basic computing engine called by [`opsr`] used to fit ordinal
-#' probit switching regression models. Should usually *not* be called directly.
+#' probit switching regression models. Should usually *not* be used directly.
 #' The log-likelihood function is implemented in C++ which yields a considerable
 #' speed-up. Parallel computation is implemented using `OpenMP`.
 #'
@@ -19,7 +19,7 @@
 #' @param printLevel larger number prints more working information (passed to [`maxLik`]).
 #' @param nThreads number of threads to be used. Do not pass higher number than
 #'   number of ordinal outcomes. See also [`opsr_check_omp`] and [`opsr_max_threads`].
-#' @param .useR if `TRUE` usese [`loglik_R`]. Go grab a coffe.
+#' @param .useR if `TRUE`, usese [`loglik_R`]. Go grab a coffe.
 #' @param ... further arguments passed to [`maxLik`].
 #'
 #' @return object of class `"maxLik" "maxim"`.

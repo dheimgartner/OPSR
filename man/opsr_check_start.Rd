@@ -11,10 +11,11 @@ opsr_check_start(start, W, Xs)
 
 \item{W}{matrix with explanatory variables for selection process.}
 
-\item{Xs}{of matrices with expalanatory varialbes for outcome process for each regime.}
+\item{Xs}{list of matrices with expalanatory varialbes for outcome process for each regime.}
 }
 \description{
 This is a utility function, used in \code{\link{opsr}} and should not be used directly.
+It is included here to document the expected structure of \code{\link{opsr}}'s \code{start} argument.
 Makes sure, the start vector conforms to the expected structure. Adds the
 expected parameter names to the numeric vector. Therefore the user has to
 conform to the expected order. See 'Details' for further explanation.

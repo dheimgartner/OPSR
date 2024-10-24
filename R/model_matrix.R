@@ -2,8 +2,8 @@
 #'
 #' @param object an object of class `"opsr"`.
 #' @param data a data frame containing the terms from `object$formula`. Passed to
-#'   [`model.frame.opsr`].
-#' @param .filter used internally in [`predict.opsr`] for counterfactual prediction.
+#'   [`model.frame.opsr`]. Can be omitted.
+#' @param .filter used internally in [`predict.opsr`] for counterfactual predictions.
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @return A list of lists with the design matrices `W` (selection process) and

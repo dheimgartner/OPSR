@@ -12,15 +12,18 @@ opsr_simulate(nobs = 1000, sigma = NULL)
 \item{sigma}{the covariance matrix of the multivariate normal.}
 }
 \value{
-Named list.
+Named list:
+\item{params}{ground truth parameters.}
+\item{data}{simulated data (as observed by the researcher). See also 'Details' section.}
+\item{errors}{error draws from the multivariate normal (as used in the latent
+process).}
+\item{sigma}{assumed covariance matrix (to generate \code{errors}).}
 }
 \description{
 Simulates data from an ordinal probit process and separate (for each regime)
 OLS process where the errors follow a multivariate normal distribution.
 }
 \details{
-The named list contains the ground truth parameters \code{params}, the simulated
-\code{data}, the error draws \code{errors} and the assumed covariance matrix \code{sigma}.
 Three ordinal outcomes are simulated and the distinct design matrices (\code{W} and
 \code{X}) are used (if \code{W == X} the model is poorely identified). Variables \code{ys} and
 \code{xs} in \code{data} correspond to the selection process and \code{yo}, \code{xo} to the outcome

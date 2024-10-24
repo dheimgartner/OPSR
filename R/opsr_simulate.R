@@ -47,11 +47,14 @@ errors <- function(Sigma, nobs = 1000) {
 #' @param nobs number of observations to simulate.
 #' @param sigma the covariance matrix of the multivariate normal.
 #'
-#' @return Named list.
+#' @return Named list:
+#' \item{params}{ground truth parameters.}
+#' \item{data}{simulated data (as observed by the researcher). See also 'Details' section.}
+#' \item{errors}{error draws from the multivariate normal (as used in the latent
+#'   process).}
+#' \item{sigma}{assumed covariance matrix (to generate `errors`).}
 #'
 #' @details
-#' The named list contains the ground truth parameters `params`, the simulated
-#' `data`, the error draws `errors` and the assumed covariance matrix `sigma`.
 #' Three ordinal outcomes are simulated and the distinct design matrices (`W` and
 #' `X`) are used (if `W == X` the model is poorely identified). Variables `ys` and
 #' `xs` in `data` correspond to the selection process and `yo`, `xo` to the outcome

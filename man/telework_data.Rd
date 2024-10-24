@@ -51,6 +51,7 @@ telework_data
 Telework data as used in \insertCite{xinyi2024;textual}{OPSR}.
 }
 \examples{
+## model as in Xinyi & Mokhtarian (2024)
 f <-
   ## ordinal and continuous outcome
   twing_status | vmd_ln ~

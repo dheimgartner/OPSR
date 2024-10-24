@@ -9,9 +9,9 @@ opsr_2step(W, Xs, Z, Ys)
 \arguments{
 \item{W}{matrix with explanatory variables for selection process.}
 
-\item{Xs}{of matrices with expalanatory varialbes for outcome process for each regime.}
+\item{Xs}{list of matrices with expalanatory varialbes for outcome process for each regime.}
 
-\item{Z}{list of vectors with ordinal outcomes for each regime (in integer increasing fashion).}
+\item{Z}{vector with ordinal outcomes (in integer increasing fashion).}
 
 \item{Ys}{list of vectors with continuous outcomes for each regime.}
 }
@@ -29,9 +29,12 @@ These estimates can be retrieved by specifying \code{.get2step = TRUE} in \code{
 
 Since the Heckman two-step estimator includes an estimate in the second step
 regression, the resulting OLS standard errors and heteroskedasticity-robust
-standard errors are incorrect (see Greene, 2002).
+standard errors are incorrect \insertCite{greene2002}{OPSR}.
 }
 
+\references{
+\insertRef{greene2002}{OPSR}
+}
 \seealso{
 \code{\link{opsr.fit}}, \code{\link{opsr_prepare_coefs}}
 }

@@ -1,3 +1,4 @@
+## model as in Xinyi & Mokhtarian (2024)
 f <-
   ## ordinal and continuous outcome
   twing_status | vmd_ln ~

@@ -62,7 +62,7 @@ NULL
 #' @export
 NULL
 
-#' Check Whether OpenMP is Available
+#' Check Whether `OpenMP` is Available
 #'
 #' @return boolean
 #' @usage opsr_check_omp()

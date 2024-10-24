@@ -131,8 +131,8 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #' @rdname extract.opsr
 #' @aliases extract.opsr
 #'
-#' @param model an object of class `"opsr"`
-#' @param beside if `TRUE` prints structural, selection and outcome coefficients side-by-side.
+#' @param model an object of class `"opsr"`.
+#' @param beside if `TRUE`, prints structural, selection and outcome coefficients side-by-side.
 #' @param include.structural whether or not structural coefficients should be printed.
 #' @param include.selection whether or not selection coefficients should be printed.
 #' @param include.outcome whether or not outcome coefficients should be printed.

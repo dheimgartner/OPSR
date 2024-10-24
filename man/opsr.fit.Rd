@@ -44,7 +44,7 @@ outcome).}
 \item{nThreads}{number of threads to be used. Do not pass higher number than
 number of ordinal outcomes. See also \code{\link{opsr_check_omp}} and \code{\link{opsr_max_threads}}.}
 
-\item{.useR}{if \code{TRUE} usese \code{\link{loglik_R}}. Go grab a coffe.}
+\item{.useR}{if \code{TRUE}, usese \code{\link{loglik_R}}. Go grab a coffe.}
 
 \item{...}{further arguments passed to \code{\link{maxLik}}.}
 }
@@ -53,7 +53,7 @@ object of class \verb{"maxLik" "maxim"}.
 }
 \description{
 This is the basic computing engine called by \code{\link{opsr}} used to fit ordinal
-probit switching regression models. Should usually \emph{not} be called directly.
+probit switching regression models. Should usually \emph{not} be used directly.
 The log-likelihood function is implemented in C++ which yields a considerable
 speed-up. Parallel computation is implemented using \code{OpenMP}.
 }

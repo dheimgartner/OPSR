@@ -35,5 +35,5 @@ anova(fit)
 anova(fit_null, fit_intercept, fit)
 }
 \seealso{
-\code{\link[stats:anova]{stats::anova}}
+\code{\link[stats:anova]{stats::anova}}, \code{\link{print.anova.opsr}}
 }

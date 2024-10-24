@@ -32,7 +32,7 @@ more information.}
 a vector of length \code{nrow(newdata)} (or data used during estimation).
 }
 \description{
-Obtains predictions for the outcome process, the selection process (probabilities),
+Obtains predictions for the selection process (probabilities), the outcome process,
 or returns the inverse mills ratio. Handles also log-transformed outcomes.
 }
 \details{

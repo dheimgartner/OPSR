@@ -7,7 +7,7 @@
 #'
 #' @return An object of class `"anova.opsr"`.
 #' @method anova opsr
-#' @seealso [`stats::anova`]
+#' @seealso [`stats::anova`], [`print.anova.opsr`]
 #'
 #' @details
 #' If only a single object is passed then the model is compared to the null model
@@ -93,18 +93,18 @@ stat.anova.opsr <- function(table, test = "LRT", ...) {  # could be extended wit
   lrtest_table
 }
 
-#' Print method for ANOVA OPSR objects
+#' Print Method for ANOVA OPSR objects
 #'
 #' @param x an object of class `"anova.opsr"`.
 #' @param digits minimal number of *significant* digits, see [`print.default`].
-#' @param signif.stars logical; if `TRUE`, P-values are additionally encoded visually
+#' @param signif.stars if `TRUE`, P-values are additionally encoded visually
 #'   as 'significance stars' in order to help scanning of long coefficient tables.
 #'   It defaults to the `show.signif.stars` slot of [`options`].
 #' @param ... further arguments passed to [`stats::printCoefmat`].
 #'
 #' @method print anova.opsr
 #'
-#' @seealso [`stats::printCoefmat`]
+#' @seealso [`stats::printCoefmat`], [`anova.opsr`]
 #' @export
 print.anova.opsr <- function(x, digits = max(getOption("digits") - 2L, 3L), signif.stars = getOption("show.signif.stars"),
                               ...) {

@@ -1,6 +1,6 @@
 #' Predict Method for OPSR Model Fits
 #'
-#' Obtains predictions for the outcome process, the selection process (probabilities),
+#' Obtains predictions for the selection process (probabilities), the outcome process,
 #' or returns the inverse mills ratio. Handles also log-transformed outcomes.
 #'
 #' @param object an object of class `"opsr"`.

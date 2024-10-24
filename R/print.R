@@ -1,3 +1,13 @@
+#' Print Method for Summary OPSR Objects
+#'
+#' @param x and object of class `"summary.opsr"`
+#'
+#' @param digits minimum number of significant digits to be used for most numbers (passed to [`stats::printCoefmat`]).
+#' @param ... further arguments passed to or from other methods.
+#'
+#' @method print summary.opsr
+#'
+#' @seealso [`stats::printCoefmat`], [`summary.opsr`]
 #' @export
 print.summary.opsr <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   ## output formatting for wald tests

@@ -4,8 +4,8 @@
 #' Tow-step estimation procedure to generate reasonable starting values.
 #'
 #' @param W matrix with explanatory variables for selection process.
-#' @param Xs of matrices with expalanatory varialbes for outcome process for each regime.
-#' @param Z list of vectors with ordinal outcomes for each regime (in integer increasing fashion).
+#' @param Xs list of matrices with expalanatory varialbes for outcome process for each regime.
+#' @param Z vector with ordinal outcomes (in integer increasing fashion).
 #' @param Ys list of vectors with continuous outcomes for each regime.
 #'
 #' @return Named vector with starting values passed to [`opsr.fit`].
@@ -13,10 +13,13 @@
 #' @section Remark:
 #' Since the Heckman two-step estimator includes an estimate in the second step
 #' regression, the resulting OLS standard errors and heteroskedasticity-robust
-#' standard errors are incorrect (see Greene, 2002).
+#' standard errors are incorrect \insertCite{greene2002}{OPSR}.
 #'
 #' @details
 #' These estimates can be retrieved by specifying `.get2step = TRUE` in [`opsr`].
+#'
+#' @references
+#' \insertRef{greene2002}{OPSR}
 #'
 #' @seealso [`opsr.fit`], [`opsr_prepare_coefs`]
 #' @export

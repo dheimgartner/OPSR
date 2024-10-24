@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{an object of class \code{"opsr"}.}
 
-\item{rob}{if \code{TRUE} the \code{\link[sandwich:sandwich]{sandwich::sandwich}} covariance matrix extimator is used.}
+\item{rob}{if \code{TRUE}, the \code{\link[sandwich:sandwich]{sandwich::sandwich}} covariance matrix extimator is used.}
 
 \item{...}{further arguments passed to or from other methods.}
 }
