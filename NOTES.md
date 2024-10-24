@@ -67,15 +67,16 @@
   -[x] Write fixture with simulated data (s.t. it is always the same data)
   -[x] Init for each (important) file in `R/` a test file with `usethis::use_test()` and write what to test with ## => see also `dev.R` for insp
 
--[ ] Update documentation (outsource examples [see mixl])
+-[ ] Update documentation 
+  - [x] outsource examples [see mixl]
   - [x] how to document texreg extract?
   - [x] consider what to export (e.g., should S3 methods be exported => yes they should! => see for example `help(package = "stats")`)
   - [x] cross references (e.g. seealso seem to complain) => use separate `[]` for each function!
-  - [ ] update data and its documentation => add paper source to data => add example
+  - [x] update data and its documentation => add paper source to data => add example
   - https://cran.r-project.org/web/packages/Rdpack/vignettes/Inserting_bibtex_references.pdf
+  - [x] update README and compile
+  - [ ] create auto package doc - print it and check it (all functions / methods documented?)
   - [ ] use @inheritParams
-  - [ ] update README and compile
-  - [ ] create auto package doc - print it and check it
 -[ ] `devtools::submit_cran()`: Read and follow chapter 22 (https://r-pkgs.org/release.html)
 -[ ] Write paper (read jss.pdf and learn from others)
 

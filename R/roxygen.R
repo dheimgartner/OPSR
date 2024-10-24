@@ -88,6 +88,8 @@ NULL
 #'
 #' Telework data as used in \insertCite{xinyi2024;textual}{OPSR}.
 #'
+#' @example R/examples/ex-telework_data.R
+#'
 #' @references
 #' \insertRef{xinyi2024}{OPSR}
 #'

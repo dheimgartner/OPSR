@@ -6,7 +6,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of OPSR is to …
+Estimate ordinal probit switching regression (OPSR) models with ease and
+fast.
 
 ## Installation
 
@@ -18,9 +19,24 @@ You can install the development version of OPSR from
 devtools::install_github("dheimgartner/OPSR")
 ```
 
+Or from CRAN:
+
+``` r
+install.packages("OPSR")
+```
+
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+`OPSR` can be used whenever the ordinal treatment is not assigned
+exogenously but self-selected and one is interested in a continuous
+outcome. The motivating example is telework frequency and vehicle miles
+driven. We assume that two distinct processes lead people to choose a
+certain telework frequency and another process how mobile they are.
+Further and most importantly, the possibility of selection on
+unobservables exist. I.e., unobserved factors (as part of the errors of
+the two processes) might influence both the ordinal and continuous
+outcome. This leads to error correlation which we need to account for in
+our modeling effort and ultimately estimate unbiased treatment effects!
 
 ``` r
 library(OPSR)
@@ -33,32 +49,117 @@ library(OPSR)
 #> If you have questions, suggestions, or comments regarding the 'OPSR' package, please open an issue on https://github.com/dheimgartner/OPSR
 #> 
 #> To see these entries in BibTeX format, use 'citation('OPSR')'
+
+f <-
+  ## ordinal and continuous outcome
+  twing_status | vmd_ln ~
+  ## selection model
+  edu_2 + edu_3 + hhincome_2 + hhincome_3 +
+  flex_work + work_fulltime + twing_feasibility +
+  att_proactivemode + att_procarowning +
+  att_wif + att_proteamwork +
+  att_tw_effective_teamwork + att_tw_enthusiasm + att_tw_location_flex |
+  ## outcome model NTW
+  female + age_mean + age_mean_sq +
+  race_black + race_other +
+  vehicle + suburban + smalltown + rural +
+  work_fulltime +
+  att_prolargehouse + att_procarowning +
+  region_waa |
+  ## outcome model NUTW
+  edu_2 + edu_3 + suburban + smalltown + rural +
+  work_fulltime +
+  att_prolargehouse + att_proactivemode + att_procarowning |
+  ## outcome model UTW
+  female + hhincome_2 + hhincome_3 +
+  child + suburban + smalltown + rural +
+  att_procarowning +
+  region_waa
+
+fit <- opsr(f, telework_data, printLevel = 0)
+texreg::screenreg(fit, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE)
+#> 
+#> ===============================================================================================
+#>                            Structural    Selection     Outcome 1     Outcome 2     Outcome 3   
+#> -----------------------------------------------------------------------------------------------
+#> kappa1                         1.15 ***                                                        
+#>                               (0.17)                                                           
+#> kappa2                         2.38 ***                                                        
+#>                               (0.18)                                                           
+#> sigma1                         1.18 ***                                                        
+#>                               (0.05)                                                           
+#> sigma2                         1.24 ***                                                        
+#>                               (0.07)                                                           
+#> sigma3                         1.43 ***                                                        
+#>                               (0.04)                                                           
+#> rho1                           0.07                                                            
+#>                               (0.10)                                                           
+#> rho2                           0.13                                                            
+#>                               (0.07)                                                           
+#> rho3                           0.30 ***                                                        
+#>                               (0.07)                                                           
+#> edu_2                                        0.24                        0.22                  
+#>                                             (0.14)                      (0.34)                 
+#> edu_3                                        0.40 **                     0.67 *                
+#>                                             (0.13)                      (0.33)                 
+#> hhincome_2                                   0.09                                      0.47    
+#>                                             (0.11)                                    (0.26)   
+#> hhincome_3                                   0.28 *                                    0.30    
+#>                                             (0.11)                                    (0.25)   
+#> flex_work                                    0.28 **                                           
+#>                                             (0.10)                                             
+#> work_fulltime                                0.25 *        0.44 ***      0.71 ***              
+#>                                             (0.10)        (0.13)        (0.17)                 
+#> twing_feasibility                            0.13 ***                                          
+#>                                             (0.01)                                             
+#> att_proactivemode                            0.08 *                     -0.18 *                
+#>                                             (0.04)                      (0.08)                 
+#> att_procarowning                            -0.08          0.12          0.17          0.25 ***
+#>                                             (0.04)        (0.07)        (0.09)        (0.06)   
+#> att_wif                                      0.12 **                                           
+#>                                             (0.04)                                             
+#> att_proteamwork                              0.09 *                                            
+#>                                             (0.04)                                             
+#> att_tw_effective_teamwork                    0.32 ***                                          
+#>                                             (0.04)                                             
+#> att_tw_enthusiasm                            0.09 *                                            
+#>                                             (0.04)                                             
+#> att_tw_location_flex                         0.08 *                                            
+#>                                             (0.04)                                             
+#> (Intercept)                                                3.74 ***      2.42 ***      2.38 ***
+#>                                                           (0.28)        (0.39)        (0.29)   
+#> female                                                    -0.21 *                     -0.37 ***
+#>                                                           (0.11)                      (0.11)   
+#> age_mean                                                   0.01 **                             
+#>                                                           (0.00)                               
+#> age_mean_sq                                               -0.00                                
+#>                                                           (0.00)                               
+#> race_black                                                -0.39                                
+#>                                                           (0.24)                               
+#> race_other                                                -0.02                                
+#>                                                           (0.18)                               
+#> vehicle                                                    0.13 **                             
+#>                                                           (0.05)                               
+#> suburban                                                   0.01          0.45 *        0.29 *  
+#>                                                           (0.16)        (0.17)        (0.14)   
+#> smalltown                                                  0.41 *        0.22          0.31    
+#>                                                           (0.18)        (0.29)        (0.28)   
+#> rural                                                      0.49 *        0.82 *        0.85 ** 
+#>                                                           (0.23)        (0.32)        (0.33)   
+#> att_prolargehouse                                          0.19 ***      0.16 *                
+#>                                                           (0.05)        (0.08)                 
+#> region_waa                                                -0.24 *                     -0.27 *  
+#>                                                           (0.11)                      (0.11)   
+#> child                                                                                  0.19 ** 
+#>                                                                                       (0.06)   
+#> -----------------------------------------------------------------------------------------------
+#> AIC                         7189.51       7189.51       7189.51       7189.51       7189.51    
+#> BIC                         7490.10       7490.10       7490.10       7490.10       7490.10    
+#> Log Likelihood             -3538.76      -3538.76      -3538.76      -3538.76      -3538.76    
+#> Pseudo R^2 (EL)                0.49          0.49          0.49          0.49          0.49    
+#> Pseudo R^2 (MS)                0.46          0.46          0.46          0.46          0.46    
+#> R^2                            0.24          0.24          0.24          0.24          0.24    
+#> Num. obs.                   1584          1584          1584          1584          1584       
+#> ===============================================================================================
+#> *** p < 0.001; ** p < 0.01; * p < 0.05
 ```
-
-``` r
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.

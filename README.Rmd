@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of OPSR is to ...
+Estimate ordinal probit switching regression (OPSR) models with ease and fast.
 
 ## Installation
 
@@ -29,27 +29,45 @@ You can install the development version of OPSR from [GitHub](https://github.com
 devtools::install_github("dheimgartner/OPSR")
 ```
 
+Or from CRAN:
+
+``` r
+install.packages("OPSR")
+```
+
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+`OPSR` can be used whenever the ordinal treatment is not assigned exogenously but self-selected and one is interested in a continuous outcome. The motivating example is telework frequency and vehicle miles driven. We assume that two distinct processes lead people to choose a certain telework frequency and another process how mobile they are. Further and most importantly, the possibility of selection on unobservables exist. I.e., unobserved factors (as part of the errors of the two processes) might influence both the ordinal and continuous outcome. This leads to error correlation which we need to account for in our modeling effort and ultimately estimate unbiased treatment effects!
 
 ```{r example}
 library(OPSR)
-## basic example code
+
+f <-
+  ## ordinal and continuous outcome
+  twing_status | vmd_ln ~
+  ## selection model
+  edu_2 + edu_3 + hhincome_2 + hhincome_3 +
+  flex_work + work_fulltime + twing_feasibility +
+  att_proactivemode + att_procarowning +
+  att_wif + att_proteamwork +
+  att_tw_effective_teamwork + att_tw_enthusiasm + att_tw_location_flex |
+  ## outcome model NTW
+  female + age_mean + age_mean_sq +
+  race_black + race_other +
+  vehicle + suburban + smalltown + rural +
+  work_fulltime +
+  att_prolargehouse + att_procarowning +
+  region_waa |
+  ## outcome model NUTW
+  edu_2 + edu_3 + suburban + smalltown + rural +
+  work_fulltime +
+  att_prolargehouse + att_proactivemode + att_procarowning |
+  ## outcome model UTW
+  female + hhincome_2 + hhincome_3 +
+  child + suburban + smalltown + rural +
+  att_procarowning +
+  region_waa
+
+fit <- opsr(f, telework_data, printLevel = 0)
+texreg::screenreg(fit, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE)
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
