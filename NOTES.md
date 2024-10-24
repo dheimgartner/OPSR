@@ -71,7 +71,11 @@
   - [x] how to document texreg extract?
   - [x] consider what to export (e.g., should S3 methods be exported => yes they should! => see for example `help(package = "stats")`)
   - [x] cross references (e.g. seealso seem to complain) => use separate `[]` for each function!
+  - [ ] update data and its documentation => add paper source to data => add example
+  - https://cran.r-project.org/web/packages/Rdpack/vignettes/Inserting_bibtex_references.pdf
+  - [ ] use @inheritParams
   - [ ] update README and compile
+  - [ ] create auto package doc - print it and check it
 -[ ] `devtools::submit_cran()`: Read and follow chapter 22 (https://r-pkgs.org/release.html)
 -[ ] Write paper (read jss.pdf and learn from others)
 

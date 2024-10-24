@@ -20,6 +20,7 @@ Imports:
     mvtnorm,
     Rcpp,
     RcppArmadillo,
+    Rdpack (>= 0.7),
     sandwich,
     stats,
     texreg,
@@ -28,6 +29,7 @@ LinkingTo: Rcpp, RcppArmadillo
 Depends: 
     R (>= 2.10)
 LazyData: true
+RdMacros: Rdpack
 BugReports: https://github.com/dheimgartner/OPSR/issues
 Suggests: 
     testthat (>= 3.0.0)

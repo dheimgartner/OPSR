@@ -2,6 +2,10 @@
 #' @name OPSR-package
 "_PACKAGE"
 
+## Rdpack
+#' @importFrom Rdpack reprompt
+NULL
+
 ## Generics outside OPSR
 #' @importFrom stats AIC BIC coef coefficients fitted model.frame model.matrix
 #'   model.weights predict residuals update nobs
@@ -82,11 +86,47 @@ NULL
 
 #' Telework data
 #'
-#' @source tbc
+#' Telework data as used in \insertCite{xinyi2024;textual}{OPSR}.
 #'
-#' @format Data frame with columns
+#' @references
+#' \insertRef{xinyi2024}{OPSR}
+#'
+#' @format Data frame with numeric columns
 #' \describe{
-#' \item{variable1}{Description.}
-#' \item{variable2}{Description.}
+#' \item{id}{Respondent ID}
+#' \item{weight}{Sample weight}
+#' \item{vmd}{Weekly vehicle-miles traveled}
+#' \item{vmd_ln}{Log-transformed VMD, the dependent variable of the outcome model}
+#' \item{twing_status}{Teleworking status: 1=Non-TWer, 2=Non-usual TWer, 3=Usual TWer}
+#' \item{female}{Sex: female}
+#' \item{age_mean}{Mean-centered age}
+#' \item{age_mean_sq}{Sqaure of mean-centered age}
+#' \item{race_white}{Race: white only}
+#' \item{race_black}{Race: black only}
+#' \item{race_other}{Race: other}
+#' \item{edu_1}{Education: high school or lower}
+#' \item{edu_2}{Education: some college}
+#' \item{edu_3}{Education: BA or higher}
+#' \item{hhincome_1}{Household income: less than $50,000}
+#' \item{hhincome_2}{Household income: $50,000 to $99,999}
+#' \item{hhincome_3}{Household income: $100,000 or more}
+#' \item{flex_work}{Flexible work schedule}
+#' \item{work_fulltime}{Full-time worker}
+#' \item{twing_feasibility}{Teleworking feasibility (days/month)}
+#' \item{vehicle}{Number of household vehicles}
+#' \item{child}{Number of children}
+#' \item{urban}{Residential location: urban}
+#' \item{suburban}{Residential location: suburban}
+#' \item{smalltown}{Residential location: small town}
+#' \item{rural}{Residential location: rural}
+#' \item{att_prolargehouse}{Attitude: pro-large-house}
+#' \item{att_proactivemode}{Attitude: pro-active-mode}
+#' \item{att_procarowning}{Attitude: pro-car-owning}
+#' \item{att_wif}{Attitude: work-interferes-with-family}
+#' \item{att_proteamwork}{Attitude: pro-teamwork}
+#' \item{att_tw_effective_teamwork}{Attitude: TW effective teamwork}
+#' \item{att_tw_enthusiasm}{Attitude: TW enthusiasm}
+#' \item{att_tw_location_flex}{Attitude: TW location flexibility}
+#' \item{region_waa}{Region indicator: respondents from WAA MSA}
 #' }
 "telework_data"
