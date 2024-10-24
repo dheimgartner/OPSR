@@ -67,7 +67,7 @@
   -[x] Write fixture with simulated data (s.t. it is always the same data)
   -[x] Init for each (important) file in `R/` a test file with `usethis::use_test()` and write what to test with ## => see also `dev.R` for insp
 
--[ ] Update documentation 
+-[x] Update documentation 
   - [x] outsource examples [see mixl]
   - [x] how to document texreg extract?
   - [x] consider what to export (e.g., should S3 methods be exported => yes they should! => see for example `help(package = "stats")`)
