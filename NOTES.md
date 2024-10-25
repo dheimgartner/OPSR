@@ -15,6 +15,9 @@
 > `usethis::use_readme_rmd()` and `devtools::build_readme()`
 > `devtools::submit_cran()`
 
+- The release type dictates the version number.
+  - `usethis::use_release_issue()`
+
 ## A little on testing
 
 >Init via `usethis::ues_testthat(3)`
