@@ -148,7 +148,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #'
 #' @details
 #' The `extract` method is called internally. Higher-level functions from the
-#' [`texreg-package`] pass arguments via `...` to `extract`.
+#' `texreg-package` pass arguments via `...` to `extract`.
 #'
 #' `include.pseudoR2` reports both the "equally likely" (EL) and "market share" (MS)
 #' pseudo R2.

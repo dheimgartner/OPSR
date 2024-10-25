@@ -8,15 +8,15 @@
 #' @param Ws list of matrices with explanatory variables for selection process for each regime.
 #' @param Xs list of matrices with expalanatory varialbes for outcome process for each regime.
 #' @param Ys list of vectors with continuous outcomes for each regime.
-#' @param start a numeric vector with the starting values (passed to [`maxLik`]).
+#' @param start a numeric vector with the starting values (passed to [`maxLik::maxLik`]).
 #' @param fixed parameters to be treated as constants at their `start` values. If
-#'   present, it is treated as an index vector of `start` parameters (passed to [`maxLik`]).
+#'   present, it is treated as an index vector of `start` parameters (passed to [`maxLik::maxLik`]).
 #' @param weights a vector of weights to be used in the fitting process. Has to
 #'   conform with order (`w <- weights[order(Z)]`, where Z is the ordinal
 #'   outcome).
-#' @param method maximzation method (passed to [`maxLik`]).
-#' @param iterlim maximum number of iterations (passed to [`maxLik`]).
-#' @param printLevel larger number prints more working information (passed to [`maxLik`]).
+#' @param method maximzation method (passed to [`maxLik::maxLik`]).
+#' @param iterlim maximum number of iterations (passed to [`maxLik::maxLik`]).
+#' @param printLevel larger number prints more working information (passed to [`maxLik::maxLik`]).
 #' @param nThreads number of threads to be used. Do not pass higher number than
 #'   number of ordinal outcomes. See also [`opsr_check_omp`] and [`opsr_max_threads`].
 #' @param .useR if `TRUE`, usese [`loglik_R`]. Go grab a coffe.

@@ -43,7 +43,7 @@ This is the main method called when using functions from the \code{texreg-packag
 }
 \details{
 The \code{extract} method is called internally. Higher-level functions from the
-\code{\link{texreg-package}} pass arguments via \code{...} to \code{extract}.
+\code{texreg-package} pass arguments via \code{...} to \code{extract}.
 
 \code{include.pseudoR2} reports both the "equally likely" (EL) and "market share" (MS)
 pseudo R2.

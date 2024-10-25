@@ -26,20 +26,20 @@ opsr.fit(
 
 \item{Ys}{list of vectors with continuous outcomes for each regime.}
 
-\item{start}{a numeric vector with the starting values (passed to \code{\link{maxLik}}).}
+\item{start}{a numeric vector with the starting values (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
 \item{fixed}{parameters to be treated as constants at their \code{start} values. If
-present, it is treated as an index vector of \code{start} parameters (passed to \code{\link{maxLik}}).}
+present, it is treated as an index vector of \code{start} parameters (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
 \item{weights}{a vector of weights to be used in the fitting process. Has to
 conform with order (\code{w <- weights[order(Z)]}, where Z is the ordinal
 outcome).}
 
-\item{method}{maximzation method (passed to \code{\link{maxLik}}).}
+\item{method}{maximzation method (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
-\item{iterlim}{maximum number of iterations (passed to \code{\link{maxLik}}).}
+\item{iterlim}{maximum number of iterations (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
-\item{printLevel}{larger number prints more working information (passed to \code{\link{maxLik}}).}
+\item{printLevel}{larger number prints more working information (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
 \item{nThreads}{number of threads to be used. Do not pass higher number than
 number of ordinal outcomes. See also \code{\link{opsr_check_omp}} and \code{\link{opsr_max_threads}}.}
