@@ -19,7 +19,6 @@ Imports:
     methods,
     mvtnorm,
     Rcpp,
-    RcppArmadillo,
     Rdpack (>= 0.7),
     sandwich,
     stats,

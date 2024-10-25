@@ -126,7 +126,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 
 #' Extract Method for OPSR Model Fits
 #'
-#' This is the main method called when using functions from the [`texreg-package`].
+#' This is the main method called when using functions from the `texreg-package`.
 #'
 #' @rdname extract.opsr
 #' @aliases extract.opsr
@@ -142,9 +142,9 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #'   should be printed.
 #' @param ... additional arguments passed to [`summary.opsr`].
 #'
-#' @return A [`texreg-class`] object representing the statistical model.
+#' @return A `texreg-class` object representing the statistical model.
 #' @method extract opsr
-#' @seealso [`texreg-package`], [`texreg::texreg`], [`texreg::screenreg`] and related functions.
+#' @seealso `texreg-package`, [`texreg::texreg`], [`texreg::screenreg`] and related functions.
 #'
 #' @details
 #' The `extract` method is called internally. Higher-level functions from the

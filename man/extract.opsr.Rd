@@ -36,10 +36,10 @@ should be printed.}
 \item{...}{additional arguments passed to \code{\link{summary.opsr}}.}
 }
 \value{
-A \code{\linkS4class{texreg}} object representing the statistical model.
+A \code{texreg-class} object representing the statistical model.
 }
 \description{
-This is the main method called when using functions from the \code{\link{texreg-package}}.
+This is the main method called when using functions from the \code{texreg-package}.
 }
 \details{
 The \code{extract} method is called internally. Higher-level functions from the
@@ -62,5 +62,5 @@ texreg::screenreg(fit, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE
 texreg::screenreg(list(fit_null, fit_intercept, fit))
 }
 \seealso{
-\code{\link{texreg-package}}, \code{\link[texreg:texreg]{texreg::texreg}}, \code{\link[texreg:screenreg]{texreg::screenreg}} and related functions.
+\code{texreg-package}, \code{\link[texreg:texreg]{texreg::texreg}}, \code{\link[texreg:screenreg]{texreg::screenreg}} and related functions.
 }

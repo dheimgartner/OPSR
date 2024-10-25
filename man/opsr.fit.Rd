@@ -46,7 +46,7 @@ number of ordinal outcomes. See also \code{\link{opsr_check_omp}} and \code{\lin
 
 \item{.useR}{if \code{TRUE}, usese \code{\link{loglik_R}}. Go grab a coffe.}
 
-\item{...}{further arguments passed to \code{\link{maxLik}}.}
+\item{...}{further arguments passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}.}
 }
 \value{
 object of class \verb{"maxLik" "maxim"}.
@@ -58,5 +58,5 @@ The log-likelihood function is implemented in C++ which yields a considerable
 speed-up. Parallel computation is implemented using \code{OpenMP}.
 }
 \seealso{
-\code{\link{maxLik}}, \code{\link{loglik_cpp}}, \code{\link{opsr}}
+\code{\link[maxLik:maxLik]{maxLik::maxLik}}, \code{\link{loglik_cpp}}, \code{\link{opsr}}
 }

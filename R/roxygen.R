@@ -17,11 +17,6 @@ NULL
 #' @importFrom texreg extract
 NULL
 
-## RcppArmadillo listed in imports but never explicitly used
-silence_r_cmd_check <- function() {
-  RcppArmadillo::armadillo_get_number_of_omp_threads()  # just some random function
-}
-
 ## C++
 #' @useDynLib OPSR, .registration=TRUE
 #' @importFrom Rcpp evalCpp setRcppClass

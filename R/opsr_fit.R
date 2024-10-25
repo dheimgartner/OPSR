@@ -20,11 +20,11 @@
 #' @param nThreads number of threads to be used. Do not pass higher number than
 #'   number of ordinal outcomes. See also [`opsr_check_omp`] and [`opsr_max_threads`].
 #' @param .useR if `TRUE`, usese [`loglik_R`]. Go grab a coffe.
-#' @param ... further arguments passed to [`maxLik`].
+#' @param ... further arguments passed to [`maxLik::maxLik`].
 #'
 #' @return object of class `"maxLik" "maxim"`.
 #'
-#' @seealso [`maxLik`], [`loglik_cpp`], [`opsr`]
+#' @seealso [`maxLik::maxLik`], [`loglik_cpp`], [`opsr`]
 #' @export
 opsr.fit <- function(Ws, Xs, Ys, start, fixed, weights,
                      method, iterlim, printLevel, nThreads, .useR = FALSE, ...) {

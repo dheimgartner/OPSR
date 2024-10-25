@@ -11,6 +11,7 @@ Estimates ordinal probit switching regression models - a Heckman type selection 
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://github.com/dheimgartner/OPSR}
   \item Report bugs at \url{https://github.com/dheimgartner/OPSR/issues}
 }
 

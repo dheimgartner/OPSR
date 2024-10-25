@@ -46,20 +46,20 @@ contain \code{NA}s. The default is set by the \code{na.action} setting of \code{
 and is \code{\link{na.fail}} if that is unset. The 'factory-fresh' default is \code{\link{na.omit}}.
 Another possible value is \code{NULL}, no action. Value \code{\link{na.exclude}} can be useful.}
 
-\item{start}{a numeric vector with the starting values (passed to \code{\link{maxLik}}).
+\item{start}{a numeric vector with the starting values (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).
 If no starting values are provided, reasonable values are auto-generated via
 the Heckman 2-step procedure \code{\link{opsr_2step}}. The structure of \code{start} has to
 conform with \code{opsr}'s expectations. See \code{\link{opsr_check_start}} for further details.}
 
 \item{fixed}{parameters to be treated as constants at their \code{start} values. If
 present, it is treated as an index vector of \code{start} parameters (passed to
-\code{\link{maxLik}}).}
+\code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
-\item{method}{maximzation method (passed to \code{\link{maxLik}}).}
+\item{method}{maximzation method (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
-\item{iterlim}{maximum number of iterations (passed to \code{\link{maxLik}}).}
+\item{iterlim}{maximum number of iterations (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
-\item{printLevel}{larger number prints more working information (passed to \code{\link{maxLik}}).}
+\item{printLevel}{larger number prints more working information (passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}).}
 
 \item{nThreads}{number of threads to be used. Do not pass higher number than
 number of ordinal outcomes. See also \code{\link{opsr_check_omp}} and \code{\link{opsr_max_threads}}.}
@@ -72,7 +72,7 @@ not proceed with the maximum likelihood estimation.}
 \item{.censorRho}{if \code{TRUE}, rho starting values are censored to lie in the
 interval [-0.85, 0.85].}
 
-\item{...}{further arguments passed to \code{\link{maxLik}}.}
+\item{...}{further arguments passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}.}
 }
 \value{
 An object of class \verb{"opsr" "maxLik" "maxim"}.
