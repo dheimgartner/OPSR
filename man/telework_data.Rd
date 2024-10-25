@@ -51,6 +51,8 @@ telework_data
 Telework data as used in \insertCite{xinyi2024;textual}{OPSR}.
 }
 \examples{
+\dontrun{
+
 ## model as in Xinyi & Mokhtarian (2024)
 f <-
   ## ordinal and continuous outcome
@@ -80,6 +82,8 @@ f <-
 
 fit <- opsr(f, telework_data)
 texreg::screenreg(fit, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE)
+
+}
 }
 \references{
 \insertRef{xinyi2024}{OPSR}

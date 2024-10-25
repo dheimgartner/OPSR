@@ -1,3 +1,5 @@
+\dontrun{
+
 ## model as in Xinyi & Mokhtarian (2024)
 f <-
   ## ordinal and continuous outcome
@@ -27,3 +29,5 @@ f <-
 
 fit <- opsr(f, telework_data)
 texreg::screenreg(fit, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE)
+
+}
