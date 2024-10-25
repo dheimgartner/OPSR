@@ -12,18 +12,18 @@ Different model specifications are allowed for each treatment/regime.
 
 ## Installation
 
+Install from CRAN:
+
+``` r
+install.packages("OPSR")
+```
+
 You can install the development version of `OPSR` from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("dheimgartner/OPSR")
-```
-
-Or from CRAN:
-
-``` r
-install.packages("OPSR")
 ```
 
 ## Example

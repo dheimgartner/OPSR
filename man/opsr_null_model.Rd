@@ -2,7 +2,7 @@
 % Please edit documentation in R/opsr_null_model.R
 \name{opsr_null_model}
 \alias{opsr_null_model}
-\title{Null Model for OPSR Model fit}
+\title{Null Model for OPSR Model fits}
 \usage{
 opsr_null_model(object, ...)
 }

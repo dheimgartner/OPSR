@@ -22,17 +22,17 @@ Estimates ordinal probit switching regression (OPSR) models - a Heckman type sel
 
 ## Installation
 
+Install from CRAN:
+
+``` r
+install.packages("OPSR")
+```
+
 You can install the development version of `OPSR` from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("dheimgartner/OPSR")
-```
-
-Or from CRAN:
-
-``` r
-install.packages("OPSR")
 ```
 
 ## Example

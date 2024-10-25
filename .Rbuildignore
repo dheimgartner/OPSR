@@ -12,3 +12,4 @@
 ^NOTES.md
 ^check/*$
 ^_vignettes$
+^cran-comments\.md$

@@ -16,7 +16,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Daniel Heimgartner \email{d.heimgartners@gmail.com} (\href{https://orcid.org/0000-0002-0643-8690}{ORCID})
+\strong{Maintainer}: Daniel Heimgartner \email{d.heimgartners@gmail.com} (\href{https://orcid.org/0000-0002-0643-8690}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
