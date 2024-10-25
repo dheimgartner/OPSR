@@ -50,6 +50,9 @@ library(OPSR)
 #> If you have questions, suggestions, or comments regarding the 'OPSR' package, please open an issue on https://github.com/dheimgartner/OPSR
 #> 
 #> To see these entries in BibTeX format, use 'citation('OPSR')'
+```
+
+``` r
 
 f <-
   ## ordinal and continuous outcome
