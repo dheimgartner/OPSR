@@ -15,8 +15,10 @@
 > `usethis::use_readme_rmd()` and `devtools::build_readme()`
 > `devtools::submit_cran()`
 
+- Use a `NEWS.md` file.
 - The release type dictates the version number.
   - `usethis::use_release_issue()`
+  - But version number is bumped at later stage...
 
 ## A little on testing
 
