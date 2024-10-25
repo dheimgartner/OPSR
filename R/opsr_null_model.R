@@ -1,4 +1,4 @@
-#' Null Model for OPSR Model fit
+#' Null Model for OPSR Model fits
 #'
 #' Intercept-only model with no error correlation.
 #'
