@@ -6,7 +6,7 @@
 \alias{OPSR-package}
 \title{OPSR: Ordinal Probit Switching Regression}
 \description{
-Estimates ordinal probit switching regression models - a Heckman type selection model with an ordinal selection and continous outcomes. Different model specifications are allowed for each treatment/regime.
+Estimates ordinal probit switching regression models - a Heckman type selection model with an ordinal selection and continuous outcomes. Different model specifications are allowed for each treatment/regime.
 }
 \seealso{
 Useful links:
@@ -20,7 +20,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Xinyi Wang \email{email@gmail.com} (\href{https://orcid.org/1234}{ORCID})
+  \item Xinyi Wang \email{xinyi174@mit.edu} (\href{https://orcid.org/0000-0002-3564-9147}{ORCID})
 }
 
 }

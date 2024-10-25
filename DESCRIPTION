@@ -3,9 +3,9 @@ Title: Ordinal Probit Switching Regression
 Version: 0.0.0.9009
 Authors@R: c(person("Daniel", "Heimgartner", email = "d.heimgartners@gmail.com", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-0643-8690")),
-    person("Xinyi", "Wang", email = "email@gmail.com", role = c("aut"), comment = c(ORCID = "1234")))
+    person("Xinyi", "Wang", email = "xinyi174@mit.edu", role = c("aut"), comment = c(ORCID = "0000-0002-3564-9147")))
 Description: Estimates ordinal probit switching regression models - a Heckman
-    type selection model with an ordinal selection and continous outcomes.
+    type selection model with an ordinal selection and continuous outcomes.
     Different model specifications are allowed for each treatment/regime.
 License: GPL (>= 3)
 Encoding: UTF-8

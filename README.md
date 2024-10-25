@@ -6,8 +6,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-Estimate ordinal probit switching regression (OPSR) models with ease and
-fast.
+Estimates ordinal probit switching regression (OPSR) models - a Heckman
+type selection model with an ordinal selection and continuous outcomes.
+Different model specifications are allowed for each treatment/regime.
 
 ## Installation
 
