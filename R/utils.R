@@ -84,3 +84,8 @@ coef.opsr <- function(object, component = c("all", "structural", "selection", "o
 is_opsr_null <- function(object) {
   methods::is(object, "opsr.null")
 }
+
+## is a recent feature...
+`%||%` <- function(x, y) {
+  if (is.null(x)) y else x
+}

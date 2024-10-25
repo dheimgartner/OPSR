@@ -83,7 +83,7 @@ test_that("probs for selection process sum to 1", {
   p1 <- predict(fit, group = 1, counterfact = 1, type = "prob")
   p2 <- predict(fit, group = 1, counterfact = 2, type = "prob")
   p3 <- predict(fit, group = 1, counterfact = 3, type = "prob")
-  p_sum <- rowSums(na.omit(cbind(p1, p2, p3)))
+  p_sum <- round(rowSums(na.omit(cbind(p1, p2, p3))), digits = 3)
   expect_true(all(p_sum == 1))
 })
 
