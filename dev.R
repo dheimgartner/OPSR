@@ -536,10 +536,9 @@ BIC(fit_null, fit)
 anova(fit_null, fit)
 
 
-
-
-
-
+plot(vmd_ln ~ factor(twing_status), data = telework_data, varwidth = TRUE,
+     ylab = "Log vehicle miles driven", xlab = "Teleworking status",
+     names = c("NTW", "NUTW", "UTW"))
 
 
 

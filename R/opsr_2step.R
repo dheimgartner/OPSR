@@ -13,13 +13,13 @@
 #' @section Remark:
 #' Since the Heckman two-step estimator includes an estimate in the second step
 #' regression, the resulting OLS standard errors and heteroskedasticity-robust
-#' standard errors are incorrect \insertCite{greene2002}{OPSR}.
+#' standard errors are incorrect \insertCite{Greene:2002}{OPSR}.
 #'
 #' @details
 #' These estimates can be retrieved by specifying `.get2step = TRUE` in [`opsr`].
 #'
 #' @references
-#' \insertRef{greene2002}{OPSR}
+#' \insertRef{Greene:2002}{OPSR}
 #'
 #' @seealso [`opsr.fit`], [`opsr_prepare_coefs`]
 #' @export

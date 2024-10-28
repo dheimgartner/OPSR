@@ -29,11 +29,11 @@ These estimates can be retrieved by specifying \code{.get2step = TRUE} in \code{
 
 Since the Heckman two-step estimator includes an estimate in the second step
 regression, the resulting OLS standard errors and heteroskedasticity-robust
-standard errors are incorrect \insertCite{greene2002}{OPSR}.
+standard errors are incorrect \insertCite{Greene:2002}{OPSR}.
 }
 
 \references{
-\insertRef{greene2002}{OPSR}
+\insertRef{Greene:2002}{OPSR}
 }
 \seealso{
 \code{\link{opsr.fit}}, \code{\link{opsr_prepare_coefs}}

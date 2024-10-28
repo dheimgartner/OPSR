@@ -81,12 +81,12 @@ NULL
 
 #' Telework data
 #'
-#' Telework data as used in \insertCite{xinyi2024;textual}{OPSR}.
+#' Telework data as used in \insertCite{Wang+Mokhtarian:2024;textual}{OPSR}.
 #'
 #' @example R/examples/ex-telework_data.R
 #'
 #' @references
-#' \insertRef{xinyi2024}{OPSR}
+#' \insertRef{Wang+Mokhtarian:2024}{OPSR}
 #'
 #' @format Data frame with numeric columns
 #' \describe{

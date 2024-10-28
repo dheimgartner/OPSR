@@ -90,9 +90,10 @@
 
 -[ ] Write paper (read jss.pdf and learn from others)
   -[x] read jss-template.pdf
-  -[ ] draft opsr.Rnw paper layout (see also usual structure of other JSS papers)
+  -[x] draft opsr.Rnw paper layout (see also usual structure of other JSS papers)
   -[ ] write methods section
   -[ ] ...
+  -[ ] Break lines after n characters (final paper)
 
 
 ## General

@@ -48,7 +48,7 @@ Data frame with numeric columns
 telework_data
 }
 \description{
-Telework data as used in \insertCite{xinyi2024;textual}{OPSR}.
+Telework data as used in \insertCite{Wang+Mokhtarian:2024;textual}{OPSR}.
 }
 \examples{
 \dontrun{
@@ -86,6 +86,6 @@ texreg::screenreg(fit, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE
 }
 }
 \references{
-\insertRef{xinyi2024}{OPSR}
+\insertRef{Wang+Mokhtarian:2024}{OPSR}
 }
 \keyword{datasets}
