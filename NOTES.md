@@ -83,10 +83,16 @@
   - [x] create auto package doc - print it and check it (all functions / methods documented?)
     - `devtools::build_manual()` (this fails because of Rdpack stuff...)
   - [x] use @inheritParams => not really needed here...
--[ ] `devtools::submit_cran()`: Read and follow chapter 22 (https://r-pkgs.org/release.html)
--[ ] Write paper (read jss.pdf and learn from others)
-
+-[x] `devtools::submit_cran()`: Read and follow chapter 22 (https://r-pkgs.org/release.html)
 -[x] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
+
+>Kepp the paper as simple and minimal as possible (always a good idea)...
+
+-[ ] Write paper (read jss.pdf and learn from others)
+  -[x] read jss-template.pdf
+  -[ ] draft opsr.Rnw paper layout (see also usual structure of other JSS papers)
+  -[ ] write methods section
+  -[ ] ...
 
 
 ## General

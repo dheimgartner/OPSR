@@ -531,8 +531,9 @@ f <- twing_status | vmd_ln ~
 fit <- opsr(f, OPSR::telework_data)
 texreg::screenreg(list(fit_xinyi, fit))
 
-
-
+fit_null <- opsr_null_model(fit)
+BIC(fit_null, fit)
+anova(fit_null, fit)
 
 
 
