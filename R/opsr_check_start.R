@@ -1,4 +1,4 @@
-#' Check the user-specified starting values
+#' Check the User-Specified Starting Values
 #'
 #' This is a utility function, used in [`opsr`] and should not be used directly.
 #' It is included here to document the expected structure of [`opsr`]'s `start` argument.
@@ -10,13 +10,15 @@
 #' @param W matrix with explanatory variables for selection process.
 #' @param Xs list of matrices with expalanatory varialbes for outcome process for each regime.
 #'
+#' @return Named numeric vector conforming to the expected structure.
+#'
 #' @details
 #' Expected order: 1. kappa threshold parameters (for ordinal probit model),
-#' 2. parameters of the selection process, 3. parameters of the outcome processes,
-#' 4. sigma, 5. rho. If the same outcome process specification is used in the
-#' `formula`, the starting values have to be repeated (i.e., the length of the
-#' `start` vector has to correspond to the total number of estimated parameters
-#' in the model).
+#' 2. parameters of the selection process (names starting with `s_`), 3. parameters
+#' of the outcome processes (names starting with `o[0-9]_`), 4. sigma, 5. rho.
+#' If the same outcome process specification is used in the `formula`, the starting
+#' values have to be repeated (i.e., the length of the `start` vector has to
+#' correspond to the total number of estimated parameters in the model).
 #'
 #' @seealso [`opsr_2step`]
 #' @export

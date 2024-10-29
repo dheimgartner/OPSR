@@ -51,7 +51,7 @@ telework_data
 Telework data as used in \insertCite{Wang+Mokhtarian:2024;textual}{OPSR}.
 }
 \examples{
-\dontrun{
+\donttest{
 
 ## model as in Xinyi & Mokhtarian (2024)
 f <-

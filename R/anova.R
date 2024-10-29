@@ -93,7 +93,7 @@ stat.anova.opsr <- function(table, test = "LRT", ...) {  # could be extended wit
   lrtest_table
 }
 
-#' Print Method for ANOVA OPSR objects
+#' Print Method for ANOVA OPSR Objects
 #'
 #' @param x an object of class `"anova.opsr"`.
 #' @param digits minimal number of *significant* digits, see [`print.default`].
@@ -101,6 +101,8 @@ stat.anova.opsr <- function(table, test = "LRT", ...) {  # could be extended wit
 #'   as 'significance stars' in order to help scanning of long coefficient tables.
 #'   It defaults to the `show.signif.stars` slot of [`options`].
 #' @param ... further arguments passed to [`stats::printCoefmat`].
+#'
+#' @return Prints tables in a 'pretty' form and returns `x` invisibly.
 #'
 #' @method print anova.opsr
 #'

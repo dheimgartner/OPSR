@@ -5,6 +5,8 @@
 #' @param digits minimum number of significant digits to be used for most numbers (passed to [`stats::printCoefmat`]).
 #' @param ... further arguments passed to or from other methods.
 #'
+#' @return Prints summary in 'pretty' form and returns `x` invisibly.
+#'
 #' @method print summary.opsr
 #'
 #' @seealso [`stats::printCoefmat`], [`summary.opsr`]

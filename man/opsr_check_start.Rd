@@ -2,7 +2,7 @@
 % Please edit documentation in R/opsr_check_start.R
 \name{opsr_check_start}
 \alias{opsr_check_start}
-\title{Check the user-specified starting values}
+\title{Check the User-Specified Starting Values}
 \usage{
 opsr_check_start(start, W, Xs)
 }
@@ -13,6 +13,9 @@ opsr_check_start(start, W, Xs)
 
 \item{Xs}{list of matrices with expalanatory varialbes for outcome process for each regime.}
 }
+\value{
+Named numeric vector conforming to the expected structure.
+}
 \description{
 This is a utility function, used in \code{\link{opsr}} and should not be used directly.
 It is included here to document the expected structure of \code{\link{opsr}}'s \code{start} argument.
@@ -22,11 +25,11 @@ conform to the expected order. See 'Details' for further explanation.
 }
 \details{
 Expected order: 1. kappa threshold parameters (for ordinal probit model),
-2. parameters of the selection process, 3. parameters of the outcome processes,
-4. sigma, 5. rho. If the same outcome process specification is used in the
-\code{formula}, the starting values have to be repeated (i.e., the length of the
-\code{start} vector has to correspond to the total number of estimated parameters
-in the model).
+2. parameters of the selection process (names starting with \code{s_}), 3. parameters
+of the outcome processes (names starting with \verb{o[0-9]_}), 4. sigma, 5. rho.
+If the same outcome process specification is used in the \code{formula}, the starting
+values have to be repeated (i.e., the length of the \code{start} vector has to
+correspond to the total number of estimated parameters in the model).
 }
 \seealso{
 \code{\link{opsr_2step}}

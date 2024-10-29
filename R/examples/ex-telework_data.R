@@ -1,4 +1,4 @@
-\dontrun{
+\donttest{
 
 ## model as in Xinyi & Mokhtarian (2024)
 f <-

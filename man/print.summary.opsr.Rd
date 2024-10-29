@@ -13,6 +13,9 @@
 
 \item{...}{further arguments passed to or from other methods.}
 }
+\value{
+Prints summary in 'pretty' form and returns \code{x} invisibly.
+}
 \description{
 Print Method for Summary OPSR Objects
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/anova.R
 \name{print.anova.opsr}
 \alias{print.anova.opsr}
-\title{Print Method for ANOVA OPSR objects}
+\title{Print Method for ANOVA OPSR Objects}
 \usage{
 \method{print}{anova.opsr}(
   x,
@@ -22,8 +22,11 @@ It defaults to the \code{show.signif.stars} slot of \code{\link{options}}.}
 
 \item{...}{further arguments passed to \code{\link[stats:printCoefmat]{stats::printCoefmat}}.}
 }
+\value{
+Prints tables in a 'pretty' form and returns \code{x} invisibly.
+}
 \description{
-Print Method for ANOVA OPSR objects
+Print Method for ANOVA OPSR Objects
 }
 \seealso{
 \code{\link[stats:printCoefmat]{stats::printCoefmat}}, \code{\link{anova.opsr}}

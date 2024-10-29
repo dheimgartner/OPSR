@@ -540,7 +540,15 @@ plot(vmd_ln ~ factor(twing_status), data = telework_data, varwidth = TRUE,
      ylab = "Log vehicle miles driven", xlab = "Teleworking status",
      names = c("NTW", "NUTW", "UTW"))
 
+## cran resubmit 0.1.2
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+model <- ys | yo ~ xs1 + xs2 | xo1 + xo2
 
+debugonce(opsr_check_start)
+start <- opsr(model, dat, .get2step = TRUE)
+fit <- opsr(model, dat, start = start)
 
-
-
+fit_lm <- lm(yo ~ xo1 + xo2, data = dat, subset = ys == 1)
+debugonce(print)
+anova(fit_lm)
