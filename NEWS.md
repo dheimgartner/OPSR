@@ -1,5 +1,7 @@
 # OPSR 0.1.2
 
+* Patch with minor updates on documentation.
+
 # OPSR 0.1.1
 
 * Patch with missing links.
