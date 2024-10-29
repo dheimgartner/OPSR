@@ -1,11 +1,13 @@
 ## Resubmission
 
-This is a resubmission of a failed new release. I have:
+This is a resubmission of a failed new release (0.1.1). As requested, I have:
 
-* Resolved missing package anchors for Rd files.
-* Don't run long-running example (slightly more than 10s) in 'telework_data.Rd'.
-* However, the notes on potential misspelling remain - I could remove 'Heckman', but 'Probit'/'probit' is an important keyword (which also triggers misspelling concerns).
+* Added references to the DESCRIPTION file.
+* Documented the return values of opsr_check_start, print.anova.opsr and print.summary.opsr
+* Replaced \dontrun{} with \donttest{} in R/examples/ex-telework_data.R
 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
+
+* No misspellings in DESCRIPTION
