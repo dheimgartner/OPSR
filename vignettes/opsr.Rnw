@@ -1,0 +1,456 @@
+\documentclass[article]{jss}
+
+%% -- LaTeX packages and custom commands ---------------------------------------
+
+%% recommended packages
+\usepackage{orcidlink,thumbpdf,lmodern}
+
+%% another package (only for the draft article)
+\usepackage{framed}
+
+%% daniehei
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{dcolumn}
+
+%% new custom commands
+\newcommand{\class}[1]{`\code{#1}'}
+\newcommand{\fct}[1]{\code{#1()}}
+
+%%daniehei
+\newcommand{\jth}{$j^{\mathrm{th}}$}
+\newcommand{\Xb}{\boldsymbol{X_j}\boldsymbol{\beta_j}}
+\newcommand{\Xbd}{\boldsymbol{X_{j'}}\boldsymbol{\beta_{j'}}}
+\newcommand{\Wg}{\boldsymbol{W}\boldsymbol{\gamma}}
+
+%% For Sweave-based articles about R packages:
+%% need no \usepackage{Sweave}
+\SweaveOpts{engine=R, eps=FALSE, keep.source = TRUE}
+<<preliminaries, echo=FALSE, results=hide>>=
+library(OPSR)
+
+options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE,
+        digits = 3)
+library("MASS")
+@
+
+
+%% -- Article metainformation (author, title, ...) -----------------------------
+
+%% - \author{} with primary affiliation (and optionally ORCID link)
+%% - \Plainauthor{} without affiliations
+%% - Separate authors by \And or \AND (in \author) or by comma (in \Plainauthor).
+%% - \AND starts a new line, \And does not.
+\author{Daniel Heimgartner~\orcidlink{0000-0002-0643-8690}\\ETH Z\"urich
+\And Xinyi Wang~\orcidlink{0000-0002-3564-9147}\\MIT Boston}
+\Plainauthor{Daniel Heimgartner, Second Author}
+
+%% - \title{} in title case
+%% - \Plaintitle{} without LaTeX markup (if any)
+%% - \Shorttitle{} with LaTeX markup (if any), used as running title
+\title{\pkg{OPSR}: A Package for Estimating Ordinal Probit Switching Regression Models in \proglang{R}}
+\Plaintitle{OPSR: A Package for Estimating Ordinal Probit Switching Regression Models in R}
+\Shorttitle{\pkg{OPSR}: Ordinal Probit Switching Regression in \proglang{R}}
+
+%% - \Abstract{} almost as usual
+\Abstract{
+This short article illustrates how to write a manuscript for the
+\emph{Journal of Statistical Software} (JSS) using its {\LaTeX} style files.
+Generally, we ask to follow JSS's style guide and FAQs precisely. Also,
+it is recommended to keep the {\LaTeX} code as simple as possible,
+i.e., avoid inclusion of packages/commands that are not necessary.
+For outlining the typical structure of a JSS article some brief text snippets
+are employed that have been inspired by \cite{Zeileis+Kleiber+Jackman:2008},
+discussing count data regression in \proglang{R}. Editorial comments and
+instructions are marked by vertical bars.
+}
+
+%% - \Keywords{} with LaTeX markup, at least one required
+%% - \Plainkeywords{} without LaTeX markup (if necessary)
+%% - Should be comma-separated and in sentence case.
+\Keywords{JSS, style guide, comma-separated, not capitalized, \proglang{R}}
+\Plainkeywords{JSS, style guide, comma-separated, not capitalized, R}
+
+%% - \Address{} of at least one author
+%% - May contain multiple affiliations for each author
+%%   (in extra lines, separated by \emph{and}\\).
+%% - May contain multiple authors for the same affiliation
+%%   (in the same first line, separated by comma).
+\Address{
+Daniel Heimgartner\\
+Institute for Transport Planning and Systems\\
+ETH Z\"urich\\
+IFW C 46.1\\
+Haldeneggsteig 4\\
+8092 Z\"urich, Switzerland\\
+E-mail: \email{daniel.heimgartner@ivt.baug.ethz.ch}
+}
+
+\begin{document}
+
+
+%% -- Introduction -------------------------------------------------------------
+
+%% - In principle "as usual".
+%% - But should typically have some discussion of both _software_ and _methods_.
+%% - Use \proglang{}, \pkg{}, and \code{} markup throughout the manuscript.
+%% - If such markup is in (sub)section titles, a plain text version has to be
+%%   added as well.
+%% - All software mentioned should be properly \cite-d.
+%% - All abbreviations should be introduced.
+%% - Unless the expansions of abbreviations are proper names (like "Journal
+%%   of Statistical Software" above) they should be in sentence case (like
+%%   "generalized linear models" below).
+
+\section{Introduction} \label{sec:intro}
+
+
+%% -- Manuscript ---------------------------------------------------------------
+
+%% - In principle "as usual" again.
+%% - When using equations (e.g., {equation}, {eqnarray}, {align}, etc.
+%%   avoid empty lines before and after the equation (which would signal a new
+%%   paragraph.
+%% - When describing longer chunks of code that are _not_ meant for execution
+%%   (e.g., a function synopsis or list of arguments), the environment {Code}
+%%   is recommended. Alternatively, a plain {verbatim} can also be used.
+%%   (For executed code see the next section.)
+
+\section{Model and software} \label{sec:model}
+
+In the following, we outline the ordinal probit switching regression model as well as list all the key formulas underlying the software implementation. \pkg{OPSR} follows the \proglang{R}-typical formula interface to a workhorse fitter function. Its architecture is detailed after the mathematical part.
+
+As alluded, OPSR is a two-step model: One process governs the ordinal outcome and separate processes (for each ordinal outcome) govern the continuous outcomes. The ordinal outcome can also be thought of as a regime or treatment. In the subsequent exposition, we will refer to the two processes as \emph{selection} and \emph{outcome} process.
+
+We borrow the notation from \cite{Wang+Mokhtarian:2024} where also the derivation of the log-likelihood is detailed. For a similar exhibition, \citet{Chiburis+Lokshin:2007} can be consulted. Individual subscripts are suppressed throughout, for simplicity.
+
+Let $\mathcal{Z}$ be a latent propensity governing the selection outcome
+%
+\begin{equation} \label{eq:selection}
+\mathcal{Z} = \Wg + \epsilon,
+\end{equation}
+%
+where $\boldsymbol{W}$ represents the vector of attributes of an individual, $\boldsymbol{\gamma}$ is the corresponding vector of parameters and $\epsilon \sim \mathcal{N}(0, 1)$ a normally distributed error term.
+
+As $\mathcal{Z}$ increases and passes some unknown but estimable thresholds, we move up from one ordinal treatment to the next higher level
+%
+\begin{equation} \label{eq:thresholds}
+Z = j \quad \mathrm{if}\ \kappa_{j-1} < \mathcal{Z} \le \kappa_j,
+\end{equation}
+%
+where $Z$ is the observed ordinal selection variable, $j = 1, \dots, J$ indexes the ordinal levels of $Z$, and $\kappa_j$ are the thresholds (with $\kappa_0 = -\infty$ and $\kappa_J = \infty$). Hence, there are $J-1$ thresholds to be estimated. The probability that an individual self-selects into treatment group $j$ is
+%
+\begin{equation} \label{eq:prob-selection}
+\begin{aligned}
+\Prob[Z = j] &= \Prob[\kappa_{j-1} < \mathcal{Z} \le \kappa_j] \\
+&= \Prob[\kappa_{j-1} - \Wg < \epsilon \le \kappa_j - \Wg] \\
+&= \Phi(\kappa_j - \Wg) - \Phi(\kappa_{j-1} - \Wg).
+\end{aligned}
+\end{equation}
+
+The outcome model for the \jth{} treatment group is expressed as
+%
+\begin{equation} \label{eq:outcome}
+y_j = \Xb + \eta_j,
+\end{equation}
+%
+where $y_j$ is the observed continuous outcome, $\boldsymbol{X_j}$ the vector of observed explanatory variables associated with the \jth{} outcome model, $\boldsymbol{\beta_j}$ is the vector of associated parameters, and $\eta_j \sim \mathcal{N}(0, \sigma^2)$ is a normally distributed error term. At this point it should be noted that $\boldsymbol{X_j}$ and $\boldsymbol{W}$ may share some explanatory variables but not all, due to identification problems otherwise \citep{Chiburis+Lokshin:2007}.
+
+The whole idea of OPSR is now that the error terms of the selection and outcome models follow the multivariate normal distribution
+%
+\begin{equation} \label{eq:multi-norm}
+\begin{pmatrix}
+\epsilon \\
+\eta_1 \\
+\vdots \\
+\eta_j \\
+\vdots \\
+\eta_J
+\end{pmatrix}
+\sim \mathcal{N}\left(
+\begin{pmatrix}
+0 \\
+0 \\
+\vdots \\
+0 \\
+\vdots \\
+0
+\end{pmatrix},
+\begin{pmatrix}
+1 & \rho_1 \sigma_1 & \cdots & \rho_j \sigma_j & \cdots & \rho_J \sigma_J \\
+\rho_1 \sigma_1 & \sigma_2^2 \\
+\vdots &  & \ddots \\
+\rho_j \sigma_j & & & \sigma_j^2 \\
+\vdots & & & & \ddots \\
+\rho_J \sigma_J & & & & & \sigma_J^2
+\end{pmatrix}
+\right),
+\end{equation}
+%
+where $\rho_j$ represents the correlation between the errors of the selection model ($\epsilon$) and the \jth{} outcome model ($\eta_j$). If the covariance matrix should be diagonal (i.e., no error correlation), no selection-bias exists and the selection and outcome models can be estimated in separately.
+
+As shown in \cite{Wang+Mokhtarian:2024}, the log-likelihood of observing all individuals self-selecting into treatment $j$ and choosing continuous outcome $y_j$ can be expressed as
+%
+\begin{equation} \label{eq:log-lik}
+\begin{aligned}
+&\ell(\theta \mid \boldsymbol{W}, \boldsymbol{X_j}) = \sum_{j = 1}^{J} \sum_{\{j\}}
+\left\{
+\ln\left[
+\frac{1}{\sigma_j} \phi\left(\frac{y_j - \Xb}{\sigma_j}\right)
+\right] \quad + \right. \\
+&\left. \ln\left[
+\Phi\left(
+\frac{\sigma_j (\kappa_j - \Wg) - \rho_j(y_j - \Xb)}{\sigma_j\sqrt{1 - \rho_j^2}}
+\right) -
+\Phi\left(
+\frac{\sigma_j (\kappa_{j-1} - \Wg) - \rho_j(y_j - \Xb)}{\sigma_j\sqrt{1 - \rho_j^2}}
+\right)
+\right]
+\right\}
+\end{aligned}
+\end{equation}
+%
+where $\sum_{\{j\}}$ means the summation of all the cases belonging to the \jth{} selection outcome, $\phi(\cdot)$ and $\Phi(\cdot)$ are the density and cumulative distribution function of the standard normal distribution.
+
+The conditional expectation can be expressed as
+%
+\begin{equation} \label{eq:cond-exp}
+\begin{aligned}
+\E[y_j \mid Z = j] &= \Xb + \E[\eta_j \mid \kappa_{j-1} - \Wg < \epsilon \le \kappa_j - \Wg] \\
+&= \Xb - \rho_j\sigma_j \frac{\phi(\kappa_j - \Wg) - \phi(\kappa_{j-1} - \Wg)}{\Phi(\kappa_j - \Wg) - \Phi(\kappa_{j-1} - \Wg)},
+\end{aligned}
+\end{equation}
+%
+where the fraction is the ordered probit switching regression model counterpart to the inverse Mills ratio (IMR) term of a binary switching regression model. We immediately see, that regressing $\boldsymbol{X_j}$ on $y_j$ leads to an omitted variable bias if $\rho_j \neq 0$ and is the root cause of the selection bias. However, the IMR can be pre-computed based on a ordinal probit model and then included in the second stage regression, which describes the Heckman correction \citep{Heckman:}. It should be warned, that since the Heckman two-step procedure includes an estimate in the second step regression, the resulting OLS standard errors and heteroskedasticity-robust standard errors are incorrect \citep{Greene:2002}.
+
+To obtain unbiased treatment effects, we must further evaluate the ``counterfactual outcome'', which reflects the expected outcome under a counterfactual treatment (i.e., for $j' \neq j$)
+%
+\begin{equation} \label{eq:counterfact-exp}
+\begin{aligned}
+\E[y_{j'} \mid Z = j] &= \Xbd + \E[\eta_{j'} \mid \kappa_{j-1} - \Wg < \epsilon \le \kappa_j - \Wg] \\
+&= \Xbd - \rho_{j'}\sigma_{j'} \frac{\phi(\kappa_j - \Wg) - \phi(\kappa_{j-1} - \Wg)}{\Phi(\kappa_j - \Wg) - \Phi(\kappa_{j-1} - \Wg)}.
+\end{aligned}
+\end{equation}
+
+As it is usual to log-transform the continuous outcome in regression analysis, we have to note, that in such cases the Equations~\ref{eq:cond-exp}-\ref{eq:counterfact-exp} provide the conditional expectation of the log-transformed outcome. Therefore, we need to back-transform $\ln(y_j + 1)$
+%
+\begin{equation} \label{eq:log-cond-exp}
+\E[y_j \mid Z = j] =
+\exp\left(\Xb + \frac{\sigma_j^2}{2}\right)
+\left[
+\frac{\Phi(\kappa_j - \Wg - \rho_j\sigma_j) - \Phi(\kappa_{j-1} - \Wg - \rho_j\sigma_j)}
+{\Phi(\kappa_j - \Wg) - \Phi(\kappa_{j-1} - \Wg)}
+\right] - 1
+\end{equation}
+%
+for the factual case, and
+%
+\begin{equation} \label{eq:log-counterfact-exp}
+\E[y_{j'} \mid Z = j] =
+\exp\left(\Xbd + \frac{\sigma_{j'}^2}{2}\right)
+\left[
+\frac{\Phi(\kappa_j - \Wg - \rho_{j'}\sigma_{j'}) - \Phi(\kappa_{j-1} - \Wg - \rho_{j'}\sigma_{j'})}
+{\Phi(\kappa_j - \Wg) - \Phi(\kappa_{j-1} - \Wg)}
+\right] - 1
+\end{equation}
+%
+for the counterfactual case \citep{Wang+Mokhtarian:2024}.
+
+We follow \proglang{R} conventions to provide the usual formula interface to specify an OPSR model. To allow for multiple parts and multiple responses, we use the \pkg{Formula} package \citep{}. After parsing the formula object and generating the model matrices, the Heckman two-step estimator is called in \fct{opsr\_2step} to generate reasonable starting values. These are then passed together with the data to the basic computation engine \fct{opsr.fit}. The main estimates are retrieved using maximum likelihood estimation by passing the log-likelihood function (Equation~\ref{eq:log-lik}) to \fct{maxLik} from the \pkg{maxLik} package \citep{}. The likelihood function \fct{loglik\_cpp} is implemented in \proglang{C++} using \pkg{Rcpp} \citep{} and relying on the data structures provided by \pkg{RcppArmadillo} \citep{}. Parallelization is available using \proglang{OpenMP}. This makes \pkg{OPSR} both fast and memory efficient (as data matrices are passed by reference). All the above calls are nested in the main interface \fct{opsr} which returns an object of class \class{opsr}. Several methods then exist to post-process this object as illustrated below.
+
+
+%% -- Illustrations ------------------------------------------------------------
+
+%% - Virtually all JSS manuscripts list source code along with the generated
+%%   output. The style files provide dedicated environments for this.
+%% - In R, the environments {Sinput} and {Soutput} - as produced by Sweave() or
+%%   or knitr using the render_sweave() hook - are used (without the need to
+%%   load Sweave.sty).
+%% - Equivalently, {CodeInput} and {CodeOutput} can be used.
+%% - The code input should use "the usual" command prompt in the respective
+%%   software system.
+%% - For R code, the prompt "R> " should be used with "+  " as the
+%%   continuation prompt.
+%% - Comments within the code chunks should be avoided - these should be made
+%%   within the regular LaTeX text.
+
+\section{Illustrations} \label{sec:illustrations}
+
+We first illustrate how to specify a model using the \pkg{Formula}'s extended model formulas and simulated data. Then the main functionality of the package is demonstrated reproducing the core model of \cite{Wang+Mokhtarian:2024}. Finally, we extend on the analysis and investigate ... based on a novel tracking study...
+
+Let us simulate date from an OPSR process with three ordinal outcomes and distinct design matrices $\boldsymbol{W}$ and $\boldsymbol{X}$ (where $\boldsymbol{X} = \boldsymbol{X_j} \ \forall{j}$) by
+%
+<<sim-dat>>=
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+head(dat)
+@
+%
+where \code{ys} is the selection outcome (or treatment group), \code{yo} the continuous outcome and \code{xs} respectively \code{xo} the corresponding explanatory variables.
+
+Models are specified symbolically. A typical model has the form \code{ys | yo ~ terms_s | terms_o1 | terms_o2 | ...} where the \code{|} separates the two responses and process specifications. If the user wants to specify the same process for all continuous outcomes, two processes are enough (\code{ys | yo ~ terms_s | terms_o}). Hence the minimal \fct{opsr} interface call reads
+%
+<<opsr>>=
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, data = dat,
+  printLevel = 0)
+@
+%
+where \code{printLevel = 0} omits working information during maximum likelihood iterations.
+
+As usual, the fitter function does the bare minimum model estimation while inference is performed in a separate call to \fct{summary}
+<<summary-xinyi>>=
+summary(fit)
+@
+
+\begin{leftbar}
+PROCEED: Elaborate on Welch-test and sandwhich standard errors.
+\end{leftbar}
+
+
+
+
+
+Now that the user understands the basic workflow, we illustrate some nuances by reproducing a key output of \cite{Wang+Mokhtarian:2024} where they investigate the treatment effect of telework on weekly vehicle miles driven. The data is attached, documented (\code{?telework_data}) and can be loaded by
+%
+<<data>>=
+data("telework_data", package = "OPSR")
+@
+%
+A basic boxplot of the response variable against the three teleworking status is displayed in Figure~\ref{fig:vmd-twstatus}. By simply looking at the data descriptively, we might prematurely conclude telework reduces vehicle miles driven. However, the whole value proposition of OPSR (and for models in general) is that we really are interested in a counterfactual. If the teleworkers self-select, the counterfactual is not simply the group average. More prosaically, if the usual telewokers (UTW) would choose to be non-usual teleworkers (NUTW), they might travel more or less than the actual NUTWs.
+
+\setkeys{Gin}{width=.5\textwidth}
+\begin{figure}[t!]
+\centering
+<<vmd-twstatus, echo=FALSE, fig=TRUE, height=4.7, width=4.5>>=
+plot(vmd_ln ~ factor(twing_status), data = telework_data, varwidth = TRUE,
+     ylab = "Log weekly vehicle miles driven", xlab = "Teleworking status",
+     names = c("NTW", "NUTW", "UTW"))
+@
+\caption{\label{fig:vmd-twstatus} Log vehicle miles driven for different teleworking status.}
+\end{figure}
+
+The final model specification reads
+%
+<<formula-xinyi>>=
+f <-
+  twing_status | vmd_ln ~
+  edu_2 + edu_3 + hhincome_2 + hhincome_3 + flex_work + work_fulltime +
+  twing_feasibility + att_proactivemode + att_procarowning + att_wif +
+  att_proteamwork + att_tw_effective_teamwork + att_tw_enthusiasm +
+  att_tw_location_flex |
+  female + age_mean + age_mean_sq + race_black + race_other + vehicle +
+  suburban + smalltown + rural + work_fulltime + att_prolargehouse +
+  att_procarowning + region_waa |
+  edu_2 + edu_3 + suburban + smalltown + rural + work_fulltime +
+  att_prolargehouse + att_proactivemode + att_procarowning |
+  female + hhincome_2 + hhincome_3 + child + suburban + smalltown +
+  rural + att_procarowning + region_waa
+@
+%
+and the model can be estimated by
+%
+<<model-xinyi>>=
+fit <- opsr(f, data = telework_data, method = "NM", iterlim = 50e3,
+  printLevel = 0)
+@
+%
+where we demonstratate that alternative maximization methods (here Nelder-Mead) can be used (as in the original paper).
+
+<<custom-coef-names, echo=FALSE>>=
+custom.model.names <- c("NTWer (535)", "NUTWer (322)", "UTWer (727)")
+custom.coef.names <- c(
+  "Intercept",
+  "Female",
+  "Age",
+  "Age squared",
+  "Black",
+  "Other races",
+  "Number of vehicles",
+  "Suburban",
+  "Small town",
+  "Rural",
+  "Full time worker",
+  "Pro-large-house",
+  "Pro-car-owning",
+  "Region indicator (WAA)",
+  "Some college",
+  "Bachelor's degree or higher",
+  "Pro-active-mode",
+  "\\$50,000 to \\$99,999",
+  "\\$100,000 or more",
+  "Number of children"
+)
+reorder.coef <- c(1, 2, 3, 4, 5, 6, 15, 16, 18, 19, 20, 7, 8, 9, 10, 11, 12, 13, 17, 14)
+groups <- list(
+  "Race (ref: white)" = 5:6,
+  "Education (ref: high school or less)" = 7:8,
+  "Annual household income (ref: less than \\$50,000)" = 9:10,
+  "Residential location (ref: urban)" = 13:15,
+  "Attitudes" = 17:19
+  )
+@
+
+<<test, results=tex>>=
+texreg::texreg(fit, beside = TRUE, include.structural = FALSE,
+  include.selection = FALSE, include.R2 = TRUE,
+  custom.model.names = custom.model.names,
+  custom.coef.names = custom.coef.names,
+  reorder.coef = reorder.coef, groups = groups, scalebox = 0.82,
+  booktabs = TRUE, dcolumn = TRUE, use.packages = FALSE, float.pos = "t!",
+  caption = "Foo.", label = "tab:foo")
+@
+
+\begin{leftbar}
+WARNUNG: Wieso stimmen die Estimates nicht mehr mit Xinyi überein?
+\end{leftbar}
+
+
+
+%% -- Summary/conclusions/discussion -------------------------------------------
+
+\section{Summary and discussion} \label{sec:summary}
+
+
+%% -- Optional special unnumbered sections -------------------------------------
+
+\section*{Computational details}
+
+The results in this paper were obtained using
+\proglang{R}~\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the
+\pkg{MASS}~\Sexpr{packageVersion("MASS")} package. \proglang{R} itself
+and all packages used are available from the Comprehensive
+\proglang{R} Archive Network (CRAN) at
+\url{https://CRAN.R-project.org/}.
+
+
+\section*{Acknowledgments}
+
+
+%% -- Bibliography -------------------------------------------------------------
+%% - References need to be provided in a .bib BibTeX database.
+%% - All references should be made with \cite, \citet, \citep, \citealp etc.
+%%   (and never hard-coded). See the FAQ for details.
+%% - JSS-specific markup (\proglang, \pkg, \code) should be used in the .bib.
+%% - Titles in the .bib should be in title case.
+%% - DOIs should be included where available.
+
+\bibliography{refs}
+
+
+%% -- Appendix (if any) --------------------------------------------------------
+%% - After the bibliography with page break.
+%% - With proper section titles and _not_ just "Appendix".
+
+\newpage
+
+\begin{appendix}
+
+\section{More technical details} \label{app:technical}
+
+
+\end{appendix}
+
+%% -----------------------------------------------------------------------------
+
+
+\end{document}
