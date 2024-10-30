@@ -104,6 +104,7 @@ E-mail: \email{daniel.heimgartner@ivt.baug.ethz.ch}
 
 \section{Introduction} \label{sec:intro}
 
+Throughout the text we use the convention that OPSR refers to the general methodology, while \pkg{OPSR} refers specifically to the package.
 
 %% -- Manuscript ---------------------------------------------------------------
 
@@ -212,6 +213,10 @@ As shown in \cite{Wang+Mokhtarian:2024}, the log-likelihood of observing all ind
 %
 where $\sum_{\{j\}}$ means the summation of all the cases belonging to the \jth{} selection outcome, $\phi(\cdot)$ and $\Phi(\cdot)$ are the density and cumulative distribution function of the standard normal distribution.
 
+\begin{leftbar}
+daniehei: See overleaf tutorial \url{https://www.overleaf.com/learn/latex/Aligning_equations_with_amsmath}.
+\end{leftbar}
+
 The conditional expectation can be expressed as
 %
 \begin{equation} \label{eq:cond-exp}
@@ -276,7 +281,7 @@ We follow \proglang{R} conventions to provide the usual formula interface to spe
 
 \section{Illustrations} \label{sec:illustrations}
 
-We first illustrate how to specify a model using the \pkg{Formula}'s extended model formulas and simulated data. Then the main functionality of the package is demonstrated reproducing the core model of \cite{Wang+Mokhtarian:2024}. Finally, we extend on the analysis and investigate ... based on a novel tracking study...
+We first illustrate how to specify a model using the \pkg{Formula}'s extended model formulas and simulated data. Then the main functionality of the package is demonstrated. We conclude this section by demonstrating some nuances, reproducing the core model of \cite{Wang+Mokhtarian:2024}.
 
 Let us simulate date from an OPSR process with three ordinal outcomes and distinct design matrices $\boldsymbol{W}$ and $\boldsymbol{X}$ (where $\boldsymbol{X} = \boldsymbol{X_j} \ \forall{j}$) by
 %
@@ -297,18 +302,64 @@ fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, data = dat,
 %
 where \code{printLevel = 0} omits working information during maximum likelihood iterations.
 
-As usual, the fitter function does the bare minimum model estimation while inference is performed in a separate call to \fct{summary}
+As usual, the fitter function does the bare minimum model estimation while inference is performed in a separate call
+%
 <<summary-xinyi>>=
 summary(fit)
 @
+%
+The presentation of the model results is fairly standard and should not warrant further explanation with the following exceptions
+\begin{enumerate}
+\item The number of regimes along absolute counts are reported.
+\item Coefficient names are based on the variable names as passed to the formula specification, except that \code{"s_"} is prepended to the selection coefficients, \code{"o[0-9]_"} to the outcome coefficients and the structural components \code{"kappa", "sigma", "rho"} (aligning with the letters used in Equation~\ref{eq:log-lik}) are hard-coded.
+\item The coefficients table reports robust standard errors based on the sandwich covariance matrix as computed with help of the \pkg{sandwich} package \citep{}. \code{rob = FALSE} reports conventional standard errors.
+\item Two Welch-tests are conducted. One, testing the null that all coefficients of explanatory variables are zero and two, testing the null that all error correlation coefficients ($\rho$) are zero. If the latter is rejected, selection bias is not an issue.
+\end{enumerate}
 
-\begin{leftbar}
-PROCEED: Elaborate on Welch-test and sandwhich standard errors.
-\end{leftbar}
+A useful benchmark is always the null model with structural parameters only. The null model can be derived from an \class{opsr} model fit as follows
+%
+<<null-model>>=
+fit_null <- opsr_null_model(fit, printLevel = 0)
+@
 
+A model can be updated as usual
+%
+<<update>>=
+fit_intercept <- update(fit, . ~ . | 1)
+@
+%
+where we have removed all the explanatory variables from the outcome processes.
 
+Several models can be compared with a likelihood-ratio test using
+%
+<<anova>>=
+anova(fit_null, fit_intercept, fit)
+@
+%
+If only a single object is passed, then the model is compared to the null model. If more than one object is specified a likelihood ratio test is conducted for each pair of neighboring models. As expected, both tests reject the null.
 
+Models can be compared side-by-side using the \pkg{texreg} package \citep{}, which also allows the user to build production ready tables as illustrated later.
+%
+<<texreg>>==
+texreg::screenreg(list(fit_null, fit_intercept, fit),
+  include.pseudoR2 = TRUE, include.R2 = TRUE, single.row = TRUE)
+@
 
+Finally, the key interest of an OPSR study almost certainly is the estimation of treatment effects which relies on (counterfactual) conditional expectations as already noted in the mathematical description.
+%
+<<predict>>==
+p1 <- predict(fit, group = 1, type = "response")
+p2 <- predict(fit, group = 1, counterfact = 2, type = "response")
+@
+%
+where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p2} results from Equation~\ref{eq:counterfact-exp}. The following \code{type} arguments are available
+\begin{itemize}
+\item \code{type = "response"}: Predicts the continuous outcome according to the Equations referenced above.
+\item \code{type = "unlog-response"}: Predicts the back-transformed response if the continuous outcome was log-transformed according to Equations~\ref{eq:log-cond-exp}-\ref{eq:log-counterfact-exp}.
+\item \code{type = "prob"}: Returns the probability vector of belonging to \code{group}.
+\item \code{type = "mills"}: Returns the inverse Mills ratio.
+\end{itemize}
+Elements are \code{NA_real_} if the \code{group} does not correspond to the observed regime (selection outcome). This ensures consistent output length.
 
 Now that the user understands the basic workflow, we illustrate some nuances by reproducing a key output of \cite{Wang+Mokhtarian:2024} where they investigate the treatment effect of telework on weekly vehicle miles driven. The data is attached, documented (\code{?telework_data}) and can be loaded by
 %
@@ -317,6 +368,10 @@ data("telework_data", package = "OPSR")
 @
 %
 A basic boxplot of the response variable against the three teleworking status is displayed in Figure~\ref{fig:vmd-twstatus}. By simply looking at the data descriptively, we might prematurely conclude telework reduces vehicle miles driven. However, the whole value proposition of OPSR (and for models in general) is that we really are interested in a counterfactual. If the teleworkers self-select, the counterfactual is not simply the group average. More prosaically, if the usual telewokers (UTW) would choose to be non-usual teleworkers (NUTW), they might travel more or less than the actual NUTWs.
+
+\begin{leftbar}
+daniehei: Maybe do this discussion and boxplot in Section~\ref{sec:case-study} and omit here.
+\end{leftbar}
 
 \setkeys{Gin}{width=.5\textwidth}
 \begin{figure}[t!]
@@ -328,6 +383,18 @@ plot(vmd_ln ~ factor(twing_status), data = telework_data, varwidth = TRUE,
 @
 \caption{\label{fig:vmd-twstatus} Log vehicle miles driven for different teleworking status.}
 \end{figure}
+
+<<hidden, echo=FALSE>>=
+start <- c(
+  1.2, 2.4,  # kappa 1 & 2
+  0.2, 0.4, 0.1, 0.3, 0.3, 0.2, 0.1, 0.1, -0.1, 0.1, 0.1, 0.3, 0.1, 0.1,  # selection
+  3.744, -0.208, 0.010, 0.000, -0.392, -0.019, 0.130, 0.010, 0.415, 0.494, 0.437, 0.186, 0.124, -0.240,  # outcome 1
+  2.420, 0.224, 0.670, 0.445, 0.219, 0.824, 0.704, 0.164, -0.176, 0.171,  # outcome 2
+  2.355, -0.375, 0.476, 0.317, 0.187, 0.290, 0.313, 0.856, 0.248, -0.275,  # outcome 3
+  1.193, 1.248, 1.413,  # sigma
+  0.068, 0.128, 0.340  # rho
+)
+@
 
 The final model specification reads
 %
@@ -350,13 +417,19 @@ f <-
 and the model can be estimated by
 %
 <<model-xinyi>>=
-fit <- opsr(f, data = telework_data, method = "NM", iterlim = 50e3,
-  printLevel = 0)
+start_default <- opsr(f, telework_data, .get2step = TRUE)
+fit <- opsr(f, telework_data, start = start, method = "NM", iterlim = 50e3,
+            printLevel = 0)
 @
 %
-where we demonstratate that alternative maximization methods (here Nelder-Mead) can be used (as in the original paper).
+where we demonstrate that
+\begin{enumerate}
+\item Default starting values as computed by the Heckman two-step procedure can be retrieved.
+\item \code{start} values can be overridden (we have hidden the \code{start} vector here for brevity). If the user wishes to pass start values manually, some minimal conventions have to be followed as documented in \code{?opsr_check_start}.
+\item Alternative maximization methods (here ``Nelder-Mead'') can be used (as in the original paper).
+\end{enumerate}
 
-<<custom-coef-names, echo=FALSE>>=
+<<hidden, echo=FALSE>>=
 custom.model.names <- c("NTWer (535)", "NUTWer (322)", "UTWer (727)")
 custom.coef.names <- c(
   "Intercept",
@@ -387,23 +460,40 @@ groups <- list(
   "Annual household income (ref: less than \\$50,000)" = 9:10,
   "Residential location (ref: urban)" = 13:15,
   "Attitudes" = 17:19
-  )
+)
 @
 
-<<test, results=tex>>=
-texreg::texreg(fit, beside = TRUE, include.structural = FALSE,
+With help of the \pkg{texreg} package, production ready tables (in various output formats) can be built with ease.
+%
+<<replica, results=tex>>=
+texreg::texreg(
+  fit, beside = TRUE, include.structural = FALSE,
   include.selection = FALSE, include.R2 = TRUE,
   custom.model.names = custom.model.names,
   custom.coef.names = custom.coef.names,
-  reorder.coef = reorder.coef, groups = groups, scalebox = 0.82,
+  single.row = TRUE,
+  reorder.coef = reorder.coef, groups = groups, scalebox = 0.86,
   booktabs = TRUE, dcolumn = TRUE, use.packages = FALSE, float.pos = "t!",
-  caption = "Foo.", label = "tab:foo")
+  caption = "Replica of \\cite{Wang+Mokhtarian:2024}, Table 3.",
+  label = "tab:wang-replica"
+)
 @
+%
+Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are forwarded to a \proglang{S4} method \fct{extract} which extracts the variables of interest from a model fit (see also \code{?extract.opsr}). We demonstrate here that
+\begin{enumerate}
+\item The structural coefficients ($\kappa$, $\sigma$ and $\rho$) and coefficients belonging to the selection component can be omitted (\code{include.structural = FALSE}, \code{include.selection = FALSE}).
+\item The model components can be printed side-by-side (\code{beside = TRUE}).
+\item Additional goodness-of-fit indicators can be included (\code{include.R2}).
+\item The output formatting can be controlled flexibly, by reordering, renaming and grouping coefficients (the fiddly but trivial details are hidden here for brevity).
+\end{enumerate}
+
+
+%% -- Case study ---------------------------------------------------------------
+\section{Case study} \label{sec:case-study}
 
 \begin{leftbar}
-WARNUNG: Wieso stimmen die Estimates nicht mehr mit Xinyi überein?
+daniehei: TU+ case study. Intended to demonstrate how to use \pkg{OPSR} in a real-(or research-) world example. Don't comment on what a function does but interpret the output substantively.
 \end{leftbar}
-
 
 
 %% -- Summary/conclusions/discussion -------------------------------------------
