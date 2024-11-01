@@ -92,13 +92,26 @@
   -[x] read jss-template.pdf
   -[x] draft opsr.Rnw paper layout (see also usual structure of other JSS papers)
   -[x] write methods section
-  -[ ] introduction
+  -[x] introduction
     - 1. why selection bias, switching regression, 2. Tobit => Heckman => Switching, 3. Existing infrastructure, 4. Why OPSR
     - CRAN search => Econometrics taskview and metacran (list keywords: Heckman, Selection [Bias], Sample Selection, Switching Regression, Regime Switching)
     - Similar related software in other programming languages
     - Also briefly mention copula modeling which could be used to relax the multivariate normality assumption
   -[ ] ...
   -[ ] Break lines after n characters (final paper)
+
+
+
+
+
+
+-[ ] Convert paper to vignette
+  - https://www.jstatsoft.org/style#how-can-i-turn-my-jss-paper-into-an-r-package-vignette
+  - add
+    %\VignetteIndexEntry{OPSR: A Package for Estimating Ordinal Probit Switching Regression}
+    %\VignetteDepends{}
+    %\VignetteKeywords{}
+    %\VignettePackage{OPSR}
 
 
 ## General

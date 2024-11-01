@@ -31,7 +31,6 @@ library(OPSR)
 
 options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE,
         digits = 3)
-library("MASS")
 @
 
 
@@ -104,7 +103,18 @@ E-mail: \email{daniel.heimgartner@ivt.baug.ethz.ch}
 
 \section{Introduction} \label{sec:intro}
 
-Throughout the text we use the convention that OPSR refers to the general methodology, while \pkg{OPSR} refers specifically to the package.
+The goal of the program evaluation literature is to estimate the effect of a treatment program (e.g., a new policy, technology, medical treatment, or agricultural practice) on an outcome. To evaluate such a program, the ``treated'' are compared to the ``untreated''. In an experimental setting, the treatment can be randomly assigned. However, in an observational setting, the treatment is not always exogeneously prescribed but rather self-selected. This gives rise to a selectivity bias when unobserved factors influencing the treatment adoption also influence the outcome (also known as \emph{selection on unobservables}). Simple group comparison no longer yield an unbiased estimate of the treatment effect. In more technical terms, the counterfactual outcome of the treated (``if they had not been treated'') does not necessarily correspond to the factual outcome of the untreated. For example, cyclists riding without a helmet (the ``untreated'') might have a risk-seeking tendency. We therefore potentially overestimate the benefit of wearing a helmet if we compare the accident (severity) rate of the two groups. Risk-seeking is not readily measured and it is easy to imagine that it becomes part of the error in applied research and thus leading cause of a selectivity bias.
+
+To properly account for the selection bias, various techniques exist, both for longitudinal and cross-sectional data. In the first case, difference in differences is a widely adopted measure. In the latter case, instrumental variables, matching propensity scores, regression-discontinuity design, and the endogenous switching regression model have been applied \citep{Wang+Mokhtarian:2024}. The latter method is particularly well-suited to correct for selection on unobservables (unlike other methods which only address and correct for selection on observables).
+
+The seminal work by \cite{Heckman:1979} proposed a two-part model to address the selection bias that often occurs when modelling a continuous outcome which is only observable for a subpopulation. A very nice exposition of this model is given in \citet[][Chapter~16]{Cameron+Trivedi:2005}. The classical Heckman model consists of a probit equation and continuous outcome equation (where outcomes are only observed for the selected). A natural extension is then the switching regression, where the population is partitioned into different groups (regimes) and a separate process governs the observed continuous outcome. This model is originally known as the Roy model \citep{Cameron+Trivedi:2005} or Tobit 5 model \citep{Amemiya:1985}. These classical models (the Tobit models for truncated, censored or interval data and their extensions) are implemented in various environments for statistical computing and in \proglang{R}'s \citep{R} \pkg{sampleSelection} package \citep{Toomet+Henningsen:2008}.
+
+Many different variants can then be derived by either placing different distributional assumptions on the errors and/or how the latent process manifests into observed outcomes (i.e., the dependent variables can be of varying types, such as binary, ordinal, censored, or continuous) more generally known as conditional mixed-process (CMP) models. CMP models comprise a broad family involving two or more equations featuring jointly multivariate normally distributed error terms. The \proglang{Stata} \citep{Stata} command \code{cmp} \citep{Roodman:2011} can fit such models. The variant at the heart of this paper is an ordinal probit switching regression (OPSR) model, with an ordered treatment and continuous outcome. Throughout the text we use the convention that OPSR refers to the general methodology, while \pkg{OPSR} refers specifically to the package.
+
+OPSR is available as a \proglang{Stata} command, \code{oheckman} \citep{Chiburis+Lokshin:2007}, which however, does not allow distinct specifications for the continuous outcome processes. The recently available \proglang{R}-package \pkg{switchSelection} \citep{Potanin:2024} allows to estimate multivariate and multinomial sample selection and endogenous switching models with multiple outcomes. These models are the systems of ordinal, continuous and multinomial equations and thus nest OPSR as a special case.
+
+\pkg{OPSR} is tailored to one particular method, easy to use, fast and memory efficient. It handles log-transformed continuous outcomes which need special consideration for the computation of conditional expectations. It obeys to \proglang{R}'s implicit modeling conventions (by extending the established generics such as \fct{summary}, \fct{predict}, \fct{update}, \fct{anova} among others) and produces production-grade output tables. This work generalizes the learnings from \cite{Wang+Mokhtarian:2024} and makes the OPSR methodology readily available. The mathematical notation presented here translates to code almost verbatim which hopefully serves a pedagogical purpose for the curious reader.
+
 
 %% -- Manuscript ---------------------------------------------------------------
 
@@ -261,7 +271,7 @@ for the factual case, and
 %
 for the counterfactual case \citep{Wang+Mokhtarian:2024}.
 
-We follow \proglang{R} conventions to provide the usual formula interface to specify an OPSR model. To allow for multiple parts and multiple responses, we use the \pkg{Formula} package \citep{}. After parsing the formula object and generating the model matrices, the Heckman two-step estimator is called in \fct{opsr\_2step} to generate reasonable starting values. These are then passed together with the data to the basic computation engine \fct{opsr.fit}. The main estimates are retrieved using maximum likelihood estimation by passing the log-likelihood function (Equation~\ref{eq:log-lik}) to \fct{maxLik} from the \pkg{maxLik} package \citep{}. The likelihood function \fct{loglik\_cpp} is implemented in \proglang{C++} using \pkg{Rcpp} \citep{} and relying on the data structures provided by \pkg{RcppArmadillo} \citep{}. Parallelization is available using \proglang{OpenMP}. This makes \pkg{OPSR} both fast and memory efficient (as data matrices are passed by reference). All the above calls are nested in the main interface \fct{opsr} which returns an object of class \class{opsr}. Several methods then exist to post-process this object as illustrated below.
+We provide the usual formula interface to specify a model. To allow for multiple parts and multiple responses, we use the \pkg{Formula} package \citep{Zeileis+Croissant:2010}. After parsing the formula object and generating the model matrices, the Heckman two-step estimator is called in \fct{opsr\_2step} to generate reasonable starting values. These are then passed together with the data to the basic computation engine \fct{opsr.fit}. The main estimates are retrieved using maximum likelihood estimation by passing the log-likelihood function (Equation~\ref{eq:log-lik}) to \fct{maxLik} from the \pkg{maxLik} package \citep{Henningsen+Toomet:2011}. The likelihood function \fct{loglik\_cpp} is implemented in \proglang{C++} using \pkg{Rcpp} \citep{Edelbuettel+Balamuta:2018} and relying on the data structures provided by \pkg{RcppArmadillo} \citep{Edelbuettel+Sanderson:2014}. Parallelization is available using \proglang{OpenMP}. This makes \pkg{OPSR} both fast and memory efficient (as data matrices are passed by reference). All the above calls are nested in the main interface \fct{opsr} which returns an object of class \class{opsr}. Several methods then exist to post-process this object as illustrated below.
 
 
 %% -- Illustrations ------------------------------------------------------------
@@ -312,7 +322,7 @@ The presentation of the model results is fairly standard and should not warrant 
 \begin{enumerate}
 \item The number of regimes along absolute counts are reported.
 \item Coefficient names are based on the variable names as passed to the formula specification, except that \code{"s_"} is prepended to the selection coefficients, \code{"o[0-9]_"} to the outcome coefficients and the structural components \code{"kappa", "sigma", "rho"} (aligning with the letters used in Equation~\ref{eq:log-lik}) are hard-coded.
-\item The coefficients table reports robust standard errors based on the sandwich covariance matrix as computed with help of the \pkg{sandwich} package \citep{}. \code{rob = FALSE} reports conventional standard errors.
+\item The coefficients table reports robust standard errors based on the sandwich covariance matrix as computed with help of the \pkg{sandwich} package \citep{Zeileis:2006}. \code{rob = FALSE} reports conventional standard errors.
 \item Two Welch-tests are conducted. One, testing the null that all coefficients of explanatory variables are zero and two, testing the null that all error correlation coefficients ($\rho$) are zero. If the latter is rejected, selection bias is not an issue.
 \end{enumerate}
 
@@ -338,7 +348,7 @@ anova(fit_null, fit_intercept, fit)
 %
 If only a single object is passed, then the model is compared to the null model. If more than one object is specified a likelihood ratio test is conducted for each pair of neighboring models. As expected, both tests reject the null.
 
-Models can be compared side-by-side using the \pkg{texreg} package \citep{}, which also allows the user to build production ready tables as illustrated later.
+Models can be compared side-by-side using the \pkg{texreg} package \citep{Leifeld:2013}, which also allows the user to build production ready tables as illustrated later.
 %
 <<texreg>>==
 texreg::screenreg(list(fit_null, fit_intercept, fit),
@@ -507,7 +517,7 @@ daniehei: TU+ case study. Intended to demonstrate how to use \pkg{OPSR} in a rea
 
 The results in this paper were obtained using
 \proglang{R}~\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the
-\pkg{MASS}~\Sexpr{packageVersion("MASS")} package. \proglang{R} itself
+\pkg{OPSR}~\Sexpr{packageVersion("OPSR")} package. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at
 \url{https://CRAN.R-project.org/}.
@@ -533,12 +543,12 @@ and all packages used are available from the Comprehensive
 
 \newpage
 
-\begin{appendix}
-
-\section{More technical details} \label{app:technical}
-
-
-\end{appendix}
+% \begin{appendix}
+%
+% \section{More technical details} \label{app:technical}
+%
+%
+% \end{appendix}
 
 %% -----------------------------------------------------------------------------
 
