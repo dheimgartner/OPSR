@@ -91,7 +91,12 @@
 -[ ] Write paper (read jss.pdf and learn from others)
   -[x] read jss-template.pdf
   -[x] draft opsr.Rnw paper layout (see also usual structure of other JSS papers)
-  -[ ] write methods section
+  -[x] write methods section
+  -[ ] introduction
+    - 1. why selection bias, switching regression, 2. Tobit => Heckman => Switching, 3. Existing infrastructure, 4. Why OPSR
+    - CRAN search => Econometrics taskview and metacran (list keywords: Heckman, Selection [Bias], Sample Selection, Switching Regression, Regime Switching)
+    - Similar related software in other programming languages
+    - Also briefly mention copula modeling which could be used to relax the multivariate normality assumption
   -[ ] ...
   -[ ] Break lines after n characters (final paper)
 
