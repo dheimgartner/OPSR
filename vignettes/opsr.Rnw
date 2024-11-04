@@ -1,4 +1,4 @@
-\documentclass[article, nojss]{jss}
+\documentclass[article,nojss]{jss}
 
 %% -- LaTeX packages and custom commands ---------------------------------------
 
@@ -18,7 +18,7 @@
 \newcommand{\fct}[1]{\code{#1()}}
 
 %%daniehei
-\newcommand{\jth}{$j^{\mathrm{th}}$}
+\newcommand{\jth}{\ensuremath{j^{\mathrm{th}}\,}}  % jth will never follow by punctuation
 \newcommand{\Xb}{\boldsymbol{X_j}\boldsymbol{\beta_j}}
 \newcommand{\Xbd}{\boldsymbol{X_{j'}}\boldsymbol{\beta_{j'}}}
 \newcommand{\Wg}{\boldsymbol{W}\boldsymbol{\gamma}}
@@ -42,7 +42,7 @@ options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE,
 %% - \AND starts a new line, \And does not.
 \author{Daniel Heimgartner~\orcidlink{0000-0002-0643-8690}\\ETH Z\"urich
 \And Xinyi Wang~\orcidlink{0000-0002-3564-9147}\\MIT Boston}
-\Plainauthor{Daniel Heimgartner, Second Author}
+\Plainauthor{Daniel Heimgartner, Xinyi Wang}
 
 %% - \title{} in title case
 %% - \Plaintitle{} without LaTeX markup (if any)
@@ -53,14 +53,14 @@ options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE,
 
 %% - \Abstract{} almost as usual
 \Abstract{
-When treatment is endogenous, selectivity-biases might arise if unobserved factors influence simultaneously both the selection and outcome process. A possible cure in the case of cross-sectional data is to explicitly account for this error correlation and estimate the covariance matrix of the two processes. This is known as endogenous switching regression. The \proglang{R} package \pkg{OPSR} introduced in this article provides an easy-to-use, fast and memory efficient interface to ordinal probit switching regression, accounting for self-selection into an ordinal treatment. It handles log-transformed outcomes which need special consideration when computing conditional expectations and thus treatment effects.
+When treatment is endogenous, selection bias might arise if unobserved factors simultaneously influence both the selection and outcome process. A possible cure in the case of cross-sectional data is to explicitly account for this error correlation and estimate the covariance matrix of the two processes. This is known as endogenous switching regression. The \proglang{R} package \pkg{OPSR} introduced in this article provides an easy-to-use, fast and memory efficient interface to ordinal probit switching regression, accounting for self-selection into an ordinal treatment. It handles log-transformed outcomes which need special consideration when computing conditional expectations and thus treatment effects.
 }
 
 %% - \Keywords{} with LaTeX markup, at least one required
 %% - \Plainkeywords{} without LaTeX markup (if necessary)
 %% - Should be comma-separated and in sentence case.
-\Keywords{ordinal probit switching regression, endogenous switching regression, Heckman selection, selectivity-bias, treatment effect, \proglang{R}}
-\Plainkeywords{ordinal probit switching regression, endogenous switching regression, Heckman selection, selectivity-bias, treatment effect, R}
+\Keywords{ordinal probit switching regression, endogenous switching regression, Heckman selection, selection bias, treatment effect, \proglang{R}}
+\Plainkeywords{ordinal probit switching regression, endogenous switching regression, Heckman selection, selection bias, treatment effect, R}
 
 %% - \Address{} of at least one author
 %% - May contain multiple affiliations for each author
@@ -95,17 +95,17 @@ E-mail: \email{daniel.heimgartner@ivt.baug.ethz.ch}
 
 \section{Introduction} \label{sec:intro}
 
-The goal of the program evaluation literature is to estimate the effect of a treatment program (e.g., a new policy, technology, medical treatment, or agricultural practice) on an outcome. To evaluate such a program, the ``treated'' are compared to the ``untreated''. In an experimental setting, the treatment can be randomly assigned. However, in an observational setting, the treatment is not always exogeneously prescribed but rather self-selected. This gives rise to a selectivity bias when unobserved factors influencing the treatment adoption also influence the outcome (also known as \emph{selection on unobservables}). Simple group comparison no longer yield an unbiased estimate of the treatment effect. In more technical terms, the counterfactual outcome of the treated (``if they had not been treated'') does not necessarily correspond to the factual outcome of the untreated. For example, cyclists riding without a helmet (the ``untreated'') might have a risk-seeking tendency. We therefore potentially overestimate the benefit of wearing a helmet if we compare the accident (severity) rate of the two groups. Risk-seeking is not readily measured and it is easy to imagine that it becomes part of the error in applied research and thus leading cause of a selectivity bias.
+The goal of the program evaluation literature is to estimate the effect of a treatment program (e.g., a new policy, technology, medical treatment, or agricultural practice) on an outcome. To evaluate such a program, the ``treated'' are compared to the ``untreated''. In an experimental setting, the treatment can be assigned by the researcher. However, in an observational setting, the treatment is not always exogeneously prescribed but rather self-selected. This gives rise to a selection bias when unobserved factors influencing the treatment adoption also influence the outcome (also known as \emph{selection on unobservables}). Simple group comparison no longer yield an unbiased estimate of the treatment effect. In more technical terms, the counterfactual outcome of the treated (``if they had not been treated'') does not necessarily correspond to the factual outcome of the untreated. For example, cyclists riding without a helmet (the ``untreated'') might have a risk-seeking tendency. We therefore potentially overestimate the benefit of wearing a helmet if we compare the accident (severity) rate of the two groups. Risk-seeking is not readily measured and it is easy to imagine that it becomes part of the error in applied research and thus leading cause of a selection bias.
 
 To properly account for the selection bias, various techniques exist, both for longitudinal and cross-sectional data. In the first case, difference in differences is a widely adopted measure. In the latter case, instrumental variables, matching propensity scores, regression-discontinuity design, and the endogenous switching regression model have been applied \citep{Wang+Mokhtarian:2024}. The latter method is particularly well-suited to correct for selection on unobservables (unlike other methods which only address and correct for selection on observables).
 
-The seminal work by \cite{Heckman:1979} proposed a two-part model to address the selection bias that often occurs when modelling a continuous outcome which is only observable for a subpopulation. A very nice exposition of this model is given in \citet[][Chapter~16]{Cameron+Trivedi:2005}. The classical Heckman model consists of a probit equation and continuous outcome equation (where outcomes are only observed for the selected). A natural extension is then the switching regression, where the population is partitioned into different groups (regimes) and a separate process governs the observed continuous outcome. This model is originally known as the Roy model \citep{Cameron+Trivedi:2005} or Tobit 5 model \citep{Amemiya:1985}. These classical models (the Tobit models for truncated, censored or interval data and their extensions) are implemented in various environments for statistical computing and in \proglang{R}'s \citep{R} \pkg{sampleSelection} package \citep{Toomet+Henningsen:2008}.
+The seminal work by \cite{Heckman:1979} proposed a two-part model to address the selection bias that often occurs when modelling a continuous outcome which is only observable for a subpopulation. A very nice exposition of this model is given in \citet[][Chapter~16]{Cameron+Trivedi:2005}. The classical Heckman model consists of a probit equation and continuous outcome equation. A natural extension is then switching regression, where the population is partitioned into different groups (regimes) and separate parameters are estimated for the continuous outcome process of each group. This model is originally known as the Roy model \citep{Cameron+Trivedi:2005} or Tobit 5 model \citep{Amemiya:1985}. These classical models (the Tobit models for truncated, censored or interval data and their extensions) are implemented in various environments for statistical computing and in \proglang{R}'s \citep{R} \pkg{sampleSelection} package \citep{Toomet+Henningsen:2008}.
 
-Many different variants can then be derived by either placing different distributional assumptions on the errors and/or how the latent process manifests into observed outcomes (i.e., the dependent variables can be of varying types, such as binary, ordinal, censored, or continuous) more generally known as conditional mixed-process (CMP) models. CMP models comprise a broad family involving two or more equations featuring jointly multivariate normally distributed error terms. The \proglang{Stata} \citep{Stata} command \code{cmp} \citep{Roodman:2011} can fit such models. The variant at the heart of this paper is an ordinal probit switching regression (OPSR) model, with an ordered treatment and continuous outcome. Throughout the text we use the convention that OPSR refers to the general methodology, while \pkg{OPSR} refers specifically to the package.
+Many different variants can then be derived by either placing different distributional assumptions on the errors and/or how the latent process manifests into observed outcomes (i.e., the dependent variables can be of various types, such as binary, ordinal, censored, or continuous) more generally known as conditional mixed-process (CMP) models. CMP models comprise a broad family involving two or more equations featuring a joint error distribution assumed to be multivariate normal. The \proglang{Stata} \citep{Stata} command \code{cmp} \citep{Roodman:2011} can fit such models. The variant at the heart of this paper is an ordinal probit switching regression (OPSR) model, with an ordered treatment and continuous outcome. Throughout the text we use the convention that OPSR refers to the general methodology, while \pkg{OPSR} refers specifically to the package.
 
-OPSR is available as a \proglang{Stata} command, \code{oheckman} \citep{Chiburis+Lokshin:2007}, which however, does not allow distinct specifications for the continuous outcome processes. The recently available \proglang{R} package \pkg{switchSelection} \citep{Potanin:2024} allows to estimate multivariate and multinomial sample selection and endogenous switching models with multiple outcomes. These models are the systems of ordinal, continuous and multinomial equations and thus nest OPSR as a special case.
+OPSR is available as a \proglang{Stata} command, \code{oheckman} \citep{Chiburis+Lokshin:2007}, which however, does not allow distinct specifications for the continuous outcome processes (i.e., the same explanatory variables must be used for all treatment groups). The relatively new \proglang{R} package \pkg{switchSelection} \citep{Potanin:2024} allows to estimate multivariate and multinomial sample selection and endogenous switching models with multiple outcomes. These models are systems of ordinal, continuous and multinomial equations and thus nest OPSR as a special case.
 
-\pkg{OPSR} is tailored to one particular method, easy to use, fast and memory efficient. It handles log-transformed continuous outcomes which need special consideration for the computation of conditional expectations. It obeys to \proglang{R}'s implicit modeling conventions (by extending the established generics such as \fct{summary}, \fct{predict}, \fct{update}, \fct{anova} among others) and produces production-grade output tables. This work generalizes the learnings from \cite{Wang+Mokhtarian:2024} and makes the OPSR methodology readily available. The mathematical notation presented here translates to code almost verbatim which hopefully serves a pedagogical purpose for the curious reader.
+\pkg{OPSR} is tailored to one particular method, easy to use (understand, extend and maintain), fast and memory efficient. It handles log-transformed continuous outcomes which need special consideration for the computation of conditional expectations. It obeys to \proglang{R}'s implicit modeling conventions (by extending the established generics such as \fct{summary}, \fct{predict}, \fct{update}, \fct{anova} among others) and produces production-grade output tables. This work generalizes the learnings from \cite{Wang+Mokhtarian:2024} and makes the OPSR methodology readily available. The mathematical notation presented here translates to code almost verbatim which hopefully serves a pedagogical purpose for the curious reader.
 
 
 %% -- Manuscript ---------------------------------------------------------------
@@ -125,7 +125,7 @@ In the following, we outline the ordinal probit switching regression model as we
 
 As alluded, OPSR is a two-step model: One process governs the ordinal outcome and separate processes (for each ordinal outcome) govern the continuous outcomes. The ordinal outcome can also be thought of as a regime or treatment. In the subsequent exposition, we will refer to the two processes as \emph{selection} and \emph{outcome} process.
 
-We borrow the notation from \cite{Wang+Mokhtarian:2024} where also the derivation of the log-likelihood is detailed. For a similar exhibition, \citet{Chiburis+Lokshin:2007} can be consulted. Individual subscripts are suppressed throughout, for simplicity.
+We borrow the notation from \cite{Wang+Mokhtarian:2024} where also all the derivations are detailed. For a similar exhibition, \citet{Chiburis+Lokshin:2007} can be consulted. Individual subscripts are suppressed throughout, for simplicity.
 
 Let $\mathcal{Z}$ be a latent propensity governing the selection outcome
 %
@@ -151,15 +151,15 @@ where $Z$ is the observed ordinal selection variable, $j = 1, \dots, J$ indexes 
 \end{aligned}
 \end{equation}
 
-The outcome model for the \jth{} treatment group is expressed as
+The outcome model for the \jth treatment group is expressed as
 %
 \begin{equation} \label{eq:outcome}
 y_j = \Xb + \eta_j,
 \end{equation}
 %
-where $y_j$ is the observed continuous outcome, $\boldsymbol{X_j}$ the vector of observed explanatory variables associated with the \jth{} outcome model, $\boldsymbol{\beta_j}$ is the vector of associated parameters, and $\eta_j \sim \mathcal{N}(0, \sigma^2)$ is a normally distributed error term. At this point it should be noted that $\boldsymbol{X_j}$ and $\boldsymbol{W}$ may share some explanatory variables but not all, due to identification problems otherwise \citep{Chiburis+Lokshin:2007}.
+where $y_j$ is the observed continuous outcome, $\boldsymbol{X_j}$ the vector of observed explanatory variables associated with the \jth outcome model, $\boldsymbol{\beta_j}$ is the vector of associated parameters, and $\eta_j \sim \mathcal{N}(0, \sigma^2)$ is a normally distributed error term. At this point it should be noted that $\boldsymbol{X_j}$ and $\boldsymbol{W}$ may share some explanatory variables but not all, due to identification problems otherwise \citep{Chiburis+Lokshin:2007}.
 
-The whole idea of OPSR is now that the error terms of the selection and outcome models follow the multivariate normal distribution
+The key assumption of OPSR is now that the errors of the selection and outcome models are jointly multivariate normally distributed
 %
 \begin{equation} \label{eq:multi-norm}
 \begin{pmatrix}
@@ -190,7 +190,7 @@ The whole idea of OPSR is now that the error terms of the selection and outcome 
 \right),
 \end{equation}
 %
-where $\rho_j$ represents the correlation between the errors of the selection model ($\epsilon$) and the \jth{} outcome model ($\eta_j$). If the covariance matrix should be diagonal (i.e., no error correlation), no selection-bias exists and the selection and outcome models can be estimated in separately.
+where $\rho_j$ represents the correlation between the errors of the selection model ($\epsilon$) and the \jth outcome model ($\eta_j$). If the covariance matrix should be diagonal (i.e., no error correlation), no selection-bias exists and the selection and outcome models can be estimated separately.
 
 As shown in \cite{Wang+Mokhtarian:2024}, the log-likelihood of observing all individuals self-selecting into treatment $j$ and choosing continuous outcome $y_j$ can be expressed as
 %
@@ -211,7 +211,7 @@ As shown in \cite{Wang+Mokhtarian:2024}, the log-likelihood of observing all ind
 \right\}
 \end{multline}
 %
-where $\sum_{\{j\}}$ means the summation of all the cases belonging to the \jth{} selection outcome, $\phi(\cdot)$ and $\Phi(\cdot)$ are the density and cumulative distribution function of the standard normal distribution.
+where $\sum_{\{j\}}$ means the summation of all the cases belonging to the \jth selection outcome, $\phi(\cdot)$ and $\Phi(\cdot)$ are the density and cumulative distribution function of the standard normal distribution.
 
 The conditional expectation can be expressed as
 %
@@ -222,7 +222,7 @@ The conditional expectation can be expressed as
 \end{aligned}
 \end{equation}
 %
-where the fraction is the ordered probit switching regression model counterpart to the inverse Mills ratio (IMR) term of a binary switching regression model. We immediately see, that regressing $\boldsymbol{X_j}$ on $y_j$ leads to an omitted variable bias if $\rho_j \neq 0$ and is the root cause of the selection bias. However, the IMR can be pre-computed based on a ordinal probit model and then included in the second stage regression, which describes the Heckman correction \citep{Heckman:1979}. It should be warned, that since the Heckman two-step procedure includes an estimate in the second step regression, the resulting OLS standard errors and heteroskedasticity-robust standard errors are incorrect \citep{Greene:2002}.
+where the fraction is the ordered probit switching regression model counterpart to the inverse Mills ratio (IMR) term of a binary switching regression model. We immediately see, that regressing $\boldsymbol{X_j}$ on $y_j$ leads to an omitted variable bias if $\rho_j \neq 0$ which is the root cause of the selection bias. However, the IMR can be pre-computed based on an ordinal probit model and then included in the second stage regression, which describes the Heckman correction \citep{Heckman:1979}. It should be warned, that since the Heckman two-step procedure includes an estimate in the second step regression, the resulting OLS standard errors and heteroskedasticity-robust standard errors are incorrect \citep{Greene:2002}.
 
 To obtain unbiased treatment effects, we must further evaluate the ``counterfactual outcome'', which reflects the expected outcome under a counterfactual treatment (i.e., for $j' \neq j$)
 %
@@ -233,7 +233,7 @@ To obtain unbiased treatment effects, we must further evaluate the ``counterfact
 \end{aligned}
 \end{equation}
 
-As it is usual to log-transform the continuous outcome in regression analysis, we have to note, that in such cases the Equations~\ref{eq:cond-exp}-\ref{eq:counterfact-exp} provide the conditional expectation of the log-transformed outcome. Therefore, we need to back-transform $\ln(y_j + 1)$
+As it is usual to log-transform the continuous outcome in regression analysis, we have to note, that in such cases the Equations~\ref{eq:cond-exp}-\ref{eq:counterfact-exp} provide the conditional expectation of the log-transformed outcome. Therefore, we need to back-transform $\ln(y_j + 1)$ which yields
 %
 \begin{equation} \label{eq:log-cond-exp}
 \E[y_j \mid Z = j] =
@@ -257,10 +257,10 @@ for the factual case, and
 %
 for the counterfactual case \citep{Wang+Mokhtarian:2024}.
 
-\pkg{OPSR}'s architecture can be conceptualized as follows:
+This concludes the mathematical treatment and we briefly outline \pkg{OPSR}'s architecture which can be conceptualized as follows:
 \begin{itemize}
 \item We provide the usual formula interface to specify a model. To allow for multiple parts and multiple responses, we rely on the \pkg{Formula} package \citep{Zeileis+Croissant:2010}.
-\item After parsing the formula object and generating the model matrices, the Heckman two-step estimator is called in \fct{opsr\_2step} to generate reasonable starting values.
+\item After parsing the formula object, checking the user inputs and computing the model matrices, the Heckman two-step estimator is called in \fct{opsr\_2step} to generate reasonable starting values.
 \item These are then passed together with the data to the basic computation engine \fct{opsr.fit}. The main estimates are retrieved using maximum likelihood estimation by passing the log-likelihood function \fct{loglik\_cpp} (Equation~\ref{eq:log-lik}) to \fct{maxLik} from the \pkg{maxLik} package \citep{Henningsen+Toomet:2011}.
 \item All the above calls are nested in the main interface \fct{opsr} which returns an object of class \class{opsr}. Several methods then exist to post-process this object as illustrated below.
 \end{itemize}
@@ -285,7 +285,7 @@ The likelihood function \fct{loglik\_cpp} is implemented in \proglang{C++} using
 
 \section{Illustrations} \label{sec:illustrations}
 
-We first illustrate how to specify a model using the \pkg{Formula}'s extended model formulas and simulated data. Then the main functionality of the package is demonstrated. We conclude this section by demonstrating some nuances, reproducing the core model of \cite{Wang+Mokhtarian:2024}.
+We first illustrate how to specify a model using \pkg{Formula}'s extended syntax and simulated data. Then the main functionality of the package is demonstrated. We conclude this section by demonstrating some nuances, reproducing the core model of \cite{Wang+Mokhtarian:2024}.
 
 Let us simulate date from an OPSR process with three ordinal outcomes and distinct design matrices $\boldsymbol{W}$ and $\boldsymbol{X}$ (where $\boldsymbol{X} = \boldsymbol{X_j} \ \forall{j}$) by
 %
@@ -315,7 +315,7 @@ summary(fit)
 The presentation of the model results is fairly standard and should not warrant further explanation with the following exceptions
 \begin{enumerate}
 \item The number of regimes along absolute counts are reported.
-\item Coefficient names are based on the variable names as passed to the formula specification, except that \code{"s_"} is prepended to the selection coefficients, \code{"o[0-9]_"} to the outcome coefficients and the structural components \code{"kappa", "sigma", "rho"} (aligning with the letters used in Equation~\ref{eq:log-lik}) are hard-coded.
+\item Coefficient names are based on the variable names as passed to the formula specification, except that \code{"s_"} is prepended to the selection coefficients, \code{"o[0-9]_"} to the outcome coefficients and the structural components \code{"kappa", "sigma", "rho"} (aligning with the letters used in Equation~\ref{eq:log-lik}) are hard-coded (but can be over-written).
 \item The coefficients table reports robust standard errors based on the sandwich covariance matrix as computed with help of the \pkg{sandwich} package \citep{Zeileis:2006}. \code{rob = FALSE} reports conventional standard errors.
 \item Two Welch-tests are conducted. One, testing the null that all coefficients of explanatory variables are zero and two, testing the null that all error correlation coefficients ($\rho$) are zero. If the latter is rejected, selection bias is not an issue.
 \end{enumerate}
@@ -342,21 +342,21 @@ anova(fit_null, fit_intercept, fit)
 %
 If only a single object is passed, then the model is compared to the null model. If more than one object is specified a likelihood ratio test is conducted for each pair of neighboring models. As expected, both tests reject the null.
 
-Models can be compared side-by-side using the \pkg{texreg} package \citep{Leifeld:2013}, which also allows the user to build production ready tables as illustrated later.
+Models can be compared side-by-side using the \pkg{texreg} package \citep{Leifeld:2013}, which also allows the user to build production-grade tables as illustrated later.
 %
 <<texreg>>==
 texreg::screenreg(list(fit_null, fit_intercept, fit),
   include.pseudoR2 = TRUE, include.R2 = TRUE, single.row = TRUE)
 @
 
-Finally, the key interest of an OPSR study almost certainly is the estimation of treatment effects which relies on (counterfactual) conditional expectations as already noted in the mathematical description.
+Finally, the key interest of an OPSR study almost certainly is the estimation of treatment effects which relies on (counterfactual) conditional expectations as already noted in the mathematical exposition.
 %
 <<predict>>==
 p1 <- predict(fit, group = 1, type = "response")
 p2 <- predict(fit, group = 1, counterfact = 2, type = "response")
 @
 %
-where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p2} results from Equation~\ref{eq:counterfact-exp}. The following \code{type} arguments are available
+where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p2} is the counterfactual outcome resulting from Equation~\ref{eq:counterfact-exp}. The following \code{type} arguments are available
 \begin{itemize}
 \item \code{type = "response"}: Predicts the continuous outcome according to the Equations referenced above.
 \item \code{type = "unlog-response"}: Predicts the back-transformed response if the continuous outcome was log-transformed according to Equations~\ref{eq:log-cond-exp}-\ref{eq:log-counterfact-exp}.
@@ -467,7 +467,7 @@ groups <- list(
 )
 @
 
-With help of the \pkg{texreg} package, production ready tables (in various output formats) can be built with ease.
+With help of the \pkg{texreg} package, production-grade tables (in various output formats) can be generated with ease.
 %
 <<replica, results=tex>>=
 texreg::texreg(
