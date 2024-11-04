@@ -98,7 +98,7 @@
     - Similar related software in other programming languages
     - Also briefly mention copula modeling which could be used to relax the multivariate normality assumption
   -[ ] ...
-  -[ ] Break lines after n characters (final paper)
+  -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 
 
 
