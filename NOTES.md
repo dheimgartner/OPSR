@@ -112,6 +112,7 @@
     %\VignetteDepends{}
     %\VignetteKeywords{}
     %\VignettePackage{OPSR}
+-[ ] Maybe revise print.summary.opsr (similar to zeroinfl model, without ---)
 
 
 ## General

@@ -1,4 +1,4 @@
-\documentclass[article]{jss}
+\documentclass[article, nojss]{jss}
 
 %% -- LaTeX packages and custom commands ---------------------------------------
 
@@ -53,22 +53,14 @@ options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE,
 
 %% - \Abstract{} almost as usual
 \Abstract{
-This short article illustrates how to write a manuscript for the
-\emph{Journal of Statistical Software} (JSS) using its {\LaTeX} style files.
-Generally, we ask to follow JSS's style guide and FAQs precisely. Also,
-it is recommended to keep the {\LaTeX} code as simple as possible,
-i.e., avoid inclusion of packages/commands that are not necessary.
-For outlining the typical structure of a JSS article some brief text snippets
-are employed that have been inspired by \cite{Zeileis+Kleiber+Jackman:2008},
-discussing count data regression in \proglang{R}. Editorial comments and
-instructions are marked by vertical bars.
+When treatment is endogenous, selectivity-biases might arise if unobserved factors influence simultaneously both the selection and outcome process. A possible cure in the case of cross-sectional data is to explicitly account for this error correlation and estimate the covariance matrix of the two processes. This is known as endogenous switching regression. The \proglang{R} package \pkg{OPSR} introduced in this article provides an easy-to-use, fast and memory efficient interface to ordinal probit switching regression, accounting for self-selection into an ordinal treatment. It handles log-transformed outcomes which need special consideration when computing conditional expectations and thus treatment effects.
 }
 
 %% - \Keywords{} with LaTeX markup, at least one required
 %% - \Plainkeywords{} without LaTeX markup (if necessary)
 %% - Should be comma-separated and in sentence case.
-\Keywords{JSS, style guide, comma-separated, not capitalized, \proglang{R}}
-\Plainkeywords{JSS, style guide, comma-separated, not capitalized, R}
+\Keywords{ordinal probit switching regression, endogenous switching regression, Heckman selection, selectivity-bias, treatment effect, \proglang{R}}
+\Plainkeywords{ordinal probit switching regression, endogenous switching regression, Heckman selection, selectivity-bias, treatment effect, R}
 
 %% - \Address{} of at least one author
 %% - May contain multiple affiliations for each author
@@ -111,7 +103,7 @@ The seminal work by \cite{Heckman:1979} proposed a two-part model to address the
 
 Many different variants can then be derived by either placing different distributional assumptions on the errors and/or how the latent process manifests into observed outcomes (i.e., the dependent variables can be of varying types, such as binary, ordinal, censored, or continuous) more generally known as conditional mixed-process (CMP) models. CMP models comprise a broad family involving two or more equations featuring jointly multivariate normally distributed error terms. The \proglang{Stata} \citep{Stata} command \code{cmp} \citep{Roodman:2011} can fit such models. The variant at the heart of this paper is an ordinal probit switching regression (OPSR) model, with an ordered treatment and continuous outcome. Throughout the text we use the convention that OPSR refers to the general methodology, while \pkg{OPSR} refers specifically to the package.
 
-OPSR is available as a \proglang{Stata} command, \code{oheckman} \citep{Chiburis+Lokshin:2007}, which however, does not allow distinct specifications for the continuous outcome processes. The recently available \proglang{R}-package \pkg{switchSelection} \citep{Potanin:2024} allows to estimate multivariate and multinomial sample selection and endogenous switching models with multiple outcomes. These models are the systems of ordinal, continuous and multinomial equations and thus nest OPSR as a special case.
+OPSR is available as a \proglang{Stata} command, \code{oheckman} \citep{Chiburis+Lokshin:2007}, which however, does not allow distinct specifications for the continuous outcome processes. The recently available \proglang{R} package \pkg{switchSelection} \citep{Potanin:2024} allows to estimate multivariate and multinomial sample selection and endogenous switching models with multiple outcomes. These models are the systems of ordinal, continuous and multinomial equations and thus nest OPSR as a special case.
 
 \pkg{OPSR} is tailored to one particular method, easy to use, fast and memory efficient. It handles log-transformed continuous outcomes which need special consideration for the computation of conditional expectations. It obeys to \proglang{R}'s implicit modeling conventions (by extending the established generics such as \fct{summary}, \fct{predict}, \fct{update}, \fct{anova} among others) and produces production-grade output tables. This work generalizes the learnings from \cite{Wang+Mokhtarian:2024} and makes the OPSR methodology readily available. The mathematical notation presented here translates to code almost verbatim which hopefully serves a pedagogical purpose for the curious reader.
 
@@ -202,14 +194,13 @@ where $\rho_j$ represents the correlation between the errors of the selection mo
 
 As shown in \cite{Wang+Mokhtarian:2024}, the log-likelihood of observing all individuals self-selecting into treatment $j$ and choosing continuous outcome $y_j$ can be expressed as
 %
-\begin{equation} \label{eq:log-lik}
-\begin{aligned}
-&\ell(\theta \mid \boldsymbol{W}, \boldsymbol{X_j}) = \sum_{j = 1}^{J} \sum_{\{j\}}
+\begin{multline} \label{eq:log-lik}
+\ell(\theta \mid \boldsymbol{W}, \boldsymbol{X_j}) = \sum_{j = 1}^{J} \sum_{\{j\}}
 \left\{
 \ln\left[
 \frac{1}{\sigma_j} \phi\left(\frac{y_j - \Xb}{\sigma_j}\right)
 \right] \quad + \right. \\
-&\left. \ln\left[
+\left. \ln\left[
 \Phi\left(
 \frac{\sigma_j (\kappa_j - \Wg) - \rho_j(y_j - \Xb)}{\sigma_j\sqrt{1 - \rho_j^2}}
 \right) -
@@ -218,14 +209,9 @@ As shown in \cite{Wang+Mokhtarian:2024}, the log-likelihood of observing all ind
 \right)
 \right]
 \right\}
-\end{aligned}
-\end{equation}
+\end{multline}
 %
 where $\sum_{\{j\}}$ means the summation of all the cases belonging to the \jth{} selection outcome, $\phi(\cdot)$ and $\Phi(\cdot)$ are the density and cumulative distribution function of the standard normal distribution.
-
-\begin{leftbar}
-daniehei: See overleaf tutorial \url{https://www.overleaf.com/learn/latex/Aligning_equations_with_amsmath}.
-\end{leftbar}
 
 The conditional expectation can be expressed as
 %
@@ -236,7 +222,7 @@ The conditional expectation can be expressed as
 \end{aligned}
 \end{equation}
 %
-where the fraction is the ordered probit switching regression model counterpart to the inverse Mills ratio (IMR) term of a binary switching regression model. We immediately see, that regressing $\boldsymbol{X_j}$ on $y_j$ leads to an omitted variable bias if $\rho_j \neq 0$ and is the root cause of the selection bias. However, the IMR can be pre-computed based on a ordinal probit model and then included in the second stage regression, which describes the Heckman correction \citep{Heckman:}. It should be warned, that since the Heckman two-step procedure includes an estimate in the second step regression, the resulting OLS standard errors and heteroskedasticity-robust standard errors are incorrect \citep{Greene:2002}.
+where the fraction is the ordered probit switching regression model counterpart to the inverse Mills ratio (IMR) term of a binary switching regression model. We immediately see, that regressing $\boldsymbol{X_j}$ on $y_j$ leads to an omitted variable bias if $\rho_j \neq 0$ and is the root cause of the selection bias. However, the IMR can be pre-computed based on a ordinal probit model and then included in the second stage regression, which describes the Heckman correction \citep{Heckman:1979}. It should be warned, that since the Heckman two-step procedure includes an estimate in the second step regression, the resulting OLS standard errors and heteroskedasticity-robust standard errors are incorrect \citep{Greene:2002}.
 
 To obtain unbiased treatment effects, we must further evaluate the ``counterfactual outcome'', which reflects the expected outcome under a counterfactual treatment (i.e., for $j' \neq j$)
 %
@@ -271,7 +257,15 @@ for the factual case, and
 %
 for the counterfactual case \citep{Wang+Mokhtarian:2024}.
 
-We provide the usual formula interface to specify a model. To allow for multiple parts and multiple responses, we use the \pkg{Formula} package \citep{Zeileis+Croissant:2010}. After parsing the formula object and generating the model matrices, the Heckman two-step estimator is called in \fct{opsr\_2step} to generate reasonable starting values. These are then passed together with the data to the basic computation engine \fct{opsr.fit}. The main estimates are retrieved using maximum likelihood estimation by passing the log-likelihood function (Equation~\ref{eq:log-lik}) to \fct{maxLik} from the \pkg{maxLik} package \citep{Henningsen+Toomet:2011}. The likelihood function \fct{loglik\_cpp} is implemented in \proglang{C++} using \pkg{Rcpp} \citep{Edelbuettel+Balamuta:2018} and relying on the data structures provided by \pkg{RcppArmadillo} \citep{Edelbuettel+Sanderson:2014}. Parallelization is available using \proglang{OpenMP}. This makes \pkg{OPSR} both fast and memory efficient (as data matrices are passed by reference). All the above calls are nested in the main interface \fct{opsr} which returns an object of class \class{opsr}. Several methods then exist to post-process this object as illustrated below.
+\pkg{OPSR}'s architecture can be conceptualized as follows:
+\begin{itemize}
+\item We provide the usual formula interface to specify a model. To allow for multiple parts and multiple responses, we rely on the \pkg{Formula} package \citep{Zeileis+Croissant:2010}.
+\item After parsing the formula object and generating the model matrices, the Heckman two-step estimator is called in \fct{opsr\_2step} to generate reasonable starting values.
+\item These are then passed together with the data to the basic computation engine \fct{opsr.fit}. The main estimates are retrieved using maximum likelihood estimation by passing the log-likelihood function \fct{loglik\_cpp} (Equation~\ref{eq:log-lik}) to \fct{maxLik} from the \pkg{maxLik} package \citep{Henningsen+Toomet:2011}.
+\item All the above calls are nested in the main interface \fct{opsr} which returns an object of class \class{opsr}. Several methods then exist to post-process this object as illustrated below.
+\end{itemize}
+
+The likelihood function \fct{loglik\_cpp} is implemented in \proglang{C++} using \pkg{Rcpp} \citep{Edelbuettel+Balamuta:2018} and relying on the data types provided by \pkg{RcppArmadillo} \citep{Edelbuettel+Sanderson:2014}. Parallelization is available using \proglang{OpenMP}. This makes \pkg{OPSR} both fast and memory efficient (as data matrices are passed by reference).
 
 
 %% -- Illustrations ------------------------------------------------------------
@@ -502,7 +496,7 @@ Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are for
 \section{Case study} \label{sec:case-study}
 
 \begin{leftbar}
-daniehei: TU+ case study. Intended to demonstrate how to use \pkg{OPSR} in a real-(or research-) world example. Don't comment on what a function does but interpret the output substantively.
+daniehei: TU+ case study. Intended to demonstrate how to use \pkg{OPSR} in a real-world example. Don't comment on what a function does but interpret the output substantively.
 \end{leftbar}
 
 
