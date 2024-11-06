@@ -70,11 +70,18 @@ When treatment is endogenous, selection bias might arise if unobserved factors s
 \Address{
 Daniel Heimgartner\\
 Institute for Transport Planning and Systems\\
-ETH Z\"urich\\
+Eidgen\"ossische Technische Hochschule Z\"urich\\
 IFW C 46.1\\
 Haldeneggsteig 4\\
 8092 Z\"urich, Switzerland\\
-E-mail: \email{daniel.heimgartner@ivt.baug.ethz.ch}
+E-mail: \email{daniel.heimgartner@ivt.baug.ethz.ch}\\
+\\
+Xinyi Wang\\
+Department of Urban Studies and Planning\\
+Massachusetts Institute of Technology\\
+105 Massachusetts  Avenue\\
+Cambridge, MA 02139\\
+E-mail: \email{xinyi174@mit.edu}
 }
 
 \begin{document}
@@ -487,7 +494,7 @@ Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are for
 \begin{enumerate}
 \item The structural coefficients ($\kappa$, $\sigma$ and $\rho$) and coefficients belonging to the selection component can be omitted (\code{include.structural = FALSE}, \code{include.selection = FALSE}).
 \item The model components can be printed side-by-side (\code{beside = TRUE}).
-\item Additional goodness-of-fit indicators can be included (\code{include.R2}).
+\item Additional goodness-of-fit indicators can be included (\code{include.R2 = TRUE}).
 \item The output formatting can be controlled flexibly, by reordering, renaming and grouping coefficients (the fiddly but trivial details are hidden here for brevity).
 \end{enumerate}
 
