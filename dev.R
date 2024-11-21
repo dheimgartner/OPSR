@@ -575,3 +575,12 @@ print(summary(fit_null))
 ## include R2 for each regime in texreg
 devtools::load_all()
 texreg::screenreg(fit, include.pseudoR2 = TRUE, include.R2 = TRUE)
+
+## https://github.com/dheimgartner/OPSR/issues/7
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+model <- ys | yo ~ xs1 + xs2 | xo1 + I(1 * xo2)
+fit <- opsr(model, dat)
+fit_null <- opsr_null_model(fit)
+summary(fit_null)

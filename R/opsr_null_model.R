@@ -21,7 +21,14 @@ opsr_null_model <- function(object, ...) {
     stop("Intercept needs to be included for all regimes!")
   }
   fixed <- sapply(nm, function(x) !grepl(pattern, x))
+
+  browser()
+  debugonce(opsr)
   dat <- model.frame(object)
+
+
+
+
   fit_null <- opsr(object$formula, dat, start = start, fixed = fixed, ...)
   class(fit_null) <- c("opsr.null", class(object))
   fit_null
