@@ -4,12 +4,14 @@
 \alias{print.summary.opsr}
 \title{Print Method for Summary OPSR Objects}
 \usage{
-\method{print}{summary.opsr}(x, digits = max(3L, getOption("digits") - 3L), ...)
+\method{print}{summary.opsr}(x, digits = max(3L, getOption("digits") - 3L), print.call = TRUE, ...)
 }
 \arguments{
 \item{x}{and object of class \code{"summary.opsr"}}
 
 \item{digits}{minimum number of significant digits to be used for most numbers (passed to \code{\link[stats:printCoefmat]{stats::printCoefmat}}).}
+
+\item{print.call}{if \code{TRUE}, prints the underlying \code{\link{opsr}} call.}
 
 \item{...}{further arguments passed to or from other methods.}
 }

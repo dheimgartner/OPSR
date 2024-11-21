@@ -552,3 +552,22 @@ fit <- opsr(model, dat, start = start)
 fit_lm <- lm(yo ~ xo1 + xo2, data = dat, subset = ys == 1)
 debugonce(print)
 anova(fit_lm)
+
+
+## remove fixed parameters in opsr_null_model
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+model <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+fit <- opsr(model, dat)
+fit_null <- opsr_null_model(fit)
+summary(fit_null)
+texreg::screenreg(list(fit_null, fit))
+
+## print.formula arg in print.anova.opsr
+print(anova(fit), print.formula = FALSE)
+
+## revising print.summary.opsr
+devtools::load_all()
+print(summary(fit))
+print(summary(fit_null))

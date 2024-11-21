@@ -22,7 +22,7 @@
 
 ## A little on testing
 
->Init via `usethis::ues_testthat(3)`
+>Init via `usethis::use_testthat(3)`
 
 - Good practice to keep `R/` and `tests/testthat/` aligned (i.e., for each file write a testsuit with the `test-` filename)
 - `usethis::use_test("foo")`
@@ -85,6 +85,14 @@
   - [x] use @inheritParams => not really needed here...
 -[x] `devtools::submit_cran()`: Read and follow chapter 22 (https://r-pkgs.org/release.html)
 -[x] OpenMP parallelize (see Statistical Computing in C++ and R pdf => has chapter on it)
+
+-[x] Remove fixed variables in `"opsr.null"`
+-[x] Add argument to remove model in `print.anova`
+-[x] Revise `print.summary.opsr()`
+  -[x] Add (optional) call (part of `"summary.opsr"`)
+  -[x] Remove ---
+  - See hurdle model (jss paper) as an example
+-[ ] Resolve github issues
 
 >Kepp the paper as simple and minimal as possible (always a good idea)...
 

@@ -30,6 +30,7 @@ opsr_null_model <- function(object, ...) {
 #' @export
 summary.opsr.null <- function(object, ...) {
   ms <- NextMethod("summary", object)  # opsr
+  ms$coef_table[object$fixed, "Estimate"] <- NA_real_
   ms$formula <- ~Nullmodel
   class(ms) <- c("summary.opsr.null", class(ms))
   ms
@@ -37,8 +38,6 @@ summary.opsr.null <- function(object, ...) {
 
 #' @export
 print.summary.opsr.null <- function(x, ...) {
-  ps <- utils::capture.output(NextMethod("print", x))
-  ps[2] <- "Ordinal probit switching regression (null model)"
-  cat(ps, sep = "\n")
+  NextMethod("print", x)
   invisible(x)
 }
