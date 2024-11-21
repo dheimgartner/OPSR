@@ -41,10 +41,15 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
   }
 
   if (include.R2) {
-    R2 <- s$GOFcomponents$R2[["Total"]]
-    gof <- c(gof, R2)
-    gof.names <- c(gof.names, "R$^2$")
-    gof.decimal <- c(gof.decimal, TRUE)
+    R2 <- s$GOFcomponents$R2
+    for (r2 in R2) {
+      gof <- c(gof, r2)
+    }
+    gof.names <- c(gof.names, "R$^2$ (total)")
+    for (i in seq_len(s$nReg)) {
+      gof.names <- c(gof.names, paste0("R$^2$ (", i, ")"))
+    }
+    gof.decimal <- c(gof.decimal, rep(TRUE, length(R2)))
   }
 
   n <- stats::nobs(model)
@@ -138,7 +143,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #' @param include.outcome whether or not outcome coefficients should be printed.
 #' @param include.pseudoR2 whether or not the pseudo R2 statistic for the selection
 #'   component should be printed. See also the 'Details' section.
-#' @param include.R2 whether or not the R2 statistic for the outcome component
+#' @param include.R2 whether or not the R2 statistic for the outcome components
 #'   should be printed.
 #' @param ... additional arguments passed to [`summary.opsr`].
 #'

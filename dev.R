@@ -571,3 +571,7 @@ print(anova(fit), print.formula = FALSE)
 devtools::load_all()
 print(summary(fit))
 print(summary(fit_null))
+
+## include R2 for each regime in texreg
+devtools::load_all()
+texreg::screenreg(fit, include.pseudoR2 = TRUE, include.R2 = TRUE)
