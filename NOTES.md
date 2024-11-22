@@ -92,7 +92,7 @@
   -[x] Remove ---
   - See hurdle model (jss paper) as an example
 -[x] Maybe include R^2 for regimes... => R^2 (1), R^2 (2), ...
--[ ] Resolve github issues
+-[x] Resolve github issues
 
 >Kepp the paper as simple and minimal as possible (always a good idea)...
 
