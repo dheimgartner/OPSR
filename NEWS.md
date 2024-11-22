@@ -1,4 +1,8 @@
-# OPSR (development version)
+# OPSR 0.1.2.9001
+
+* R2 for each regime in texreg functions.
+* Nicer summary printing and setting fixed values in null model to NA.
+* Fixed issues 7 - 9.
 
 # OPSR 0.1.2
 
