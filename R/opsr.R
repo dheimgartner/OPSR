@@ -114,7 +114,8 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   weights <- w  # keep a copy to attach to output
   w <- w[order(Z)]
 
-  W <- model.matrix(update(f, ~ . -1), mf, rhs = 1)  # no intercept (identification threshold)!
+  W <- model.matrix(f, mf, rhs = 1)
+  W <- W[, !(colnames(W) %in% "(Intercept)"), drop = FALSE]  # no intercept (identification threshold)!
   Ws <- lapply(seq_len(nReg), function(i) {
     as.matrix(W[Z == i, ])
   })

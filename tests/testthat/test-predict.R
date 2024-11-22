@@ -102,3 +102,11 @@ test_that("yields similar results to predict.lm if no error correlation", {
   expect_equal(test, 1, tolerance = 1e-2)
 })
 
+## https://github.com/dheimgartner/OPSR/issues/8
+test_that("works on model with formula transformation (factor)", {
+  sim_dat <- load_sim_dat()
+  dat <- sim_dat$data
+  dat$xs3 <- ifelse(dat$xs2 > 0, "a", "b")
+  fit <- opsr(ys | yo ~ xs1 + factor(xs3) | xo1 + xo2, data = dat, printLevel = 0)
+  expect_no_error(predict(fit, group = 1, type = "prob"))
+})

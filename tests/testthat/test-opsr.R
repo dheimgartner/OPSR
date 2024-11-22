@@ -45,13 +45,23 @@ test_that("parameters can be fixed", {
   expect_true(all(test == 0))
 })
 
-test_that("accepts usual formula syntax (factors and transformations)", {
+test_that("accepts usual formula syntax (factors and transformations) in outcome process", {
   sim_dat <- load_sim_dat()
   dat <- sim_dat$data
   dat$xo3 <- ifelse(dat$xo2 > 0, "a", "b")
   expect_no_error(fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + factor(xo3), data = dat, printLevel = 0))
   expect_equal(fit$code, 0)
   expect_no_error(fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + I(xo2**2) + log(xo1 + 10), data = dat, printLevel = 0))
+  expect_equal(fit$code, 0)
+})
+
+test_that("accepts usual formula syntax (factors and transformations in selection process", {
+  sim_dat <- load_sim_dat()
+  dat <- sim_dat$data
+  dat$xs3 <- ifelse(dat$xs2 > 0, "a", "b")
+  expect_no_error(fit <- opsr(ys | yo ~ xs1 + factor(xs3) | xo1 + xo2, data = dat, printLevel = 0))
+  expect_equal(fit$code, 0)
+  expect_no_error(fit <- opsr(ys | yo ~ xs1 + I(xs2**2) + log(xs1 + 10) | xo1 + xo2, data = dat, printLevel = 0))
   expect_equal(fit$code, 0)
 })
 

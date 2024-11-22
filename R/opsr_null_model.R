@@ -24,7 +24,7 @@ opsr_null_model <- function(object, ...) {
   dat <- opsr_get_all_vars(object)
 
   ## somewhat hacky: model.frame searches environment(object$formula) but we want
-  ## it to find the data in this environment here
+  ## it to find the data in this environment
   f <- object$formula
   environment(f) <- environment()
 

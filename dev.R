@@ -595,3 +595,26 @@ fit_null <- opsr_null_model(fit)
 summary(fit)
 summary(fit_null)
 model.frame(fit_null)
+
+
+
+
+
+
+## https://github.com/dheimgartner/OPSR/issues/8
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+dat$xo3 <- ifelse(dat$xo2 > 0, "a", "b")
+dat$xs3 <- ifelse(dat$xs2 > 0, "a", "b")
+fit1 <- opsr(ys | yo ~ xs1 + xs2 | xo1 + factor(xo3), data = dat)  # ok
+fit2 <- opsr(ys | yo ~ xs1 + factor(xs3) | xo1 + factor(xo3), data = dat)  # not ok
+summary(fit2)
+
+debugonce(predict)
+predict(fit2, group = 1, type = "prob")
+
+
+
+
+
