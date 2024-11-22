@@ -554,6 +554,8 @@ debugonce(print)
 anova(fit_lm)
 
 
+
+
 ## remove fixed parameters in opsr_null_model
 devtools::load_all()
 sim_dat <- opsr_simulate()
@@ -576,11 +578,20 @@ print(summary(fit_null))
 devtools::load_all()
 texreg::screenreg(fit, include.pseudoR2 = TRUE, include.R2 = TRUE)
 
+
+
+
+
 ## https://github.com/dheimgartner/OPSR/issues/7
 devtools::load_all()
+rm(list = ls())
 sim_dat <- opsr_simulate()
 dat <- sim_dat$data
+list2env(as.list(dat), envir = .GlobalEnv)
+rm(dat)
 model <- ys | yo ~ xs1 + xs2 | xo1 + I(1 * xo2)
-fit <- opsr(model, dat)
+fit <- opsr(model)
 fit_null <- opsr_null_model(fit)
+summary(fit)
 summary(fit_null)
+model.frame(fit_null)

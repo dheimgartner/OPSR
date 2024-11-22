@@ -83,3 +83,17 @@ test_that("runs on machines without OpenMP", {
   dat <- sim_dat$data
   expect_no_error(fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat, printLevel = 0))
 })
+
+test_that("works if data is not passed (finds in env)", {
+  sim_dat <- load_sim_dat()
+  dat <- sim_dat$data
+  ys <- dat$ys
+  yo <- dat$yo
+  xs1 <- dat$xs1
+  xs2 <- dat$xs2
+  xo1 <- dat$xo1
+  xo2 <- dat$xo2
+  rm(dat)
+  f <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+  expect_no_error(opsr(f, printLevel = 0))
+})

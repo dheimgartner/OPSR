@@ -21,15 +21,14 @@ opsr_null_model <- function(object, ...) {
     stop("Intercept needs to be included for all regimes!")
   }
   fixed <- sapply(nm, function(x) !grepl(pattern, x))
+  dat <- opsr_get_all_vars(object)
 
-  browser()
-  debugonce(opsr)
-  dat <- model.frame(object)
+  ## somewhat hacky: model.frame searches environment(object$formula) but we want
+  ## it to find the data in this environment here
+  f <- object$formula
+  environment(f) <- environment()
 
-
-
-
-  fit_null <- opsr(object$formula, dat, start = start, fixed = fixed, ...)
+  fit_null <- opsr(f, dat, start = start, fixed = fixed, ...)
   class(fit_null) <- c("opsr.null", class(object))
   fit_null
 }
