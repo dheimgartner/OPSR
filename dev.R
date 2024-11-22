@@ -618,3 +618,37 @@ predict(fit2, group = 1, type = "prob")
 
 
 
+## https://github.com/dheimgartner/OPSR/issues/9
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+dat$yo <- dat$yo + 10  # shift to avoid log of neg
+dat$log_yo <- log(dat$yo + 1)
+
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
+summary(fit)
+
+fit_log <- opsr(ys | log_yo ~ xs1 + xs2 | xo1 + xo2, dat)
+summary(fit_log)
+
+texreg::screenreg(list(fit, fit_log))
+
+boxplot(dat$yo)
+boxplot(dat$log_yo)
+
+compare_fun <- function(fit, group, type = "unlog-response") {
+  p <- predict(fit, group = group, type = type)  # counterfact = group
+  compare <- data.frame(
+    yo = subset(dat, subset = ys == group, select = yo),
+    yo_pred = na.omit(p)
+  )
+
+  title <- paste0("'group' = ", group)
+  plot(compare, xlim = c(0, max(compare)), ylim = c(0, max(compare)), main = title)
+  abline(a = 0, b = 1, col = "red")
+}
+
+par(mfrow = c(1, 3))
+compare_fun(fit_log, group = 1)
+compare_fun(fit_log, group = 2)
+compare_fun(fit_log, group = 3)

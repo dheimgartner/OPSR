@@ -102,7 +102,6 @@ test_that("yields similar results to predict.lm if no error correlation", {
   expect_equal(test, 1, tolerance = 1e-2)
 })
 
-## https://github.com/dheimgartner/OPSR/issues/8
 test_that("works on model with formula transformation (factor)", {
   sim_dat <- load_sim_dat()
   dat <- sim_dat$data
