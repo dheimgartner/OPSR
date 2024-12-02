@@ -105,7 +105,10 @@
     - CRAN search => Econometrics taskview and metacran (list keywords: Heckman, Selection [Bias], Sample Selection, Switching Regression, Regime Switching)
     - Similar related software in other programming languages
     - Also briefly mention copula modeling which could be used to relax the multivariate normality assumption
-  -[ ] ...
+  -[ ] Scetch out case study chapter (data, boxplot vmd, commute distance, with illustration omitting log_commute_distance_km)
+  -[ ] Code snippets (just put helpers in utils and source)
+  -[ ] (Compute treatment effects [similar to Xinyi's paper])
+  -[ ] Write case study (see `TU` documentation for analytical sample...)
   -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 
 
