@@ -112,16 +112,6 @@
   -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 
 
-- compare full sample and analytical sample
-- vmd as term (driver vs. passenger)
-- and number of trips by modes
-- flag commutes
-- include commutes (and frequency)
-- separate distance by mode
-- calculate unit treatment and total treatment effect
-- average commute distance
-- include some original attitude indicators
-
 
 
 
