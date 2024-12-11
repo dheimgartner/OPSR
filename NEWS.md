@@ -1,5 +1,6 @@
 # OPSR (development version)
 
+* Added timeuse data
 * R2 for each regime in texreg functions.
 * Nicer summary printing and setting fixed values in null model to NA.
 * Fixed issues 7 - 9.
