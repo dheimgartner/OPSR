@@ -374,26 +374,9 @@ Elements are \code{NA_real_} if the \code{group} does not correspond to the obse
 
 Now that the user understands the basic workflow, we illustrate some nuances by reproducing a key output of \cite{Wang+Mokhtarian:2024} where they investigate the treatment effect of telework on weekly vehicle miles driven. The data is attached, documented (\code{?telework_data}) and can be loaded by
 %
-<<data>>=
+<<telework-data>>=
 data("telework_data", package = "OPSR")
 @
-%
-A basic boxplot of the response variable against the three teleworking status is displayed in Figure~\ref{fig:vmd-twstatus}. By simply looking at the data descriptively, we might prematurely conclude telework reduces vehicle miles driven. However, the whole value proposition of OPSR (and for models in general) is that we really are interested in a counterfactual. If the teleworkers self-select, the counterfactual is not simply the group average. More prosaically, if the usual telewokers (UTW) would choose to be non-usual teleworkers (NUTW), they might travel more or less than the actual NUTWs.
-
-\begin{leftbar}
-daniehei: Maybe do this discussion and boxplot in Section~\ref{sec:case-study} and omit here.
-\end{leftbar}
-
-\setkeys{Gin}{width=.5\textwidth}
-\begin{figure}[t!]
-\centering
-<<vmd-twstatus, echo=FALSE, fig=TRUE, height=4.7, width=4.5>>=
-plot(vmd_ln ~ factor(twing_status), data = telework_data, varwidth = TRUE,
-     ylab = "Log weekly vehicle miles driven", xlab = "Teleworking status",
-     names = c("NTW", "NUTW", "UTW"))
-@
-\caption{\label{fig:vmd-twstatus} Log vehicle miles driven for different teleworking status.}
-\end{figure}
 
 <<hidden, echo=FALSE>>=
 start <- c(
@@ -502,8 +485,149 @@ Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are for
 %% -- Case study ---------------------------------------------------------------
 \section{Case study} \label{sec:case-study}
 
+Now that the reader is familiar with the main functionality of \pkg{OPSR}, this section demonstrates how to use it in a real-world example. The emphasis, therefore, lies not on what each function does but on guiding the reader through the modeling and post-estimation steps. We investigate once again, telework treatment effects on weekly distance traveled (aggregated over all modes of transport).
+
+%% The data
+We use the TimeUse+ dataset \citep{Winkler+Meister+Axhausen:2024}, a smartphone-based diary, recording travel, time use, and expenditure data. Our analytical sample comprises employed individuals only and is based on what \citet{Winkler+Axhausen:2024} identified as valid days. A valid day has at least 20 hours of information where 70\% of the events were validated by the user. Users who did not have at least 14 valid days were excluded and for the remaining 824 participants mobility indicators for a typical week were constructed. The telework status is based on tracked (and labelled) work activities and we differentiate three regimes: Non-teleworkers (NTW), Non-usual teleworkers (NUTW; $<$3 days/week) and Usual teleworkers (UTW; 3$+$ days/week).
+
+The data, underlying this analysis, is attached, documented (\code{?timeuse_data}) and can be loaded by
+%
+<<timeuse-data>>=
+data("timeuse_data", package = "OPSR")
+@
+
+A basic boxplot of the response variable against the three teleworking status is displayed in Figure~\ref{fig:boxplot}. By simply looking at the data descriptively, we might prematurely conclude that telework does not impact weekly distance traveled. However, the whole value proposition of OPSR (and for models in general) is that we really are interested in a counterfactual. If the teleworkers self-select, the counterfactual is not simply the group average. More prosaically, if the usual telewokers (UTW) would choose to be non-teleworkers (NTW), they might travel more or less than the actual NTWs.
+
+Meanwhile, commute distance increases across the three teleworking groups, suggesting that teleworkers ``compensate'' some of the foregone commute with leisure travel.
+
+\setkeys{Gin}{width=.8\textwidth}
+\begin{figure}[t!]
+\centering
+<<boxplot, echo=FALSE, fig=TRUE, height=5, width=9>>=
+par(mfrow = c(1, 2))
+plot(log_weekly_km ~ factor(wfh), data = timeuse_data, varwidth = TRUE,
+     ylab = "Log weekly distance traveled (km)", xlab = "Teleworking status",
+     names = c("NTW", "NUTW", "UTW"), main = "Weekly distance traveled",
+     col = "white")
+plot(log_commute_km ~ factor(wfh), data = timeuse_data, varwidth = TRUE,
+     ylab = "Log commute distance (km)", xlab = "Teleworking status",
+     names = c("NTW", "NUTW", "UTW"), main = "Commute distance",
+     col = "white")
+@
+\caption{\label{fig:boxplot} Log weekly distance traveled for different teleworking status.}
+\end{figure}
+
+%% The model
+Before blindly throwing all variables at \pkg{OPSR} the modeler is well advised to first, think of an identification restriction as discussed in Section~\ref{sec:model} and second, estimate the models separately, e.g., using \fct{polr} from the \pkg{MASS} package \citep{Venables+Ripley:2002}, and \fct{lm} for the treatment groups separately. We reserve the international standard classification of occupations (ISCO-08) variables for the selection process.
+%
+<<fit-polr>>=
+drop <- c("id", "weekly_km", "log_weekly_km", "commute_km", "log_commute_km",
+  "wfh_days")
+dat_polr <- subset(timeuse_data, select = !(names(timeuse_data) %in% drop))
+dat_polr$wfh <- factor(dat_polr$wfh)
+fit_polr <- MASS::polr(wfh ~ ., dat_polr, method = "probit")
+@
+
+We use the \fct{stepAIC} function to choose a selection model specification by AIC in a stepwise algorithm
+%
+<<step>>=
+fit_step <- MASS::stepAIC(fit_polr, trace = FALSE)
+fit_step$anova
+@
+%
+The selected model can also be fitted with \fct{opsr}, specifying a constant for all continuous outcomes
+%
+<<fit-selection>>=
+f_step <- wfh | log_weekly_km ~
+  age + educ_higher + hh_income + young_kids + workload + fixed_workplace +
+  shift_work + permanent_employed + isco_craft + isco_tech + isco_clerical +
+  isco_elementary + car_access + parking_home + freq_onl_order +
+  grocery_shopper |
+  1
+fit_step2 <- opsr(f_step, timeuse_data, printLevel = 0)
+@
+
+Fitting the linear models separately, has the advantage that the analyst gets aware of potential identification problems (e.g., colinear variables or missing factor levels in one of the groups). While the resulting estimates are potentially biased and their standard errors not reliable it can still be beneficial to investigate the estimates.
+%
+<<fit-outcome>>=
+fit_lm <- function(data, group) {
+  f <- paste0("log_weekly_km ~ . - wfh")
+  dat <- subset(data, subset = wfh == group)
+  fit <- lm(f, dat)
+  fit
+}
+
+drop <- c("id", "weekly_km", "commute_km", "log_commute_km", "wfh_days")
+dat_lm <- subset(timeuse_data,
+  select = !(names(timeuse_data) %in% drop) & !grepl("^isco_", names(timeuse_data)))
+
+fit_ntw <- fit_lm(dat_lm, group = 1)
+fit_nutw <- fit_lm(dat_lm, group = 2)
+fit_utw <- fit_lm(dat_lm, group = 3)
+@
+%
+For example, looking at \code{summary(fit_utw)} yields the insight, that we have two identification issues for the UTW: First \code{shift_work} is a constant and second \code{parking_home} is colinear with \code{car_access}.
+
+We then follow the conventional (somewhat heuristic) model building strategy to specify the full identified model and then exclude all variables which do not produce significant estimates (at the 10\% level). The formula specification of the full model is hidden here for brevity
+%
+<<hidden, echo=FALSE>>=
+f_full <- wfh | log_weekly_km ~
+  age + educ_higher + hh_income + young_kids + workload + fixed_workplace +
+  shift_work + permanent_employed + isco_craft + isco_tech + isco_clerical +
+  isco_elementary + car_access + parking_home + freq_onl_order +
+  grocery_shopper |
+  sex_male + age + educ_higher + swiss + married + res_loc + dogs + hh_size +
+  young_kids + n_children + workload + fixed_workplace + permanent_employed +
+  driverlicense + car_access + parking_home + parking_work + rents_home +
+  freq_onl_order + vacation + grocery_shopper |
+  sex_male + age + educ_higher + swiss + married + res_loc + dogs + hh_size +
+  young_kids + n_children + workload + fixed_workplace + permanent_employed +
+  driverlicense + car_access + parking_home + parking_work + rents_home +
+  freq_onl_order + vacation + grocery_shopper |
+  sex_male + age + educ_higher + swiss + married + res_loc + dogs + hh_size +
+  young_kids + n_children + workload + fixed_workplace + permanent_employed +
+  driverlicense + car_access + parking_work + rents_home +
+  freq_onl_order + vacation + grocery_shopper
+@
+%
+<<full-reduced>>=
+fit_full <- opsr(f_full, timeuse_data, printLevel = 0)
+f_red <- wfh | log_weekly_km ~
+  age + educ_higher + hh_income + young_kids + workload + fixed_workplace +
+  shift_work + permanent_employed + isco_craft + isco_tech + isco_clerical +
+  isco_elementary + car_access + parking_home + freq_onl_order +
+  grocery_shopper |
+  sex_male + res_loc + workload + permanent_employed + parking_work |
+  swiss + res_loc + young_kids + workload + parking_work |
+  sex_male + swiss + fixed_workplace + permanent_employed + parking_work
+
+fit_red <- opsr(f_red, timeuse_data, printLevel = 0)
+print(anova(fit_red, fit_full), print.formula = FALSE)
+summary(fit_red)
+@
+%
+We see that our reduced model specification is not rejected in the likelihood ratio test. Further, there is significant error correlation between the error of the selection process and the error of the outcome process for the UTW (\code{rho3}). The Wald-test suggests that the Null hypothesis (\code{rho1} = \code{rho2} = \code{rho3} = 0) can be rejected at the 5\% level, hinting that OPSR is beneficial given our model specification.
+
+However, so far we have neglected the commute distance which most likely impacts the propensity to telework (see Figure~\ref{fig:boxplot}) and naturally influences the weekly distance driven. To illustrate this, we simply add \code{log_weekly_km} to our reduced model specification
+%
+<<adding-commute>>=
+fit_commute <- update(fit_red, ~ . + log_commute_km | . + log_commute_km | . +
+  log_commute_km | . + log_commute_km)
+
+cat("Wald chi2 (rho):", round(summary(fit_commute)$wald$rho$pval, 2))
+
+texreg::screenreg(list(fit_red, fit_commute), include.R2 = TRUE,
+  include.pseudoR2 = TRUE)
+@
+%
+where now all goodness of fit indicators improved (in particular R$^2$ for the continuous outcomes) and the rho coefficients are no longer significant at conventional levels. Similarly, the Wald-test (rho) can not reject the Null. At the same time some of the coefficients slightly changed in magnitude and rendered insignificant or vice versa. For example, the effect of residential location (\code{o1_res_loc_rural} and \code{o2_res_loc_rural}) moderated the effect of commute distance in \code{fit_red}.
+
+While this discussion (of how to deal with potentially endogenous variables) is common for all regression analysis, it demonstrates here how error correlation can occur and why it might be important to account for. Both model specifications (\code{fit_red} and \code{fit_commute}) produce almost identical insights in the post-estimation that follows and we proceed with the latter model.
+
+%% The treatment effects
+
 \begin{leftbar}
-daniehei: TU+ case study. Intended to demonstrate how to use \pkg{OPSR} in a real-world example. Don't comment on what a function does but interpret the output substantively.
+daniehei: 1. Compute average treatment effects, 2. Graphic, 3. Scatter plot, 4. Unit treatment effects
 \end{leftbar}
 
 

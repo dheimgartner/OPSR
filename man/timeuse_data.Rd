@@ -12,7 +12,7 @@ Data frame with numeric and factor columns
 \item{weekly_km}{Weekly distance covered (in km) across all modes}
 \item{log_weekly_km}{Log of \code{weekly_km}}
 \item{wfh_days}{Based on tracked work episodes. Average full working days spent in home office during a typical week.}
-\item{wfh}{Derived from \code{wfh_days}: NTW = Non-TWing, NUTW = Non-usual TWing (< 3 days/week), UTW = Usual TWing (3+ days/week)}
+\item{wfh}{Derived from \code{wfh_days}: NTW=Non-TWer, NUTW=Non-usual TWer (< 3 days/week), UTW=Usual TWer(3+ days/week)}
 \item{commute_km}{Map matched commute distance in km}
 \item{log_commute_km}{Log of \code{commute_km}}
 \item{age}{Age}

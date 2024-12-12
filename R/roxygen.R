@@ -131,15 +131,18 @@ NULL
 
 #' Data from TimeUse+
 #'
-#' TimeUse+ **insertcite** was a tracking study conducted at the Institute for
-#' Transport Planning and Systems (IVT) at ETH Zurich. The data allows researchers
-#' to investigate time-use and mobility patterns. Full data access can be requested
-#' <doi:10.3929/ethz-b-000634868>.
+#' TimeUse+ \insertCite{Winkler+Meister+Axhausen:2024}{OPSR} was a tracking study
+#' conducted at the Institute for Transport Planning and Systems (IVT) at ETH Zurich.
+#' The data allows researchers to investigate time-use and mobility patterns.
+#' Full data access can be requested via <doi:10.3929/ethz-b-000634868>.
 #'
 #' @details
 #' The data comprises employed individuals only and is based on valid days only.
 #' A valid day has at least 20h of information where 70% of the events were
 #' validated by the user. The telework variables are based on tracked work activities.
+#'
+#' @references
+#' \insertRef{Winkler+Meister+Axhausen:2024}{OPSR}
 #'
 #' @format Data frame with numeric and factor columns
 #' \describe{
@@ -148,7 +151,7 @@ NULL
 #' \item{weekly_km}{Weekly distance covered (in km) across all modes}
 #' \item{log_weekly_km}{Log of `weekly_km`}
 #' \item{wfh_days}{Based on tracked work episodes. Average full working days spent in home office during a typical week.}
-#' \item{wfh}{Derived from `wfh_days`: NTW = Non-TWing, NUTW = Non-usual TWing (< 3 days/week), UTW = Usual TWing (3+ days/week)}
+#' \item{wfh}{Derived from `wfh_days`: NTW=Non-TWer, NUTW=Non-usual TWer (< 3 days/week), UTW=Usual TWer(3+ days/week)}
 #' \item{commute_km}{Map matched commute distance in km}
 #' \item{log_commute_km}{Log of `commute_km`}
 #' \item{age}{Age}
@@ -161,17 +164,17 @@ NULL
 #' \item{hh_income}{Gross household income per month (CHF)}
 #' \item{hh_size}{Total household size}
 #' \item{isco_clerical}{International standard classification of Occupations (ISCO-08): Clerical support workers}
-#' \item{isco_craft_and_trades}{International standard classification of Occupations (ISCO-08): Craft related trade workers}
+#' \item{isco_craft}{International standard classification of Occupations (ISCO-08): Craft related trade workers}
 #' \item{isco_elementary}{International standard classification of Occupations (ISCO-08): Elementary occupations}
 #' \item{isco_managers}{International standard classification of Occupations (ISCO-08): Managers}
-#' \item{isco_plant_and_machine_operators}{International standard classification of Occupations (ISCO-08): Plant and machine operators, and assemblers}
+#' \item{isco_plant}{International standard classification of Occupations (ISCO-08): Plant and machine operators, and assemblers}
 #' \item{isco_professionals}{International standard classification of Occupations (ISCO-08): Professionals}
-#' \item{isco_service_and_sales}{International standard classification of Occupations (ISCO-08): Service and sales workers}
-#' \item{isco_skilled_agricultural_forestry_and_fishery_workers}{International standard classification of Occupations (ISCO-08): Skilled agricultural, forestry and fishery workers}
-#' \item{isco_technicians}{International standard classification of Occupations (ISCO-08): Technicians and associate professionals}
+#' \item{isco_service}{International standard classification of Occupations (ISCO-08): Service and sales workers}
+#' \item{isco_agri}{International standard classification of Occupations (ISCO-08): Skilled agricultural, forestry and fishery workers}
+#' \item{isco_tech}{International standard classification of Occupations (ISCO-08): Technicians and associate professionals}
 #' \item{married}{Married}
 #' \item{n_children}{Number of household members below the age of 18}
-#' \item{orders_online_frequently}{Orders products online more than once a month}
+#' \item{freq_onl_order}{Orders products online more than once a month}
 #' \item{parking_home}{Has at least one reserved parking space at home}
 #' \item{parking_work}{Has at least one reserved parking space at work location}
 #' \item{permanent_employment}{Employment contract type: permenent (unlimited employed)}
@@ -180,7 +183,7 @@ NULL
 #' \item{sex_male}{Gender}
 #' \item{shift_work}{Whether participant works in shifts}
 #' \item{swiss}{Swiss citizen}
-#' \item{vacation_during_study}{Participant took time off of work during study}
+#' \item{vacation}{Participant took time off of work during study}
 #' \item{workload}{Workload (% of full-time employment which is 41.7 h/week)}
 #' \item{young_kids}{Whether children aged 12 or younger live in the household}
 #' }
