@@ -109,6 +109,7 @@
   -[ ] Code snippets (just put helpers in utils and source)
   -[ ] (Compute treatment effects [similar to Xinyi's paper])
   -[ ] Write case study (see `TU` documentation for analytical sample...)
+  -[ ] Manually set 2 space indents again...
   -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 
 
