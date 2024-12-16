@@ -565,6 +565,7 @@ dat_lm <- subset(timeuse_data,
 fit_ntw <- fit_lm(dat_lm, group = 1)
 fit_nutw <- fit_lm(dat_lm, group = 2)
 fit_utw <- fit_lm(dat_lm, group = 3)
+summary(fit_utw)
 @
 %
 For example, looking at \code{summary(fit_utw)} yields the insight, that we have two identification issues for the UTW: First \code{shift_work} is a constant and second \code{parking_home} is colinear with \code{car_access}.
@@ -623,15 +624,10 @@ texreg::screenreg(list(fit_red, fit_commute), include.R2 = TRUE,
 %
 where now all goodness of fit indicators improved (in particular R$^2$ for the continuous outcomes) and the rho coefficients are no longer significant at conventional levels. Similarly, the Wald-test (rho) can not reject the Null. At the same time some of the coefficients slightly changed in magnitude and rendered insignificant or vice versa. For example, the effect of residential location (\code{o1_res_loc_rural} and \code{o2_res_loc_rural}) moderated the effect of commute distance in \code{fit_red}.
 
-While this discussion (of how to deal with potentially endogenous variables) is common for all regression analysis, it demonstrates here how error correlation can occur and why it might be important to account for it. Both model specifications (\code{fit_red} and \code{fit_commute}) produce almost identical insights in the post-estimation that follows and we proceed with the latter model.
+While this discussion (of omitted variable bias and/or endogeneity) is common for all regression analysis, it demonstrates here how error correlation can occur and why it might be important to account for it. Both model specifications (\code{fit_red} and \code{fit_commute}) produce almost identical insights in the post-estimation that follows and we proceed with the latter model unless for comparison purposes.
 
 %% The treatment effects
-
-\begin{leftbar}
-daniehei: 1. Compute average treatment effects, 2. Graphic, 3. Scatter plot, 4. Unit treatment effects
-\end{leftbar}
-
-We first define some helper functions to compute average treatment effects
+We first define some helper functions to compute treatment effects
 %
 <<utils>>=
 tw_status <- c("NTW", "NUTW", "UTW")
@@ -659,22 +655,23 @@ average <- function(object) {
   as.data.frame(ae)
 }
 
-ate <- function(object) {
-  pairwise_diff <- function(mat) {
-    n <- nrow(mat)
-    m <- ncol(mat)
-    result <- matrix(NA, nrow = n, ncol = m)
-    for (j in 1:m) {
-      result[, j] <- c(
-        mat[2, j] - mat[1, j],
-        mat[3, j] - mat[1, j],
-        mat[3, j] - mat[2, j]
-      )
-    }
-    rownames(result) <- c("NTW -> NUTW", "NTW -> UTW", "NUTW -> UTW")
-    colnames(result) <- c("NTW", "NUTW", "UTW")
-    result
+pairwise_diff <- function(mat) {
+  n <- nrow(mat)
+  m <- ncol(mat)
+  result <- matrix(NA, nrow = n, ncol = m)
+  for (j in 1:m) {
+    result[, j] <- c(
+      mat[2, j] - mat[1, j],
+      mat[3, j] - mat[1, j],
+      mat[3, j] - mat[2, j]
+    )
   }
+  rownames(result) <- c("NTW -> NUTW", "NTW -> UTW", "NUTW -> UTW")
+  colnames(result) <- c("NTW", "NUTW", "UTW")
+  result
+}
+
+ate <- function(object) {
   awk <- average(estimated_weekly_km(object))
   ate <- pairwise_diff(awk)
   ate
@@ -682,13 +679,62 @@ ate <- function(object) {
 
 ate(fit_commute)
 @
-
+%
 We see that telework reduces weekly kilometers driven across all groups with the exception of NTWers which would slightly be more mobile when switching from NTW to NUTW. The treatment effects when switching from NTW to NUTW are strongest for UTWers, who have generally longer commutes. Treatment effects for NTW to UTW are similar across all three groups, again slightly stronger for UTWers. Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (NTW to NUTW) but then substantially decreasing weekly kilometers with more telework (NUTW to UTW). An explanation could be that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. On the other hand, UTWers show somewhat an inverse pattern, first (NTW to NUTW) strongly reducing weekly kilometers but upon further telework adoption (NUTW to UTW) only minimally adjusting weekly kilometers. A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices.
 
-These treatment effects can also be visualized in a pairwise comparison and at the individual level
+As already alluded, if we don't control for commute distance, then there exists selection on unobservables. If the error correlation is not accounted for, a selection bias is the consequence which also compromises treatment effects. This can nicely be illustrated: Recalling that \code{fit_red} is our final model without commute distance, we derive a model (\code{fit_nocor}) without error correlation by setting the ``rho'' coefficients to 0
+%
+<<no-cor>>=
+start <- coef(fit_red)
+fixed <- c("rho1", "rho2", "rho3")
+start[fixed] <- 0
+fit_nocor <- opsr(f_red, timeuse_data, start = start, fixed = fixed, printLevel = 0)
+@
+%
+and compare the average treatment effects
+%
+<<>>=
+ate(fit_red)
+ate(fit_nocor)
+@
+%
+While resulting treatment effects based on \code{fit_red} are comparable to the ones based on \code{fit_commute}, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance driven.
+
+These treatment effects can also be visualized as in Figure~\ref{fig:treatment}.
 %
 <<hidden, echo=FALSE>>=
-plot_treatment <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = NULL,
+plot_treat_avg <- function(object, ylim, col, main,
+                           legend.position = "bottomright",
+                           pch = par("pch"), ...) {
+
+  op <- par(no.readonly = TRUE)
+  on.exit(par(op))
+
+  tw_status <- c("NTW", "NUTW", "UTW")
+  awk <- average(estimated_weekly_km(fit))
+  input <- apply(awk, 2, function(x) {
+    dat <- data.frame(y = x)
+    dat$x <- 1:nrow(dat)
+    dat
+  })
+
+  par(...)
+  plot(as.numeric(input[[1]]$x), input[[1]]$y, type = "n",
+       ylim = ylim,
+       xlab = "Telework status (treatment)", ylab = "Weekly distance (km)",
+       xaxt = "n")
+  mtext(main, line = 2, font = 2, cex = 1)
+  grid()
+  axis(1, at = input[[1]]$x, labels = tw_status)
+  for (i in seq_along(input)) {
+    lines(x = input[[i]]$x, y = input[[i]]$y, type = "b", col = col[i])
+  }
+  legend(legend.position, legend = tw_status, pch = 1, col = col, bty = "n")
+
+  invisible()
+}
+
+plot_treat_obs <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = NULL,
                            xlab = NULL, ylab = NULL, col, alpha = 1, lines.fun = mean,
                            lwd = par("lwd"), lty = par("lty"), pch = par("pch"),
                            cex.point = 1, cex.text = 1, mar = c(5.1, 4.1, 0, 0),
@@ -723,10 +769,10 @@ plot_treatment <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = 
       points(px[[i]], py[[i]], col = scales::alpha(col[i], alpha), pch = pch,
              cex = cex.point)
       abline(v = mpx[[i]], col = col[i], lty = lty, lwd = lwd)
-      text(x = mpx[[i]], y = ylim[1], labels = round(mpx[[i]], digits),
+      text(x = mpx[[i]], y = ylim[1] + 10, labels = round(mpx[[i]], digits),
            col = col[i], adj = c(-0.1, 1), cex = cex.text)
       abline(h = mpy[[i]], col = col[i], lty = lty, lwd = lwd)
-      text(x = xlim[1], y = mpy[[i]], labels = round(mpy[[i]], digits),
+      text(x = xlim[1] + 10, y = mpy[[i]], labels = round(mpy[[i]], digits),
            col = col[i], adj = c(0.3, -0.1), cex = cex.text)
     }
     abline(a = 0, b = 1, lty = 1, lwd = lwd)
@@ -783,7 +829,7 @@ plot_treatment <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = 
 \setkeys{Gin}{width=\textwidth}
 \begin{figure}[t!]
 \centering
-<<plot-treatment, echo=FALSE, fig=TRUE, height=3, width=9>>=
+<<plot-treatment, echo=FALSE, fig=TRUE, height=8, width=8>>=
 fit <- fit_commute
 
 colvec <- c("#023047", "#058c42", "#fb8500")
@@ -792,8 +838,15 @@ lty <- 3
 alpha <- 0.1
 lwd <- 2
 
+g4 <- function() {
+  plot_treat_avg(fit, ylim = c(0, 300), col = colvec,
+                 main = "d) Average treatment effect",
+                 cex = 0.8)
+}
+g4grob <- gridGraphics::echoGrob(g4)
+
 g1 <- function() {
-  plot_treatment(fit, x = 1, y = 2, type = "unlog-response",
+  plot_treat_obs(fit, x = 1, y = 2, type = "unlog-response",
                  main = "a) Not TWing vs. TWing < 3 times/week",
                  xlab = "Weekly distance when NTW (km)",
                  ylab = "Weekly distance when NUTW (km)", col = colvec, alpha = alpha,
@@ -804,7 +857,7 @@ g1 <- function() {
 g1grob <- gridGraphics::echoGrob(g1)
 
 g2 <- function() {
-  plot_treatment(fit, x = 1, y = 3, type = "unlog-response",
+  plot_treat_obs(fit, x = 1, y = 3, type = "unlog-response",
                  main = "b) Not TWing vs. TWing 3+ times/week",
                  xlab = "Weekly distance when NTW (km)",
                  ylab = "Weekly distance when UTW (km)", col = colvec, alpha = alpha,
@@ -815,7 +868,7 @@ g2 <- function() {
 g2grob <- gridGraphics::echoGrob(g2)
 
 g3 <- function() {
-  plot_treatment(fit, x = 2, y = 3, type = "unlog-response",
+  plot_treat_obs(fit, x = 2, y = 3, type = "unlog-response",
                  main = "c) TWing < 3 times/week vs. TWing 3+ times/week",
                  xlab = "Weekly distance when NUTW (km)",
                  ylab = "Weekly distance when UTW (km)", col = colvec, alpha = alpha,
@@ -825,10 +878,37 @@ g3 <- function() {
 }
 g3grob <- gridGraphics::echoGrob(g3)
 
-gridExtra::grid.arrange(g1grob, g2grob, g3grob, nrow = 1)
+gridExtra::grid.arrange(g1grob, g2grob, g3grob, g4grob, ncol = 2)
 @
 \caption{\label{fig:treatment} Treatment effects.}
 \end{figure}
+
+Lastly, we would like to investigate whether or not the foregone commute distance (when teleworking) is compensated with leisure travel. To answer this question we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below).
+%
+<<unit-treatment-effects>>=
+dat_ute <- subset(timeuse_data, select = c(commute_km, wfh, wfh_days))
+dat_ute <- aggregate(cbind(wfh_days, 2 * commute_km) ~ wfh, data = dat_ute,
+                     FUN = mean)
+
+top <- t(dat_ute[2:3])
+colnames(top) <- c("NTW", "NUTW", "UTW")
+rownames(top) <- c("WFH (days)", "2-way commute (km)")
+
+awk <- average(estimated_weekly_km(fit_commute))
+bottom <- pairwise_diff(awk)
+
+twdiff1 <- top["WFH (days)", "NUTW"] - top["WFH (days)", "NTW"]
+twdiff2 <- top["WFH (days)", "UTW"] - top["WFH (days)", "NTW"]
+twdiff3 <- top["WFH (days)", "UTW"] - top["WFH (days)", "NUTW"]
+
+twdiff <- matrix(c(rep(twdiff1, 3), rep(twdiff2, 3), rep(twdiff3, 3)), nrow = 3)
+bottom <- bottom / twdiff
+
+ute <- rbind(top, bottom)
+ute
+@
+%
+Generally, telework does not simply reduce weekly distance driven by the foregone commute distance but a rebound effect (compensating leisure travel) exists. For example, the NUTWers could save 43.33 km in commute travel but only reduce 5.2 km per marginal teleworking day when switching from NTW to NUTW. This compensating travel exists for all TW groups except the NTWers (\code{NTW -> UTW} and \code{NUTW -> UTW}, where we observe diminished travel activity beyond foregone commutes). Unit treatment effects are stronger when switching from NTW to UTW (compared to NTW to NUTW). However, this difference diminishes over the three TW groups, because of the different effects when further adopting TW (\code{NUTW -> UTW}). Again, this aligns with our previous hypothesis that NTWers initially do not adjust activity chains and location choices (leading to more travel at low TW adoption) and only later strongly adjust mobility patterns, while the contrary holds for UTWers.
 
 %% -- Summary/conclusions/discussion -------------------------------------------
 
