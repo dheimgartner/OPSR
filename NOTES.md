@@ -108,13 +108,15 @@
   -[x] Scetch out case study chapter (data, boxplot vmd, commute distance, with illustration omitting log_commute_distance_km)
   -[x] Code snippets (just put helpers in utils and source)
   -[x] (Compute treatment effects [similar to Xinyi's paper])
+  -[x] Write case study (see `TU` documentation for analytical sample...)
   -[ ] Add GOF indicators to summary and remove Meta information heading
     - maybe add parameter `gof` to `summary`
     - check that documentation is still ok
   -[ ] Write test-case for issue and resolve
-  -[ ] Write case study (see `TU` documentation for analytical sample...)
   -[ ] Manually set 2 space indents again...
   -[ ] Check whether new paragraphs (`%`) make sense
+  -[ ] Write summary
+  -[ ] Implement Xinyi's comments
   -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 
 
