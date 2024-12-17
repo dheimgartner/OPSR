@@ -79,7 +79,7 @@ NULL
 ## Data
 ## see here for documentation example: https://github.com/tidyverse/nycflights13/blob/main/R/flights.R
 
-#' Telework data
+#' Telework Data
 #'
 #' Telework data as used in \insertCite{Wang+Mokhtarian:2024;textual}{OPSR}.
 #'
@@ -129,7 +129,7 @@ NULL
 "telework_data"
 
 
-#' Data from TimeUse+
+#' TimeUse+ Data
 #'
 #' TimeUse+ \insertCite{Winkler+Meister+Axhausen:2024}{OPSR} was a tracking study
 #' conducted at the Institute for Transport Planning and Systems (IVT) at ETH Zurich.
