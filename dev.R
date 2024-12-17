@@ -662,3 +662,25 @@ dat <- sim_dat$data
 fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
 (s <- summary(fit))
 texreg::screenreg(fit, include.R2 = TRUE, include.pseudoR2 = TRUE)
+
+
+
+## https://github.com/dheimgartner/OPSR/issues/10
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+f <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+start <- opsr(f, dat, .get2step = TRUE)
+fix <- c("o2_xo2")
+start[fix] <- 0
+fit <- opsr(f, dat, start = start, fixed = fix, printLevel = 0)
+summary(fit)
+debugonce(summary.opsr)
+summary(fit)
+
+fit_ <- opsr(f, dat)
+summary(fit_)
+debugonce(summary.opsr)
+
+fit_null <- opsr_null_model(fit_)
+summary(fit_null)

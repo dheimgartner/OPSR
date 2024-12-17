@@ -109,10 +109,8 @@
   -[x] Code snippets (just put helpers in utils and source)
   -[x] (Compute treatment effects [similar to Xinyi's paper])
   -[x] Write case study (see `TU` documentation for analytical sample...)
-  -[ ] Add GOF indicators to summary and remove Meta information heading
-    - maybe add parameter `gof` to `summary`
-    - check that documentation is still ok
-  -[ ] Write test-case for issue and resolve
+  -[x] Add GOF indicators to summary and remove Meta information heading
+  -[x] Write test-case for issue and resolve
   -[ ] Manually set 2 space indents again...
   -[ ] Check whether new paragraphs (`%`) make sense
   -[ ] Write summary
