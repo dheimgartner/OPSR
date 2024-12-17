@@ -309,7 +309,7 @@ Models are specified symbolically. A typical model has the form \code{ys | yo ~ 
 %
 <<opsr>>=
 fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, data = dat,
-            printLevel = 0)
+  printLevel = 0)
 @
 %
 where \code{printLevel = 0} omits working information during maximum likelihood iterations.
@@ -323,9 +323,10 @@ summary(fit)
 The presentation of the model results is fairly standard and should not warrant further explanation with the following exceptions
 \begin{enumerate}
 \item The number of regimes along absolute counts are reported.
+\item Pseudo R-squared (EL) is based on the log-likelihood of the ``equally likely'' model, while Pseudo R-squared (MS) is based on the log-likelihood of the ``market share'' model. These indicators reflect the goodness of fit for the selection process. The multiple R-squared is reported for all continuous outcomes collectively and for the regimes separately in brackets. These indicators reflect the goodness of fit for the outcome process.
 \item Coefficient names are based on the variable names as passed to the formula specification, except that \code{"s_"} is prepended to the selection coefficients, \code{"o[0-9]_"} to the outcome coefficients and the structural components \code{"kappa", "sigma", "rho"} (aligning with the letters used in Equation~\ref{eq:log-lik}) are hard-coded (but can be over-written).
 \item The coefficients table reports robust standard errors based on the sandwich covariance matrix as computed with help of the \pkg{sandwich} package \citep{Zeileis:2006}. \code{rob = FALSE} reports conventional standard errors.
-\item Two Welch-tests are conducted. One, testing the null that all coefficients of explanatory variables are zero and two, testing the null that all error correlation coefficients ($\rho$) are zero. If the latter is rejected, selection bias is not an issue.
+\item Two Wald-tests are conducted. One, testing the null that all coefficients of explanatory variables are zero and two, testing the null that all error correlation coefficients ($\rho$) are zero. If the latter is rejected, selection bias is not an issue.
 \end{enumerate}
 
 A useful benchmark is always the null model with structural parameters only. The null model can be derived from an \class{opsr} model fit as follows
@@ -354,7 +355,7 @@ Models can be compared side-by-side using the \pkg{texreg} package \citep{Leifel
 %
 <<texreg>>==
 texreg::screenreg(list(fit_null, fit_intercept, fit),
-                  include.pseudoR2 = TRUE, include.R2 = TRUE, single.row = TRUE)
+  include.pseudoR2 = TRUE, include.R2 = TRUE, single.row = TRUE)
 @
 
 Finally, the key interest of an OPSR study almost certainly is the estimation of treatment effects which relies on (counterfactual) conditional expectations as already noted in the mathematical exposition.
@@ -414,7 +415,7 @@ and the model can be estimated by
 <<model-xinyi>>=
 start_default <- opsr(f, telework_data, .get2step = TRUE)
 fit <- opsr(f, telework_data, start = start, method = "NM", iterlim = 50e3,
-            printLevel = 0)
+  printLevel = 0)
 @
 %
 where we demonstrate that
@@ -507,13 +508,13 @@ Meanwhile, commute distance increases across the three teleworking groups, sugge
 <<boxplot, echo=FALSE, fig=TRUE, height=5, width=9>>=
 par(mfrow = c(1, 2))
 plot(log_weekly_km ~ factor(wfh), data = timeuse_data, varwidth = TRUE,
-     ylab = "Log weekly distance traveled (km)", xlab = "Teleworking status",
-     names = c("NTW", "NUTW", "UTW"), main = "Weekly distance traveled",
-     col = "white")
+  ylab = "Log weekly distance traveled (km)", xlab = "Teleworking status",
+  names = c("NTW", "NUTW", "UTW"), main = "Weekly distance traveled",
+  col = "white")
 plot(log_commute_km ~ factor(wfh), data = timeuse_data, varwidth = TRUE,
-     ylab = "Log commute distance (km)", xlab = "Teleworking status",
-     names = c("NTW", "NUTW", "UTW"), main = "Commute distance",
-     col = "white")
+  ylab = "Log commute distance (km)", xlab = "Teleworking status",
+  names = c("NTW", "NUTW", "UTW"), main = "Commute distance",
+  col = "white")
 @
 \caption{\label{fig:boxplot} Log weekly distance traveled and log commute distance for different teleworking status.}
 \end{figure}
@@ -523,7 +524,7 @@ Before blindly trying to specify a full model using \pkg{OPSR} the analyst is we
 %
 <<fit-polr>>=
 drop <- c("id", "weekly_km", "log_weekly_km", "commute_km", "log_commute_km",
-          "wfh_days")
+  "wfh_days")
 dat_polr <- subset(timeuse_data, select = !(names(timeuse_data) %in% drop))
 dat_polr$wfh <- factor(dat_polr$wfh)
 fit_polr <- MASS::polr(wfh ~ ., dat_polr, method = "probit")
@@ -548,7 +549,7 @@ fit_lm <- function(data, group) {
 
 drop <- c("id", "weekly_km", "commute_km", "log_commute_km", "wfh_days")
 dat_lm <- subset(timeuse_data,
-                 select = !(names(timeuse_data) %in% drop) & !grepl("^isco_", names(timeuse_data)))
+  select = !(names(timeuse_data) %in% drop) & !grepl("^isco_", names(timeuse_data)))
 
 fit_ntw <- fit_lm(dat_lm, group = 1)
 fit_nutw <- fit_lm(dat_lm, group = 2)
@@ -602,7 +603,7 @@ However, so far we have neglected the commute distance which most likely impacts
 %
 <<adding-commute>>=
 fit_commute <- update(fit_red, ~ . + log_commute_km | . + log_commute_km | . +
-                        log_commute_km | . + log_commute_km)
+  log_commute_km | . + log_commute_km)
 
 print(summary(fit_commute), print.call = FALSE)
 @
@@ -857,7 +858,8 @@ As already alluded, not controling for commute distance potentially induces a se
 start <- coef(fit_red)
 fixed <- c("rho1", "rho2", "rho3")
 start[fixed] <- 0
-fit_nocor <- opsr(f_red, timeuse_data, start = start, fixed = fixed, printLevel = 0)
+fit_nocor <- opsr(f_red, timeuse_data, start = start, fixed = fixed,
+  printLevel = 0)
 @
 %
 The average treatment effects are
@@ -874,15 +876,16 @@ Lastly, we would like to investigate to what degree foregone commute distance (w
 <<unit-treatment-effects>>=
 dat_ute <- subset(timeuse_data, select = c(commute_km, wfh, wfh_days))
 dat_ute <- aggregate(cbind(wfh_days, 2 * commute_km) ~ wfh, data = dat_ute,
-                     FUN = mean)
+  FUN = mean)
 
 top <- t(dat_ute[2:3])
 colnames(top) <- c("NTW", "NUTW", "UTW")
 rownames(top) <- c("WFH (days)", "2-way commute (km)")
 
-twdiff1 <- top["WFH (days)", "NUTW"] - top["WFH (days)", "NTW"]
-twdiff2 <- top["WFH (days)", "UTW"] - top["WFH (days)", "NTW"]
-twdiff3 <- top["WFH (days)", "UTW"] - top["WFH (days)", "NUTW"]
+i <- "WFH (days)"
+twdiff1 <- top[i, "NUTW"] - top[i, "NTW"]
+twdiff2 <- top[i, "UTW"] - top[i, "NTW"]
+twdiff3 <- top[i, "UTW"] - top[i, "NUTW"]
 
 twdiff <- matrix(c(rep(twdiff1, 3), rep(twdiff2, 3), rep(twdiff3, 3)), nrow = 3)
 bottom <- ate(fit_commute) / twdiff
