@@ -652,3 +652,13 @@ par(mfrow = c(1, 3))
 compare_fun(fit_log, group = 1)
 compare_fun(fit_log, group = 2)
 compare_fun(fit_log, group = 3)
+
+
+
+## revise summary
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat)
+(s <- summary(fit))
+texreg::screenreg(fit, include.R2 = TRUE, include.pseudoR2 = TRUE)
