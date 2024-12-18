@@ -489,6 +489,8 @@ Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are for
 
 Now, that the reader is familiar with the main functionality of \pkg{OPSR}, this section demonstrates how to employ it in a real-world example. The emphasis, therefore, lies not on what each function does but on guiding the reader through the modeling and post-estimation steps. We investigate once again, telework treatment effects on weekly distance traveled (aggregated over all modes of transport).
 
+We first discuss the model building strategy to arrive at an appropriately specified OPSR model. We then demonstrate, why error correlation occurs, having omitted a variable simultaneously influencing the selection and outcome process. The OPSR models are compared to models not accounting for this error correlation and implications for treatment effects are shown. The case study concludes with a discussion on unit treatment effects investigating to what degree foregone commutes (when teleworking) are compensated with leisure travel.
+
 %% The data
 We use the TimeUse+ dataset \citep{Winkler+Meister+Axhausen:2024}, a smartphone-based diary, recording travel, time use, and expenditure data. Our analytical sample comprises employed individuals and is based on what \citet{Winkler+Axhausen:2024} identified as valid days. A valid day has at least 20 hours of information where 70\% of the events were validated by the user. Users who did not have at least 14 valid days were excluded. For the remaining 824 participants mobility indicators for a typical week were constructed. The telework status is based on tracked (and labelled) work activities and three regimes are differentiated: Non-teleworkers (NTW), Non-usual teleworkers (NUTW; $<$3 days/week) and Usual teleworkers (UTW; 3$+$ days/week).
 
@@ -855,7 +857,7 @@ gridExtra::grid.arrange(g1grob, g2grob, g3grob, g4grob, ncol = 2)
 \caption{\label{fig:treatment} Treatment effects.}
 \end{figure}
 
-As already alluded, not controlling for commute distance implies that selection on unobservables exists leading to error correlation and selection bias if not accounted for. As we will illustrate now, this also compromises treatment effects. Recalling that \code{fit_red} is our final model without commute distance (but significant error correlation, as we have seen), we derive a model (\code{fit_nocor}) without error correlation by setting the ``rho'' coefficients to 0.
+As already alluded, not controlling for commute distance implies that selection on unobservables exists, leading to error correlation and selection bias if not accounted for. As we will illustrate now, this also compromises treatment effects. Recalling that \code{fit_red} is our final model without commute distance (but significant error correlation, as we have seen), we derive a model (\code{fit_nocor}) without error correlation by setting the \code{rho} coefficients to 0. I.e., this is the same as separately estimating an ordinal probit model and three linear regression models.
 %
 <<no-cor>>=
 start <- coef(fit_red)
@@ -874,7 +876,25 @@ ate(fit_nocor)
 %
 While resulting treatment effects based on \code{fit_red} are comparable to the ones based on \code{fit_commute}, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled.
 
-Lastly, we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTW to NUTW vs. NUTW to UTW).
+Recall that for \code{fit_commute}, the Wald-test (rho) could not reject the null ($p$~value \Sexpr{round(summary(fit_commute)$wald$rho$pval, 2)}). Therefore, adding \code{log_commute_km} to the model without error correlation (\code{fit_nocor}) might yield less biased treatment effects
+%
+<<no-cor-commute>>=
+start <- coef(fit_commute)
+start[fixed] <- 0
+fit_nocor2 <- opsr(fit_commute$formula, timeuse_data, start = start,
+  fixed = fixed, printLevel = 0)
+ate(fit_nocor2)
+@
+%
+where now the direction of the treatment effects aligns with the OPSR models but the values are still considerably different. Since \code{fit_nocor2} is a nested model of \code{fit_commute} we can conduct a likelihood ratio test
+%
+<<no-cor-test>>=
+print(anova(fit_nocor2, fit_commute), print.formula = FALSE)
+@
+%
+which does not reject the null that the simpler model is sufficient. It should be noted that the modeled covariance matrix (in particular the magnitude of \code{rho}) potentially strongly influences the treatment effects.
+
+Lastly (using \code{fit_commute}), we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTW to NUTW vs. NUTW to UTW).
 %
 <<unit-treatment-effects>>=
 dat_ute <- subset(timeuse_data, select = c(commute_km, wfh, wfh_days))
