@@ -111,8 +111,8 @@
   -[x] Write case study (see `TU` documentation for analytical sample...)
   -[x] Add GOF indicators to summary and remove Meta information heading
   -[x] Write test-case for issue and resolve
-  -[ ] Manually set 2 space indents again...
-  -[ ] Check whether new paragraphs (`%`) make sense
+  -[x] Manually set 2 space indents again...
+  -[x] Check whether new paragraphs (`%`) make sense
   -[ ] Write summary
   -[ ] Implement Xinyi's comments
   -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`

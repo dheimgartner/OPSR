@@ -240,7 +240,7 @@ To obtain unbiased treatment effects, we must further evaluate the ``counterfact
 &= \Xbd - \rho_{j'}\sigma_{j'} \frac{\phi(\kappa_j - \Wg) - \phi(\kappa_{j-1} - \Wg)}{\Phi(\kappa_j - \Wg) - \Phi(\kappa_{j-1} - \Wg)}.
 \end{aligned}
 \end{equation}
-
+%
 As it is usual to log-transform the continuous outcome in regression analysis, we have to note, that in such cases the Equations~\ref{eq:cond-exp}-\ref{eq:counterfact-exp} provide the conditional expectation of the log-transformed outcome. Therefore, we need to back-transform $\ln(y_j + 1)$ which yields
 %
 \begin{equation} \label{eq:log-cond-exp}
@@ -314,7 +314,7 @@ fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, data = dat,
 %
 where \code{printLevel = 0} omits working information during maximum likelihood iterations.
 
-As usual, the fitter function does the bare minimum model estimation while inference is performed in a separate call
+As usual, the fitter function does the bare minimum model estimation while inference is performed in a separate call.
 %
 <<summary-xinyi>>=
 summary(fit)
@@ -334,7 +334,7 @@ A useful benchmark is always the null model with structural parameters only. The
 <<null-model>>=
 fit_null <- opsr_null_model(fit, printLevel = 0)
 @
-
+%
 A model can be updated as usual
 %
 <<update>>=
@@ -357,7 +357,7 @@ Models can be compared side-by-side using the \pkg{texreg} package \citep{Leifel
 texreg::screenreg(list(fit_null, fit_intercept, fit),
   include.pseudoR2 = TRUE, include.R2 = TRUE, single.row = TRUE)
 @
-
+%
 Finally, the key interest of an OPSR study almost certainly is the estimation of treatment effects which relies on (counterfactual) conditional expectations as already noted in the mathematical exposition.
 %
 <<predict>>==
@@ -374,12 +374,12 @@ where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p
 \end{itemize}
 Elements are \code{NA_real_} if the \code{group} does not correspond to the observed regime (selection outcome). This ensures consistent output length.
 
-Now that the user understands the basic workflow, we illustrate some nuances by reproducing a key output of \cite{Wang+Mokhtarian:2024} where they investigate the treatment effect of telework on weekly vehicle miles driven. The data is attached, documented (\code{?telework_data}) and can be loaded by
+Now that the user understands the basic workflow, we illustrate some nuances by reproducing a key output of \cite{Wang+Mokhtarian:2024} where they investigate the treatment effect of telework (TW) on weekly vehicle miles driven. The data is attached, documented (\code{?telework_data}) and can be loaded by
 %
 <<telework-data>>=
 data("telework_data", package = "OPSR")
 @
-
+%
 <<hidden, echo=FALSE>>=
 start <- c(
   1.2, 2.4,  # kappa 1 & 2
@@ -391,7 +391,7 @@ start <- c(
   0.068, 0.128, 0.340  # rho
 )
 @
-
+%
 The final model specification reads
 %
 <<formula-xinyi>>=
@@ -424,7 +424,7 @@ where we demonstrate that
 \item \code{start} values can be overridden (we have hidden the \code{start} vector here for brevity). If the user wishes to pass start values manually, some minimal conventions have to be followed as documented in \code{?opsr_check_start}.
 \item Alternative maximization methods (here ``Nelder-Mead'') can be used (as in the original paper).
 \end{enumerate}
-
+%
 <<hidden, echo=FALSE>>=
 custom.model.names <- c("NTWer (535)", "NUTWer (322)", "UTWer (727)")
 custom.coef.names <- c(
@@ -458,7 +458,7 @@ groups <- list(
   "Attitudes" = 17:19
 )
 @
-
+%
 With help of the \pkg{texreg} package, production-grade tables (in various output formats) can be generated with ease.
 %
 <<replica, results=tex>>=
@@ -490,17 +490,17 @@ Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are for
 Now, that the reader is familiar with the main functionality of \pkg{OPSR}, this section demonstrates how to employ it in a real-world example. The emphasis, therefore, lies not on what each function does but on guiding the reader through the modeling and post-estimation steps. We investigate once again, telework treatment effects on weekly distance traveled (aggregated over all modes of transport).
 
 %% The data
-We use the TimeUse+ dataset \citep{Winkler+Meister+Axhausen:2024}, a smartphone-based diary, recording travel, time use, and expenditure data. Our analytical sample comprises employed individuals and is based on what \citet{Winkler+Axhausen:2024} identified as valid days. A valid day has at least 20 hours of information where 70\% of the events were validated by the user. Users who did not have at least 14 valid days were excluded and for the remaining 824 participants mobility indicators for a typical week were constructed. The telework status is based on tracked (and labelled) work activities and three regimes are differentiated: Non-teleworkers (NTW), Non-usual teleworkers (NUTW; $<$3 days/week) and Usual teleworkers (UTW; 3$+$ days/week).
+We use the TimeUse+ dataset \citep{Winkler+Meister+Axhausen:2024}, a smartphone-based diary, recording travel, time use, and expenditure data. Our analytical sample comprises employed individuals and is based on what \citet{Winkler+Axhausen:2024} identified as valid days. A valid day has at least 20 hours of information where 70\% of the events were validated by the user. Users who did not have at least 14 valid days were excluded. For the remaining 824 participants mobility indicators for a typical week were constructed. The telework status is based on tracked (and labelled) work activities and three regimes are differentiated: Non-teleworkers (NTW), Non-usual teleworkers (NUTW; $<$3 days/week) and Usual teleworkers (UTW; 3$+$ days/week).
 
 The data, underlying this analysis, is attached, documented (\code{?timeuse_data}) and can be loaded by
 %
 <<timeuse-data>>=
 data("timeuse_data", package = "OPSR")
 @
+%
+A basic boxplot of the response variable against the three telework status is displayed in Figure~\ref{fig:boxplot}. By simply looking at the data descriptively, we might prematurely conclude that telework does not impact weekly distance traveled. However, the whole value proposition of OPSR (and of models in general) is that we really are interested in a counterfactual. If the teleworkers self-select, the counterfactual is not simply the group average. More prosaically, if the usual telewokers (UTW) would choose to be non-teleworkers (NTW), they might travel more or less than the actual NTWers.
 
-A basic boxplot of the response variable against the three teleworking status is displayed in Figure~\ref{fig:boxplot}. By simply looking at the data descriptively, we might prematurely conclude that telework does not impact weekly distance traveled. However, the whole value proposition of OPSR (and for models in general) is that we really are interested in a counterfactual. If the teleworkers self-select, the counterfactual is not simply the group average. More prosaically, if the usual telewokers (UTW) would choose to be non-teleworkers (NTW), they might travel more or less than the actual NTWers.
-
-Meanwhile, commute distance increases across the three teleworking groups, suggesting that teleworkers have a higher share of leisure travel.
+Meanwhile, commute distance increases across the three teleworker groups, suggesting that teleworkers have a higher share of leisure travel.
 
 \setkeys{Gin}{width=.8\textwidth}
 \begin{figure}[t!]
@@ -520,7 +520,7 @@ plot(log_commute_km ~ factor(wfh), data = timeuse_data, varwidth = TRUE,
 \end{figure}
 
 %% The model
-Before blindly trying to specify a full model using \pkg{OPSR} the analyst is well advised to first, think of an identification restriction as discussed in Section~\ref{sec:model} and second, estimate the models separately, e.g., using \fct{polr} from the \pkg{MASS} package \citep{Venables+Ripley:2002}, and \fct{lm} for the treatment groups separately. We reserve the international standard classification of occupations (ISCO-08) variables for the selection process.
+Before blindly trying to specify a full model using \pkg{OPSR} the analyst is advised to first, think of an identification restriction as discussed in Section~\ref{sec:model} and second, estimate the models separately, e.g., using \fct{polr} from the \pkg{MASS} package \citep{Venables+Ripley:2002}, and \fct{lm} for the treatment groups separately. We reserve the international standard classification of occupations (ISCO-08) variables for the selection process.
 %
 <<fit-polr>>=
 drop <- c("id", "weekly_km", "log_weekly_km", "commute_km", "log_commute_km",
@@ -529,15 +529,15 @@ dat_polr <- subset(timeuse_data, select = !(names(timeuse_data) %in% drop))
 dat_polr$wfh <- factor(dat_polr$wfh)
 fit_polr <- MASS::polr(wfh ~ ., dat_polr, method = "probit")
 @
-
+%
 The \fct{stepAIC} function chooses a selection model specification by AIC in a stepwise algorithm.
 %
 <<step>>=
 fit_step <- MASS::stepAIC(fit_polr, trace = FALSE)
 fit_step$anova
 @
-
-Fitting the linear models separately, benefits an understanding of potential identification problems (e.g., colinear variables or missing factor levels in one of the groups). While the resulting estimates are potentially biased and their standard errors not reliable, it can still be beneficial to have a closer look at resulting estimates and goodness of fit indicators.
+%
+Fitting the linear models separately, benefits an understanding of potential identification problems (e.g., colinear variables or missing factor levels in one of the groups). While the resulting estimates are potentially biased and their standard errors not reliable, it can still help to have a closer look at resulting estimates and goodness of fit indicators.
 %
 <<fit-outcome>>=
 fit_lm <- function(data, group) {
@@ -557,9 +557,9 @@ fit_utw <- fit_lm(dat_lm, group = 3)
 summary(fit_utw)
 @
 %
-Here, we have two identification issues for the UTW: First \code{shift_work} is a constant and second \code{parking_home} is colinear with \code{car_access}.
+Here, we have two singularity issues for the UTWers: First, \code{shift_work} is a constant and second, \code{parking_home} is colinear with \code{car_access}.
 
-We then follow the conventional (somewhat heuristic) model building strategy to specify the full identified model and then exclude all variables which do not produce significant estimates (at the 10\% level). The formula specification of the full model is hidden here for brevity
+We then follow the conventional (somewhat heuristic) model building strategy to specify the full identified model and then exclude all variables that do not produce significant estimates (at the 10\% level). The formula specification of the full model is hidden here for brevity.
 %
 <<hidden, echo=FALSE>>=
 f_full <- wfh | log_weekly_km ~
@@ -597,7 +597,7 @@ print(anova(fit_red, fit_full), print.formula = FALSE)
 summary(fit_red)
 @
 %
-The reduced model specification (\code{fit_red}) is not rejected in the likelihood ratio test. Further, there is significant error correlation between the the selection process and the outcome process for the UTWers (\code{rho3}). The Wald-test suggests that the Null hypothesis (\code{rho1} = \code{rho2} = \code{rho3} = 0) can be rejected at the 5\% level, hinting that OPSR is beneficial given our model specification.
+The reduced model specification (\code{fit_red}) is not rejected in the likelihood ratio test. Further, there is significant error correlation between the selection process and the outcome process for the UTWers (\code{rho3}). The Wald-test suggests that the Null hypothesis (\code{rho1} = \code{rho2} = \code{rho3} = 0) can be rejected at the 5\% level, suggesting that OPSR is beneficial given our model assumptions.
 
 However, so far we have neglected the commute distance which most likely impacts the propensity to telework (see Figure~\ref{fig:boxplot}) and naturally influences the weekly distance traveled. To illustrate this, the reduced model specification can be updated to include \code{log_weekly_km}
 %
@@ -608,12 +608,12 @@ fit_commute <- update(fit_red, ~ . + log_commute_km | . + log_commute_km | . +
 print(summary(fit_commute), print.call = FALSE)
 @
 %
-where now all goodness of fit indicators improved (in particular R$^2$ for the continuous outcomes) and the rho coefficients are no longer significant at conventional levels. Similarly, the Wald-test (rho) can no longer reject the Null. At the same time, some of the coefficients slightly changed in magnitude and rendered insignificant or vice versa. For example, the effect of residential location (\code{o1_res_loc_rural} and \code{o2_res_loc_rural}) moderated the effect of commute distance in \code{fit_red}, suggesting that individuals living in more rural locations tend to have longer commutes.
+where now all goodness of fit indicators improved (in particular R$^2$ for the continuous outcomes) and the rho coefficients are no longer significant at conventional levels. Similarly, the Wald-test (rho) can no longer reject the Null. Meanwhile, some of the coefficients slightly changed in magnitude and rendered insignificant or vice versa. For example, the effect of residential location (\code{o1_res_loc_rural} and \code{o2_res_loc_rural}) moderated the effect of commute distance in \code{fit_red}, suggesting that individuals living in more rural locations tend to have longer commutes.
 
-While this discussion (of omitted variable bias and/or endogeneity) is common for all regression analysis, it demonstrates here, why error correlation can occur. While both model specifications (\code{fit_red} and \code{fit_commute}) produce similar insights in the post-estimation that follows, we will highlight, that not accounting for error correlation can lead to reverse conclusions.
+While this discussion (of omitted variable bias and/or endogeneity) is common for all regression analysis, it highlights here, why error correlation can occur. Both model specifications (\code{fit_red} and \code{fit_commute}) produce similar insights in the post-estimation that follows. However, we will demonstrate later, that not accounting for error correlation can lead to reverse (and most likely false) conclusions.
 
 %% The treatment effects
-We first define some helper functions to compute treatment effects
+We first define some helper functions to compute treatment effects.
 %
 <<utils>>=
 tw_status <- c("NTW", "NUTW", "UTW")
@@ -666,9 +666,9 @@ ate <- function(object) {
 ate(fit_commute)
 @
 %
-Telework reduces weekly kilometers traveled across all groups with the exception of NTWers which would slightly be more mobile when switching from NTW to NUTW (\code{NTW -> NUTW}). The treatment effects when switching from NTW to NUTW are strongest for UTWers, who have generally longer commutes. Treatment effects for NTW to UTW are similar across all three groups, again slightly stronger for UTWers. Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (NTW to NUTW) but then substantially decreasing weekly kilometers with more telework (NUTW to UTW). An explanation could be, that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. On the other hand, UTWers show somewhat an inverse pattern, first (NTW to NUTW) strongly reducing weekly kilometers but upon further telework adoption (NUTW to UTW) only minimally adjusting weekly kilometers. A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices. One can therefore conclude, that the treatment effect over the full range (NTW to UTW) is similar across all groups but the main travel reduction happens at different treatment intensity. Figure~\ref{fig:treatment} (panel d) visualizes these average treatment effects and shows the linear pattern for NUTW and the (mirrored) hockey stick pattern for NTW and UTW.
+Telework reduces weekly kilometers traveled across all groups with the exception of NTWers who would slightly be more mobile when switching from NTW to NUTW (\code{NTW -> NUTW}). The treatment effects when switching from NTW to NUTW are strongest for UTWers, who have generally longer commutes. Treatment effects for NTW to UTW are similar across all three groups, again slightly stronger for UTWers. Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (NTW to NUTW) but then substantially decreasing weekly kilometers with more telework (NUTW to UTW). An explanation could be, that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show somewhat an inverse pattern, first (NTW to NUTW) strongly reducing weekly kilometers but upon further telework adoption (NUTW to UTW) only minimally adjusting weekly kilometers. A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices. One can therefore conclude, that the treatment effect over the full range (NTW to UTW) is similar across all groups but the main travel reduction happens at different treatment intensities. Figure~\ref{fig:treatment} (panel d) visualizes these average treatment effects and shows the linear pattern for NUTW and the (mirrored) hockey stick pattern for NTW and UTW.
 
-While the discussion above was based on average treatment effects, Figure~\ref{fig:treatment} shows the distributions of predicted weekly distance traveled by teleworker group. Each panel presents a pair of (un)treated teleworking statuses as the margins and the dashed lines are the empirical sample means. The solid black reference line marks the instances where weekly distance traveled is equal for both of the paired (un)treated teleworking statuses. I.e., points below the reference line indicate more travel under the regime depicted on the x-axis.
+While the discussion above was based on average treatment effects, Figure~\ref{fig:treatment} shows the distributions of predicted weekly distance traveled by teleworker group. Each panel presents a pair of (un)treated teleworking statuses as the margins and the dashed lines are the empirical sample means. The solid black reference line marks the instances where weekly distance traveled is equal for both of the paired (un)treated telework statuses. I.e., points below the reference line indicate more travel under the regime depicted on the x-axis.
 %
 <<hidden, echo=FALSE>>=
 plot_treat_avg <- function(object, ylim, col, main,
@@ -793,7 +793,7 @@ plot_treat_obs <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = 
   invisible()
 }
 @
-
+%
 \setkeys{Gin}{width=\textwidth}
 \begin{figure}[t!]
 \centering
@@ -852,7 +852,7 @@ gridExtra::grid.arrange(g1grob, g2grob, g3grob, g4grob, ncol = 2)
 \caption{\label{fig:treatment} Treatment effects.}
 \end{figure}
 
-As already alluded, not controling for commute distance potentially induces a selection bias and also compromises treatment effects. This can nicely be illustrated: Recalling that \code{fit_red} is our final model without commute distance (but significant error correlation as we have seen), we derive a model (\code{fit_nocor}) without error correlation by setting the ``rho'' coefficients to 0
+As already alluded, not controlling for commute distance implies that selection on unobservables exists leading to error correlation and selection bias if not accounted for. As we will illustrate now, this also compromises treatment effects. Recalling that \code{fit_red} is our final model without commute distance (but significant error correlation, as we have seen), we derive a model (\code{fit_nocor}) without error correlation by setting the ``rho'' coefficients to 0.
 %
 <<no-cor>>=
 start <- coef(fit_red)
@@ -871,7 +871,7 @@ ate(fit_nocor)
 %
 While resulting treatment effects based on \code{fit_red} are comparable to the ones based on \code{fit_commute}, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled.
 
-Lastly, we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below).
+Lastly, we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTW to NUTW vs. NUTW to UTW).
 %
 <<unit-treatment-effects>>=
 dat_ute <- subset(timeuse_data, select = c(commute_km, wfh, wfh_days))
