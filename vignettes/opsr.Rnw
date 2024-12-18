@@ -597,7 +597,7 @@ print(anova(fit_red, fit_full), print.formula = FALSE)
 summary(fit_red)
 @
 %
-The reduced model specification (\code{fit_red}) is not rejected in the likelihood ratio test. Further, there is significant error correlation between the selection process and the outcome process for the UTWers (\code{rho3}). The Wald-test suggests that the Null hypothesis (\code{rho1} = \code{rho2} = \code{rho3} = 0) can be rejected at the 5\% level, suggesting that OPSR is beneficial given our model assumptions.
+The reduced model specification (\code{fit_red}) is not rejected in the likelihood ratio test. Further, there is significant error correlation between the selection process and the outcome process for the UTWers (\code{rho3}). The Wald-test suggests that the null hypothesis (\code{rho1} = \code{rho2} = \code{rho3} = 0) can be rejected at the 5\% level, suggesting that OPSR is beneficial given our model assumptions.
 
 However, so far we have neglected the commute distance which most likely impacts the propensity to telework (see Figure~\ref{fig:boxplot}) and naturally influences the weekly distance traveled. To illustrate this, the reduced model specification can be updated to include \code{log_weekly_km}
 %
@@ -608,7 +608,7 @@ fit_commute <- update(fit_red, ~ . + log_commute_km | . + log_commute_km | . +
 print(summary(fit_commute), print.call = FALSE)
 @
 %
-where now all goodness of fit indicators improved (in particular R$^2$ for the continuous outcomes) and the rho coefficients are no longer significant at conventional levels. Similarly, the Wald-test (rho) can no longer reject the Null. Meanwhile, some of the coefficients slightly changed in magnitude and rendered insignificant or vice versa. For example, the effect of residential location (\code{o1_res_loc_rural} and \code{o2_res_loc_rural}) moderated the effect of commute distance in \code{fit_red}, suggesting that individuals living in more rural locations tend to have longer commutes.
+where now all goodness of fit indicators improved (in particular R$^2$ for the continuous outcomes) and the rho coefficients are no longer significant at conventional levels. Similarly, the Wald-test (rho) can no longer reject the null. Meanwhile, some of the coefficients slightly changed in magnitude and rendered insignificant or vice versa. For example, the effect of residential location (\code{o1_res_loc_rural} and \code{o2_res_loc_rural}) moderated the effect of commute distance in \code{fit_red}, suggesting that individuals living in more rural locations tend to have longer commutes.
 
 While this discussion (of omitted variable bias and/or endogeneity) is common for all regression analysis, it highlights here, why error correlation can occur. Both model specifications (\code{fit_red} and \code{fit_commute}) produce similar insights in the post-estimation that follows. However, we will demonstrate later, that not accounting for error correlation can lead to reverse (and most likely false) conclusions.
 
@@ -671,7 +671,7 @@ Telework reduces weekly kilometers traveled across all groups with the exception
 While the discussion above was based on average treatment effects, Figure~\ref{fig:treatment} shows the distributions of predicted weekly distance traveled by teleworker group. Each panel presents a pair of (un)treated teleworking statuses as the margins and the dashed lines are the empirical sample means. The solid black reference line marks the instances where weekly distance traveled is equal for both of the paired (un)treated telework statuses. I.e., points below the reference line indicate more travel under the regime depicted on the x-axis.
 %
 <<hidden, echo=FALSE>>=
-plot_treat_avg <- function(object, ylim, col, main,
+plot_treat_avg <- function(object, x, ylim, col, main,
                            legend.position = "bottomright",
                            pch = par("pch"), lwd, ...) {
 
@@ -679,6 +679,7 @@ plot_treat_avg <- function(object, ylim, col, main,
   on.exit(par(op))
 
   tw_status <- c("NTW", "NUTW", "UTW")
+  xlabs <- paste0(tw_status, "\n(", round(x, 2), " d/week)")
   awk <- average(estimated_weekly_km(fit))
   input <- apply(awk, 2, function(x) {
     dat <- data.frame(y = x)
@@ -687,15 +688,15 @@ plot_treat_avg <- function(object, ylim, col, main,
   })
 
   par(...)
-  plot(as.numeric(input[[1]]$x), input[[1]]$y, type = "n",
+  plot(x, input[[1]]$y, type = "n",
        ylim = ylim,
-       xlab = "Telework status (treatment)", ylab = "Weekly distance (km)",
+       xlab = "Telework treatment", ylab = "Weekly distance (km)",
        xaxt = "n")
   mtext(main, line = 2, font = 2, cex = 1)
   grid()
-  axis(1, at = input[[1]]$x, labels = tw_status)
+  axis(1, at = x, labels = xlabs, padj = 0.5)
   for (i in seq_along(input)) {
-    lines(x = input[[i]]$x, y = input[[i]]$y, type = "b", col = col[i], lwd = lwd)
+    lines(x = x, y = input[[i]]$y, type = "b", col = col[i], lwd = lwd)
   }
   legend(legend.position, legend = tw_status, pch = 1, lwd = lwd, col = col, bty = "n")
 
@@ -798,6 +799,8 @@ plot_treat_obs <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = 
 \begin{figure}[t!]
 \centering
 <<plot-treatment, echo=FALSE, fig=TRUE, height=8, width=8>>=
+x <- aggregate(wfh_days ~ wfh, data = timeuse_data, FUN = mean)$wfh_days
+
 fit <- fit_commute
 
 colvec <- c("#023047", "#fb8500", "#058c42")
@@ -808,7 +811,7 @@ alpha <- 0.3
 lwd <- 3
 
 g4 <- function() {
-  plot_treat_avg(fit, ylim = c(0, 300), col = colvec,
+  plot_treat_avg(fit, x, ylim = c(0, 300), col = colvec,
                  main = "d) Average treatment effect",
                  cex = 0.8, lwd = lwd)
 }
