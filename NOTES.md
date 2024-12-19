@@ -114,7 +114,7 @@
   -[x] Manually set 2 space indents again...
   -[x] Check whether new paragraphs (`%`) make sense
   -[x] Short intro in case study ("what we will do", to guide the reader)
-  -[ ] Write summary
+  -[x] Write summary
   -[ ] Implement Xinyi's comments
   -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 
