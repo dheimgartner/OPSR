@@ -56,7 +56,7 @@ options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE,
 
 %% - \Abstract{} almost as usual
 \Abstract{
-When treatment is endogenous, selection bias might arise if unobserved factors simultaneously influence both the selection and outcome process. A possible cure in the case of cross-sectional data is to explicitly account for this error correlation and estimate the covariance matrix of the two processes. This is known as endogenous switching regression. The \proglang{R} package \pkg{OPSR} introduced in this article provides an easy-to-use, fast and memory efficient interface to ordered probit switching regression, accounting for self-selection into an ordinal treatment. It handles log-transformed outcomes which need special consideration when computing conditional expectations and thus treatment effects.
+Selection bias may arise if unobserved factors simultaneously influence the selection process for who gets treated (or not), and the outcome of (not) receiving the treatment. Different methods exist to correct for this bias depending on whether longitudinal or cross-sectional data is available. A possible cure in the latter case (where the counterfactual treatment outcome is never observed) is to explicitly account for the arising error correlation and estimate the covariance matrix of the selection and outcome processes. This is known as endogenous switching regression. The \proglang{R} package \pkg{OPSR} introduced in this article provides an easy-to-use, fast and memory efficient interface to ordered probit switching regression, accounting for self-selection into an ordinal treatment. It handles log-transformed outcomes which need special consideration when computing conditional expectations and thus treatment effects.
 }
 
 %% - \Keywords{} with LaTeX markup, at least one required
@@ -247,10 +247,10 @@ To obtain unbiased treatment effects, we must further evaluate the ``counterfact
 \end{aligned}
 \end{equation}
 %
-As it is usual to log-transform the continuous outcome in regression analysis, we have to note, that in such cases the Equations~\ref{eq:cond-exp}-\ref{eq:counterfact-exp} provide the conditional expectation of the log-transformed outcome. Therefore, we need to back-transform $\ln(y_j + 1)$ which yields
+Let's assume that $y_j = \ln(Y_j + 1)$ in the previous equations. I.e., the continuous outcome was log-transformed as is usual in regression analysis. We have to note, that in such cases the Equations~\ref{eq:cond-exp}-\ref{eq:counterfact-exp} provide the conditional expectation of the log-transformed outcome. Therefore we need to back-transform $Y_j = \exp(y_j) - 1$ which yields
 %
 \begin{equation} \label{eq:log-cond-exp}
-\E[y_j \mid Z = j] =
+\E[Y_j \mid Z = j] =
 \exp\left(\Xb + \frac{\sigma_j^2}{2}\right)
 \left[
 \frac{\Phi(\kappa_j - \Wg - \rho_j\sigma_j) - \Phi(\kappa_{j-1} - \Wg - \rho_j\sigma_j)}
@@ -261,7 +261,7 @@ As it is usual to log-transform the continuous outcome in regression analysis, w
 for the factual case, and
 %
 \begin{equation} \label{eq:log-counterfact-exp}
-\E[y_{j'} \mid Z = j] =
+\E[Y_{j'} \mid Z = j] =
 \exp\left(\Xbd + \frac{\sigma_{j'}^2}{2}\right)
 \left[
 \frac{\Phi(\kappa_j - \Wg - \rho_{j'}\sigma_{j'}) - \Phi(\kappa_{j-1} - \Wg - \rho_{j'}\sigma_{j'})}
@@ -903,7 +903,7 @@ where now the direction of the treatment effects aligns with the OPSR models but
 print(anova(fit_nocor2, fit_commute), print.formula = FALSE)
 @
 %
-which does not reject the null that the simpler model is sufficient. As a conclusion should be noted that the modeled covariance matrix (in particular the magnitude of \code{rho}) potentially strongly influences the treatment effects.
+which does not reject the null (at the 10\% level) that the simpler model is sufficient. As a conclusion should be noted that the modeled covariance matrix (in particular the magnitude of \code{rho}) potentially strongly influences the treatment effects.
 
 Lastly (using \code{fit_commute}), we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTW to NUTW vs. NUTW to UTW).
 %
@@ -941,13 +941,9 @@ In a real-world setting, the treatment is usually not exogenously prescribed but
 
 \section*{Computational details}
 
-\begin{leftbar}
-Add \fct{packageVersion} for all packages loaded with \fct{library}
-\end{leftbar}
-
 The results in this paper were obtained using
-\proglang{R}~\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the
-\pkg{OPSR}~\Sexpr{packageVersion("OPSR")} package. \proglang{R} itself
+\proglang{R}~\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the packages
+\pkg{OPSR}~\Sexpr{packageVersion("OPSR")}, \pkg{MASS}~\Sexpr{packageVersion("MASS")}, \pkg{texreg}~\Sexpr{packageVersion("texreg")} and \pkg{gridExtra}~\Sexpr{packageVersion("gridExtra")}. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at
 \url{https://CRAN.R-project.org/}.

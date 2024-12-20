@@ -115,16 +115,10 @@
   -[x] Check whether new paragraphs (`%`) make sense
   -[x] Short intro in case study ("what we will do", to guide the reader)
   -[x] Write summary
-  -[ ] Implement Xinyi's comments
+  -[x] Implement Xinyi's comments
   -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 
-
-
-
-
-
-
-
+-[ ] Prepare CRAN update (in particular bump version number)
 -[ ] Convert paper to vignette
   - https://www.jstatsoft.org/style#how-can-i-turn-my-jss-paper-into-an-r-package-vignette
   - add
@@ -132,7 +126,8 @@
     %\VignetteDepends{}
     %\VignetteKeywords{}
     %\VignettePackage{OPSR}
--[ ] Maybe revise print.summary.opsr (similar to zeroinfl model, without ---)
+-[x] Maybe revise print.summary.opsr (similar to zeroinfl model, without ---)
+-[ ] Update on CRAN
 
 
 ## General
