@@ -15,7 +15,7 @@
 #'   the default starting values were used). `LLfinal` is the log-likelihood at
 #'   final convergence and `AIC`, `BIC` the corresponding information critereon.}
 #' \item{GOFcomponents}{Contains the \emph{goodness of fit}  for the model components.
-#'   `LLprobit` is the log-likelihood (LL) contribution of the ordinal probit model.
+#'   `LLprobit` is the log-likelihood (LL) contribution of the ordered probit model.
 #'   `LLprobitEl` the LL of the "equally likely" and `LLprobitMs` the LL of the
 #'   "market share" model. With these three metrics the pseudo R2 is computed and
 #'   returned as `pseudoR2el` and `pseudoR2ms`. `R2` reports the usual coefficient

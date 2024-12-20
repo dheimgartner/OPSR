@@ -1,4 +1,4 @@
-#' Fitter Function for Ordinal Probit Switching Regression Models
+#' Fitter Function for Ordered Probit Switching Regression Models
 #'
 #' This is the basic computing engine called by [`opsr`] used to fit ordinal
 #' probit switching regression models. Should usually *not* be used directly.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/opsr_fit.R
 \name{opsr.fit}
 \alias{opsr.fit}
-\title{Fitter Function for Ordinal Probit Switching Regression Models}
+\title{Fitter Function for Ordered Probit Switching Regression Models}
 \usage{
 opsr.fit(
   Ws,

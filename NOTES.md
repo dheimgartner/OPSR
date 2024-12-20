@@ -128,7 +128,7 @@
 -[ ] Convert paper to vignette
   - https://www.jstatsoft.org/style#how-can-i-turn-my-jss-paper-into-an-r-package-vignette
   - add
-    %\VignetteIndexEntry{OPSR: A Package for Estimating Ordinal Probit Switching Regression}
+    %\VignetteIndexEntry{OPSR: A Package for Estimating Ordered Probit Switching Regression}
     %\VignetteDepends{}
     %\VignetteKeywords{}
     %\VignettePackage{OPSR}
@@ -147,7 +147,7 @@
     - see mvProbitPrepareCoef() and mvProbitCoefNames() in mvProbit()
     - mvProbitLogLikInternal is more or less the idea of mvProbit.fit()
 
-- If we have no error correlation then OPSR should yield ordinal probit and lin reg estimates (write test case).
+- If we have no error correlation then OPSR should yield ordered probit and lin reg estimates (write test case).
 -[x] What formula interface to use (list of formulas vs. Formula package https://www.jstatsoft.org/article/view/v034i01)
   - Formula!
 -[x] Formula vignette has very useful example! ivcoef()
@@ -163,7 +163,7 @@
   - Using the delta method: see delta_method.R
     - However, not that easy...
 -[x] First in opsr(formula, ...) => wrap f <- Formula(formula)
--[x] How to create reasonable starting values? 2-step? For selection regular ordinal probit should do the trick, right? => how did Xinyi do it (also for sigma and rho)?
+-[x] How to create reasonable starting values? 2-step? For selection regular ordered probit should do the trick, right? => how did Xinyi do it (also for sigma and rho)?
   - See maybe Chiburis and/or Jimenez (references in Xinyi)
 
 -[x] How to include weights => asked chat already => just multiply loglik (see also mixl)

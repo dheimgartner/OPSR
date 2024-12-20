@@ -2,7 +2,7 @@
 % Please edit documentation in R/opsr.R
 \name{opsr}
 \alias{opsr}
-\title{Fitting Ordinal Probit Switching Regression Models}
+\title{Fitting Ordered Probit Switching Regression Models}
 \usage{
 opsr(
   formula,

@@ -1,4 +1,4 @@
-#' Fitting Ordinal Probit Switching Regression Models
+#' Fitting Ordered Probit Switching Regression Models
 #'
 #' High-level formula interface to the workhorse [`opsr.fit`].
 #'

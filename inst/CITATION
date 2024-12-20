@@ -2,7 +2,7 @@ citHeader("To cite package 'OPSR' in publications use:")
 
 bibentry(
   bibtype  = "Article",
-  title    = "OPSR: A package for estimating ordinal probit switching regression models in R",
+  title    = "OPSR: A package for estimating ordered probit switching regression models in R",
   author   = "Daniel Heimgartner, Xinyi Wang, tbc",
   journal  = "tbc",
   year     = "2024",

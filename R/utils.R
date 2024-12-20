@@ -41,7 +41,7 @@ update.opsr <- function(object, ...) {
   NextMethod("update", object)
 }
 
-## returns loglik of ordinal probit model
+## returns loglik of ordered probit model
 ll_probit <- function(object) {
   probs <- lapply(seq_len(object$nReg), function(i) {
     predict(object, group = i, type = "prob")

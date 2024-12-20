@@ -1,6 +1,6 @@
 #' 2-step regression to generate reasonable starting values
 #'
-#' Currently, separate ordinal probit regression and linear regression and
+#' Currently, separate ordered probit regression and linear regression and
 #' setting sigma and rho to 0.5. Should be improved!
 #'
 #' @param W
