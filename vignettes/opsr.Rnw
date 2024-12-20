@@ -31,6 +31,7 @@ library("OPSR")
 library("MASS")
 library("texreg")
 library("gridExtra")
+library("gridGraphics")
 
 options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE,
         digits = 3)
@@ -943,7 +944,7 @@ In a real-world setting, the treatment is usually not exogenously prescribed but
 
 The results in this paper were obtained using
 \proglang{R}~\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the packages
-\pkg{OPSR}~\Sexpr{packageVersion("OPSR")}, \pkg{MASS}~\Sexpr{packageVersion("MASS")}, \pkg{texreg}~\Sexpr{packageVersion("texreg")} and \pkg{gridExtra}~\Sexpr{packageVersion("gridExtra")}. \proglang{R} itself
+\pkg{OPSR}~\Sexpr{packageVersion("OPSR")}, \pkg{MASS}~\Sexpr{packageVersion("MASS")}, \pkg{texreg}~\Sexpr{packageVersion("texreg")}, \pkg{gridExtra}~\Sexpr{packageVersion("gridExtra")} and \pkg{gridGraphics}~\Sexpr{packageVersion("gridGraphics")}. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at
 \url{https://CRAN.R-project.org/}.
