@@ -686,7 +686,7 @@ plot_treat_avg <- function(object, x, ylim, col, main,
 
   tw_status <- c("NTW", "NUTW", "UTW")
   xlabs <- paste0(tw_status, "\n(", round(x, 2), " d/week)")
-  awk <- average(estimated_weekly_km(fit))
+  awk <- average(estimated_weekly_km(object))
   input <- apply(awk, 2, function(x) {
     dat <- data.frame(y = x)
     dat$x <- 1:nrow(dat)
