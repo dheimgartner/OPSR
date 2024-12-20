@@ -163,7 +163,7 @@ where $Z$ is the observed ordinal selection variable, $j = 1, \dots, J$ indexes 
 \end{aligned}
 \end{equation}
 %
-where $\phi(\cdot)$ and $\Phi(\cdot)$ are the density and cumulative distribution function of the standard normal distribution.
+where $\Phi(\cdot)$ is the cumulative distribution function of the standard normal distribution.
 
 The outcome model for the \jth treatment group is expressed as
 %
@@ -225,7 +225,7 @@ As shown in \cite{Wang+Mokhtarian:2024}, the log-likelihood of observing all ind
 \right\}
 \end{multline}
 %
-where $\sum_{\{j\}}$ means the summation of all the cases belonging to the \jth selection outcome.
+where $\sum_{\{j\}}$ means the summation of all the cases belonging to the \jth selection outcome, $\phi(\cdot)$ and $\Phi(\cdot)$ are the density and cumulative distribution function of the standard normal distribution.
 
 The conditional expectation can be expressed as
 %
@@ -432,8 +432,22 @@ where we demonstrate that
 \end{enumerate}
 %
 <<hidden, echo=FALSE>>=
-custom.model.names <- c("NTWer (535)", "NUTWer (322)", "UTWer (727)")
+custom.model.names <- c("Selection", "NTWer (535)", "NUTWer (322)", "UTWer (727)")
 custom.coef.names <- c(
+  "Some college",
+  "Bachelor's degree or higher",
+  "\\$50,000 to \\$99,999",
+  "\\$100,000 or more",
+  "Flexible work schedule",
+  "Full time worker",
+  "Teleworking feasibility",
+  "Pro-active-mode",
+  "Pro-car-owning",
+  "Work interferes with family",
+  "Pro-teamwork",
+  "TW effective teamwork",
+  "TW enthusiasm",
+  "TW location flexibility",
   "Intercept",
   "Female",
   "Age",
@@ -444,24 +458,17 @@ custom.coef.names <- c(
   "Suburban",
   "Small town",
   "Rural",
-  "Full time worker",
   "Pro-large-house",
-  "Pro-car-owning",
   "Region indicator (WAA)",
-  "Some college",
-  "Bachelor's degree or higher",
-  "Pro-active-mode",
-  "\\$50,000 to \\$99,999",
-  "\\$100,000 or more",
   "Number of children"
 )
-reorder.coef <- c(1, 2, 3, 4, 5, 6, 15, 16, 18, 19, 20, 7, 8, 9, 10, 11, 12, 13, 17, 14)
+reorder.coef <- c(1:14, 25, 15:24, 26, 27)
 groups <- list(
-  "Race (ref: white)" = 5:6,
-  "Education (ref: high school or less)" = 7:8,
-  "Annual household income (ref: less than \\$50,000)" = 9:10,
-  "Residential location (ref: urban)" = 13:15,
-  "Attitudes" = 17:19
+  "Education (ref: high school or less)" = 1:2,
+  "Household income (ref: less than \\$50,000)" = 3:4,
+  "Attitudes" = 8:15,
+  "Race (ref: white)" = 20:21,
+  "Residential location (ref: urban)" = 23:25
 )
 @
 %
@@ -469,13 +476,11 @@ With help of the \pkg{texreg} package, production-grade tables (in various outpu
 %
 <<replica, results=tex>>=
 texreg::texreg(
-  fit, beside = TRUE, include.structural = FALSE,
-  include.selection = FALSE, include.R2 = TRUE,
-  custom.model.names = custom.model.names,
-  custom.coef.names = custom.coef.names,
-  single.row = TRUE,
-  reorder.coef = reorder.coef, groups = groups, scalebox = 0.86,
-  booktabs = TRUE, dcolumn = TRUE, use.packages = FALSE, float.pos = "t!",
+  fit, beside = TRUE, include.structural = FALSE, include.R2 = TRUE,
+  include.pseudoR2 = TRUE, custom.model.names = custom.model.names,
+  custom.coef.names = custom.coef.names, reorder.coef = reorder.coef,
+  groups = groups, scalebox = 0.83, booktabs = TRUE, dcolumn = TRUE,
+  use.packages = FALSE, float.pos = "t!", single.row = TRUE,
   caption = "Replica of \\cite{Wang+Mokhtarian:2024}, Table 3.",
   label = "tab:wang-replica"
 )
@@ -483,9 +488,9 @@ texreg::texreg(
 %
 Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are forwarded to a \proglang{S4} method \fct{extract} which extracts the variables of interest from a model fit (see also \code{?extract.opsr}). We demonstrate here that
 \begin{enumerate}
-\item The structural coefficients (\code{kappa}, \code{sigma}, \code{rho}) and coefficients belonging to the selection component can be omitted (\code{include.structural = FALSE}, \code{include.selection = FALSE}).
+\item Model components can be omitted. Here, the structural coefficients (\code{kappa}, \code{sigma}, \code{rho}) are disgarded (\code{include.structural = FALSE}).
 \item The model components can be printed side-by-side (\code{beside = TRUE}).
-\item Additional goodness-of-fit indicators can be included (\code{include.R2 = TRUE}).
+\item Additional goodness-of-fit indicators can be included (\code{include.R2 = TRUE} and \code{include.pseudoR2 = TRUE}). Note that the indicators are repeated for all the model components.
 \item The output formatting can be controlled flexibly, by reordering, renaming and grouping coefficients (the fiddly but trivial details are hidden here for brevity).
 \end{enumerate}
 
