@@ -156,6 +156,11 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
       rho <- grepl("^rho", names(start))
       start[rho] <- censor(start[rho], lower = -0.85, upper = 0.85)
     }
+    ## NA values point to singularity issues
+    if (any(is.na(start))) {
+      singular <- names(start)[is.na(start)]
+      stop("Singularity issues for ", deparse(singular))
+    }
   }
 
   fit <- opsr.fit(Ws, Xs, Ys, start, fixed, w,
