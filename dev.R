@@ -684,3 +684,31 @@ debugonce(summary.opsr)
 
 fit_null <- opsr_null_model(fit_)
 summary(fit_null)
+
+
+## test .loglik
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+dat[1, "yo"] <- -100
+dat[2, "yo"] <- -200
+f <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+fit <- opsr(f, dat)
+logLik(fit)
+ll1 <- opsr(f, dat, .loglik = TRUE, start = fit$estimate)
+sum(ll1)
+ll1
+boxplot(ll1)
+which(ll1 < -50)
+ll2 <- fit$loglik(fit$estimate)
+sum(ll2)
+all(ll1 == ll2)
+
+?loglik_cpp
+mm <- model.matrix(fit)
+oZ <- order(dat$ys)
+Y <- lapply(sort(unique(dat$ys)), function(z) {
+  dat$yo[dat$ys == z]
+})
+ll3 <- loglik_cpp(fit$estimate, mm$W, mm$X, Y, fit$weights, 3, 1)[order(oZ)]
+all(ll1 == ll3)

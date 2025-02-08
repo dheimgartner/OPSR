@@ -20,6 +20,8 @@
 #' @param nThreads number of threads to be used. Do not pass higher number than
 #'   number of ordinal outcomes. See also [`opsr_check_omp`] and [`opsr_max_threads`].
 #' @param .useR if `TRUE`, usese [`loglik_R`]. Go grab a coffe.
+#' @param .loglik if `TRUE`, returns the vector of log-likelihood values given
+#'   the parameters passed via `start`.
 #' @param ... further arguments passed to [`maxLik::maxLik`].
 #'
 #' @return object of class `"maxLik" "maxim"`.
@@ -27,12 +29,15 @@
 #' @seealso [`maxLik::maxLik`], [`loglik_cpp`], [`opsr`]
 #' @export
 opsr.fit <- function(Ws, Xs, Ys, start, fixed, weights,
-                     method, iterlim, printLevel, nThreads, .useR = FALSE, ...) {
+                     method, iterlim, printLevel, nThreads, .useR = FALSE,
+                     .loglik = FALSE, ...) {
   nReg <- length(Xs)
 
   ll <- ifelse(.useR, loglik_R, loglik_cpp)
 
   ll2 <- function(theta) ll(theta, Ws, Xs, Ys, weights, nReg, nThreads)
+
+  if (.loglik) return(ll2(start))
 
   mL <- maxLik::maxLik(ll2, start = start, fixed = fixed, method = method, iterlim = iterlim,
                        printLevel = printLevel, ...)

@@ -19,6 +19,7 @@ opsr(
   .get2step = FALSE,
   .useR = FALSE,
   .censorRho = TRUE,
+  .loglik = FALSE,
   ...
 )
 }
@@ -71,6 +72,9 @@ not proceed with the maximum likelihood estimation.}
 
 \item{.censorRho}{if \code{TRUE}, rho starting values are censored to lie in the
 interval [-0.85, 0.85].}
+
+\item{.loglik}{if \code{TRUE}, returns the vector of log-likelihood values given
+the parameters passed via \code{start}.}
 
 \item{...}{further arguments passed to \code{\link[maxLik:maxLik]{maxLik::maxLik}}.}
 }

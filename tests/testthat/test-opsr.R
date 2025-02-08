@@ -107,3 +107,32 @@ test_that("works if data is not passed (finds in env)", {
   f <- ys | yo ~ xs1 + xs2 | xo1 + xo2
   expect_no_error(opsr(f, printLevel = 0))
 })
+
+test_that("log-likelihood values are returned in correct order", {
+  sim_dat <- load_sim_dat()
+  dat <- sim_dat$data
+  dat[1, "yo"] <- -100
+  dat[5, "yo"] <- -100
+  dat[20, "yo"] <- -100
+  f <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+  fit <- opsr(f, dat, printLevel = 0)
+  ll <- fit$loglik(fit$estimate)
+  expect_true(all(which(ll < -50) == c(1, 5, 20)))
+})
+
+test_that(".loglik, fit$loglik() and loglik_cpp all produce identical vectors", {
+  sim_dat <- load_sim_dat()
+  dat <- sim_dat$data
+  f <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+  fit <- opsr(f, dat, printLevel = 0)
+  ll1 <- opsr(f, dat, start = fit$estimate, .loglik = TRUE)
+  ll2 <- fit$loglik(fit$estimate)
+  mm <- model.matrix(fit)
+  oZ <- order(dat$ys)
+  Y <- lapply(sort(unique(dat$ys)), function(z) {
+    dat$yo[dat$ys == z]
+  })
+  ll3 <- loglik_cpp(fit$estimate, mm$W, mm$X, Y, fit$weights, 3, 1)[order(oZ)]
+  expect_true(all(ll1 == ll2))
+  expect_true(all(ll1 == ll3))
+})

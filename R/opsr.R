@@ -37,6 +37,8 @@
 #' @param .useR if `TRUE` usese [`loglik_R`]. Go grab a coffe.
 #' @param .censorRho if `TRUE`, rho starting values are censored to lie in the
 #'   interval \[-0.85, 0.85\].
+#' @param .loglik if `TRUE`, returns the vector of log-likelihood values given
+#'   the parameters passed via `start`.
 #' @param ... further arguments passed to [`maxLik::maxLik`].
 #'
 #' @return An object of class `"opsr" "maxLik" "maxim"`.
@@ -57,7 +59,8 @@
 #' @export
 opsr <- function(formula, data, subset, weights, na.action, start = NULL,
                  fixed = NULL, method = "BFGS", iterlim = 1000, printLevel = 2,
-                 nThreads = 1, .get2step = FALSE, .useR = FALSE, .censorRho = TRUE, ...) {
+                 nThreads = 1, .get2step = FALSE, .useR = FALSE, .censorRho = TRUE,
+                 .loglik = FALSE, ...) {
   start_time <- Sys.time()
 
   mf <- match.call(expand.dots = FALSE)
@@ -111,8 +114,13 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   ## reorder weights to match with shuffling in opsr.fit() where we compute
   ## likelihood values for all elements Z == 1, then Z == 2, etc. and then
   ## stack them
+  oZ <- order(Z)
   weights <- w  # keep a copy to attach to output
-  w <- w[order(Z)]
+  w <- w[oZ]
+
+  ## REMARK
+  ## x[order(Z)] stacks according to ys as used in loglik_cpp (i.e., 1, 1, 1, ..., 2, 2, 2, ..., etc.)
+  ## x[order(oZ)] reverts to original order (e.g., all(w[order(oZ)] == weights))
 
   W <- model.matrix(f, mf, rhs = 1)
   W <- W[, !(colnames(W) %in% "(Intercept)"), drop = FALSE]  # no intercept (identification threshold)!
@@ -151,14 +159,16 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   }
 
   fit <- opsr.fit(Ws, Xs, Ys, start, fixed, w,
-                  method, iterlim, printLevel, nThreads, .useR, ...)
+                  method, iterlim, printLevel, nThreads, .useR, .loglik = .loglik, ...)
+
+  if (.loglik) return(fit[order(oZ)])
 
   runtime <- Sys.time() - start_time
 
   ## return also some other useful information
   fit$call <- match.call()
   fit$formula <- f
-  fit$loglik <- function(theta) fit$objectiveFn(theta)[order(Z)] ## ll func with correct order
+  fit$loglik <- function(theta) fit$objectiveFn(theta)[order(oZ)] ## ll func with original order
   fit$runtime <- runtime
   fit$start <- start
   fit$nReg <- nReg
