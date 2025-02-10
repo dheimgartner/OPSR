@@ -147,6 +147,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   }
 
   ## check or generate starting values (theta)
+  singular <- NULL
   if (!is.null(start)) {
     start <- opsr_check_start(start, W, Xs)
   } else {
@@ -159,7 +160,12 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
     ## NA values point to singularity issues
     if (any(is.na(start))) {
       singular <- names(start)[is.na(start)]
-      stop("Singularity issues for ", deparse(singular))
+      if (!(singular %in% fixed)) {
+        warning("Singularity issues for ", deparse(singular), ". Fixing coefficients",
+                " at 0.")
+      }
+      start[singular] <- 0
+      fixed <- unique(union(fixed, singular))
     }
   }
 
@@ -182,6 +188,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   fit$df <- fit$nObs[["Total"]] - fit$nParams
   fit$nParts <- nParts
   fit$weights <- weights
+  fit$singular <- singular
 
   class(fit) <- c("opsr", class(fit))
 

@@ -5,7 +5,7 @@
 * R2 for each regime in texreg functions.
 * Nicer summary printing and setting fixed values in null model to NA.
 * Added `.loglik` arg to `opsr()` to return log-likelihood vector.
-* Detects and errors on singularity issues.
+* Detects and warns on singularity issues.
 * Fixed issues 7 - 12.
 
 # OPSR 0.1.2

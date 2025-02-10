@@ -712,3 +712,48 @@ Y <- lapply(sort(unique(dat$ys)), function(z) {
 })
 ll3 <- loglik_cpp(fit$estimate, mm$W, mm$X, Y, fit$weights, 3, 1)[order(oZ)]
 all(ll1 == ll3)
+
+
+
+
+## singularity issues
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+dat$xo3 <- dat$xo2
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2 + xo3,
+            dat)
+summary(fit)
+fit$singular
+fit2 <- update(fit, . ~ . | . | . | . - xo3)
+texreg::screenreg(list(fit, fit2))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -136,3 +136,12 @@ test_that(".loglik, fit$loglik() and loglik_cpp all produce identical vectors", 
   expect_true(all(ll1 == ll2))
   expect_true(all(ll1 == ll3))
 })
+
+test_that("warns on singularity issues", {
+  sim_dat <- load_sim_dat()
+  dat <- sim_dat$data
+  dat$xo3 <- dat$xo2
+  f <- ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2 + xo3
+  expect_warning(opsr(f, dat, printLevel = 0))
+  expect_no_warning(opsr(f, dat, printLevel = 0, fixed = "o3_xo3"))
+})
