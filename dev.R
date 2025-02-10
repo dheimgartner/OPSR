@@ -720,9 +720,10 @@ all(ll1 == ll3)
 devtools::load_all()
 sim_dat <- opsr_simulate()
 dat <- sim_dat$data
-dat$xo3 <- dat$xo2
-fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2 + xo3,
-            dat)
+dat$xo3 <- dat$xo1
+dat$xo4 <- dat$xo2
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2 | xo1 + xo2 | xo1 + xo2 + xo3 + xo4,
+            dat, fixed = c("o3_xo3", "o3_xo4"))
 summary(fit)
 fit$singular
 fit2 <- update(fit, . ~ . | . | . | . - xo3)

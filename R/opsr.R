@@ -160,7 +160,7 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
     ## NA values point to singularity issues
     if (any(is.na(start))) {
       singular <- names(start)[is.na(start)]
-      if (!(singular %in% fixed)) {
+      if (!all(singular %in% fixed)) {
         warning("Singularity issues for ", deparse(singular), ". Fixing coefficients",
                 " at 0.")
       }
