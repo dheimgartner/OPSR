@@ -73,7 +73,7 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   h_null <- nm[!grepl(pattern, nm)]
   if (any(model$fixed) && !is_opsr_null(model)) {  # issue 10
     fixed <- names(model$fixed)[model$fixed]
-    h_null <- h_null[!grepl(fixed, h_null)]
+    h_null <- h_null[!(h_null %in% fixed)]
   }
   wald_test_null <- wald_test(model, h_null, varcov)
 
