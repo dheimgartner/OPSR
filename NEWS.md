@@ -6,6 +6,7 @@
 * Nicer summary printing and setting fixed values in null model to NA.
 * Added `.loglik` arg to `opsr()` to return log-likelihood vector.
 * Detects and warns on singularity issues.
+* Resolved memory leak.
 
 # OPSR 0.1.2
 
