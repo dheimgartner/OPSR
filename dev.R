@@ -733,21 +733,29 @@ texreg::screenreg(list(fit, fit2))
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## memory consumption
+devtools::load_all()
+NOBS <- 10e3
+N <- 100
+sim_dat <- opsr_simulate(nobs = NOBS)
+dat <- sim_dat$data
+td <- numeric(length = N)
+mem <- numeric(length = N)
+for (i in 1:N) {
+  tick <- Sys.time()
+  fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, data = dat, printLevel = 0)
+  mu <- pryr::mem_used()
+  tock <- Sys.time()
+  td[i] <- tock - tick
+  mem[i] <- mu
+  cat("timediff: ", tock - tick, "\n")
+  cat("mem used: ", mu, "\n\n")
+}
+op <- par(no.readonly = TRUE)
+par(mfrow = c(1, 2))
+plot(td, main = "Time", type = "b")
+plot(mem, main = "Memory", type = "b")
+par(op)
 
 
 
