@@ -7,6 +7,7 @@
 * Added `.loglik` arg to `opsr()` to return log-likelihood vector.
 * Detects and warns on singularity issues.
 * Resolved memory leak.
+* Corrected outcome-specific R2 computations.
 
 # OPSR 0.1.2
 
