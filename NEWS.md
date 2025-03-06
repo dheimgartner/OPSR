@@ -8,6 +8,7 @@
 * Detects and warns on singularity issues.
 * Resolved memory leak.
 * Corrected outcome-specific R2 computations.
+* Added `type = "Xb"` in `predict.opsr()`
 
 # OPSR 0.1.2
 

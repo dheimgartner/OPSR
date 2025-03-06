@@ -22,17 +22,17 @@
 #'
 #' If the `type` argument is `"response"` then the continuous outcome is predicted.
 #' Use `"unlog-response"` if the outcome response was log-transformed during estimation.
-#' `"prob"` returns the probability vector of belonging to `group` and `"mills"`
-#' returns the inverse mills ratio.
+#' `"prob"` returns the probability vector of belonging to `group`, `"mills"`
+#' returns the inverse mills ratio and `"Xb"` returns \eqn{X \beta}.
 #'
 #' @example R/examples/ex-predict.R
 #' @export
 predict.opsr <- function(object, newdata, group, counterfact = NULL,
-                         type = c("response", "unlog-response", "prob", "mills"),
+                         type = c("response", "unlog-response", "prob", "mills", "Xb"),
                          ...) {
   type <- match.arg(type)
   predict_opsr <- function(X_j, W_j, beta_j, rho_j, sigma_j, kappa_j_1, kappa_j, gamma,
-                           type = c("response", "unlog-response", "prob", "mills")) {
+                           type = c("response", "unlog-response", "prob", "mills", "Xb")) {
     type <- match.arg(type)
     Xb <- X_j %*% beta_j  # xbif(j)
     Wg <- W_j %*% gamma  # xbsel
@@ -53,7 +53,8 @@ predict.opsr <- function(object, newdata, group, counterfact = NULL,
                  (stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)) - 1
              ),
              "prob" = as.vector(stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)),
-             "mills" = as.vector(imr)
+             "mills" = as.vector(imr),
+             "Xb" = as.vector(Xb)
       )
 
     out
