@@ -30,6 +30,24 @@
 - If necessary, use `skip_on_cran()` (preferably nested in `test_thath()`)
 - `expect_equal()` accepts a tolerance argument (`expect_identical()` not)
 
+## Paper update
+
+-[ ] Respond to Xinyi's comments and update paper
+-[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
+-[ ] Add paper vignette after corrections
+  - https://www.jstatsoft.org/style#how-can-i-turn-my-jss-paper-into-an-r-package-vignette
+  - add
+    %\VignetteIndexEntry{OPSR: A Package for Estimating Ordered Probit Switching Regression}
+    %\VignetteDepends{}
+    %\VignetteKeywords{}
+    %\VignettePackage{OPSR}
+-[ ] Archive paper vignette on RC
+-[ ] Update please cite (point to RC)
+-[ ] Update TWTE cite (point to RC)
+-[ ] New release and push to CRAN
+-[ ] Submit to JSS
+-[ ]	Pack usefule accompanying functions (e.g., cross-validation, treatment effects, ploting funcs, etc.) in separate package: OPSRtools => submit to CRAN (use OPSRtools in paper [?])
+
 ## Next steps
 
 -[x] Write opsr_check_start
@@ -115,20 +133,8 @@
   -[x] Check whether new paragraphs (`%`) make sense
   -[x] Short intro in case study ("what we will do", to guide the reader)
   -[x] Write summary
+  -[x] Maybe revise print.summary.opsr (similar to zeroinfl model, without ---)
   -[x] Implement Xinyi's comments
-  -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
-
--[ ] Prepare CRAN update (in particular bump version number)
--[ ] Convert paper to vignette
-  - https://www.jstatsoft.org/style#how-can-i-turn-my-jss-paper-into-an-r-package-vignette
-  - add
-    %\VignetteIndexEntry{OPSR: A Package for Estimating Ordered Probit Switching Regression}
-    %\VignetteDepends{}
-    %\VignetteKeywords{}
-    %\VignettePackage{OPSR}
--[x] Maybe revise print.summary.opsr (similar to zeroinfl model, without ---)
--[ ] Update on CRAN
-
 
 ## General
 
