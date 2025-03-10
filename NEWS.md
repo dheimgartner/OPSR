@@ -9,6 +9,7 @@
 * Resolved memory leak.
 * Corrected outcome-specific R2 computations.
 * Added `type = "Xb"` in `predict.opsr()`
+* Works for only 2 treatment regimes.
 
 # OPSR 0.1.2
 

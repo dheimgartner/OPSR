@@ -145,3 +145,28 @@ test_that("warns on singularity issues", {
   expect_warning(opsr(f, dat, printLevel = 0))
   expect_no_warning(opsr(f, dat, printLevel = 0, fixed = "o3_xo3"))
 })
+
+test_that("runs if treatment is binary", {
+  sim_dat <- load_sim_dat()
+  dat <- subset(sim_dat$data, subset = ys %in% c(1, 2))
+  expect_error(MASS::polr(factor(ys) ~ xs1 + xs2, data = dat, method = "probit"))
+  expect_no_error(fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat, printLevel = 0))
+  expect_equal(fit$code, 0)
+})
+
+test_that("runs if more than 3 treatment regimes", {
+  sim_dat <- sim4()
+  dat <- sim_dat$dat
+  expect_no_error(fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat, printLevel = 0))
+  expect_equal(fit$code, 0)
+  ground_truth <- sim_dat$params
+  sig <- sim_dat$sigma
+  sigma <- diag(sig)[2:ncol(sig)]
+  rho <- sig[1, 2:ncol(sig)]
+  gamma <- unname(coef(fit, component = "selection"))
+  beta <- unname(coef(fit, component = "outcome"))
+  structural <- unname(coef(fit, component = "structural"))
+  expect_equal(gamma, ground_truth$gamma, tolerance = 3e-1)
+  expect_equal(beta, c(ground_truth$beta1, ground_truth$beta2, ground_truth$beta3, ground_truth$beta4), tolerance = 3e-1)
+  expect_equal(structural, c(ground_truth$kappa, sigma, rho), tolerance = 3e-1)
+})

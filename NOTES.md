@@ -33,6 +33,7 @@
 ## Paper update
 
 -[ ] Respond to Xinyi's comments and update paper
+-[ ] Work through github issues
 -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 -[ ] Add paper vignette after corrections
   - https://www.jstatsoft.org/style#how-can-i-turn-my-jss-paper-into-an-r-package-vignette
