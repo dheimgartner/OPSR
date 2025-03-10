@@ -13,6 +13,7 @@
   include.outcome = TRUE,
   include.pseudoR2 = FALSE,
   include.R2 = FALSE,
+  repeat.gofs = FALSE,
   ...
 )
 }
@@ -32,6 +33,8 @@ component should be printed. See also the 'Details' section.}
 
 \item{include.R2}{whether or not the R2 statistic for the outcome components
 should be printed.}
+
+\item{repeat.gofs}{if \code{beside = TRUE} whether or not to repeat the gofs.}
 
 \item{...}{additional arguments passed to \code{\link{summary.opsr}}.}
 }

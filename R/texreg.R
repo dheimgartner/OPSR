@@ -1,7 +1,8 @@
 ## documented below
 extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
                          include.selection = TRUE, include.outcome = TRUE,
-                         include.pseudoR2 = FALSE, include.R2 = FALSE, ...) {
+                         include.pseudoR2 = FALSE, include.R2 = FALSE,
+                         repeat.gofs = FALSE, ...) {
   ## unpack some stuff
   s <- summary(model, ...)
   str.names <- names(coef(model, component = "structural"))
@@ -102,6 +103,14 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
         trList[[length(trList) + 1]] <- tr
       }
     }
+    if (!repeat.gofs) {
+      tmp <- trList[[1]]@gof
+      trList <- lapply(trList, function(x) {
+        x@gof <- NA_real_
+        x
+      })
+      trList[[1]]@gof <- tmp
+    }
     return(trList)
 
   } else {  # beside == FALSE
@@ -145,6 +154,7 @@ extract.opsr <- function(model, beside = FALSE, include.structural = TRUE,
 #'   component should be printed. See also the 'Details' section.
 #' @param include.R2 whether or not the R2 statistic for the outcome components
 #'   should be printed.
+#' @param repeat.gofs if `beside = TRUE` whether or not to repeat the gofs.
 #' @param ... additional arguments passed to [`summary.opsr`].
 #'
 #' @return A `texreg-class` object representing the statistical model.
