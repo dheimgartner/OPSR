@@ -872,8 +872,9 @@ start <- c(
 fit <- opsr(f, telework_data, start = start, printLevel = 0)
 
 devtools::load_all("../TWTE")
+fit$weights <- telework_data$weight
 ate <- TWTE:::opsr_ate(fit, type = "unlog-response")
-
+ate
 
 
 

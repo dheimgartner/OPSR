@@ -32,7 +32,7 @@
 
 ## Paper update
 
--[ ] Respond to Xinyi's comments and update paper
+-[x] Respond to Xinyi's comments and update paper
   - Make her aware of Acknowledgements section
 -[ ] Work through github issues
 -[ ] Prepare cran update (in particular bump version number such that CRAN version conforms to paper version)
