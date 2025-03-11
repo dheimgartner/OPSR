@@ -611,7 +611,14 @@ where now all goodness of fit indicators improved (in particular R$^2$ for the c
 While this discussion (of omitted variable bias and/or endogeneity) is common for all regression analysis, it highlights here, why error correlation can occur. Both model specifications (\code{fit_red} and \code{fit_commute}) produce similar insights in the post-estimation that follows. However, we will demonstrate later, that not accounting for error correlation can lead to reverse (and most likely false) conclusions.
 
 %% The treatment effects
-We first define some helper functions to compute treatment effects.\footnote{More rigorous treatment effect computations will be part of the \pkg{OPSRtools} package available from the Comprehensive \proglang{R} Archive Network (CRAN) in the near future.}
+We first define some helper functions to compute treatment effects:\footnote{More rigorous treatment effect computations will be part of the \pkg{OPSRtools} package available from the Comprehensive \proglang{R} Archive Network (CRAN) in the near future.}
+\begin{itemize}
+\item \fct{estimated\_weekly\_km}: Computes all possible factual and counterfactual conditional expectations (for each \code{group} and \code{counterfact} tuple).
+\item \fct{average}: Averages the conditional expectations from the previous step.
+\item \fct{pairwise\_diff}: The treatment effect is then the pairwise difference of these averaged conditional expectations.
+\item \fct{te}: Computes the treatment effect from an \code{"opsr"} fit object by combining all the steps above.
+\end{itemize}
+Unless otherwise mentioned, we use the \code{fit_commute} model in the remainder.
 %
 <<utils>>=
 tw_status <- c("NTW", "NUTW", "UTW")
@@ -655,18 +662,22 @@ pairwise_diff <- function(mat) {
   result
 }
 
-ate <- function(object) {
+te <- function(object) {
   awk <- average(estimated_weekly_km(object))
-  ate <- pairwise_diff(awk)
-  ate
+  te <- pairwise_diff(awk)
+  te
 }
 
-ate(fit_commute)
+te(fit_commute)
 @
 %
-Telework reduces weekly kilometers traveled across all groups with the exception of NTWers who would slightly be more mobile when switching from NTWing to NUTWing (\code{NTWing -> NUTWing}). The treatment effects when switching from NTWing to NUTWing are strongest for UTWers, who have generally longer commutes. Treatment effects for NTWing to UTWing are similar across all three groups, again slightly stronger for UTWers. Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (NTWing to NUTWing) but then substantially decreasing weekly kilometers with more telework (NUTWing to UTWing). An explanation could be, that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show somewhat an inverse pattern, first (NTWing to NUTWing) strongly reducing weekly kilometers but upon further telework adoption (NUTWing to UTWing) only minimally adjusting weekly kilometers. A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices. One can therefore conclude, that the treatment effect over the full range (NTWing to UTWing) is similar across all groups but the main travel reduction happens at different treatment intensities. Figure~\ref{fig:treatment} (panel d) visualizes these average treatment effects and shows the linear pattern for NUTWers and the (mirrored) hockey stick pattern for NTWers and UTWers.
+<<hidden, echo=FALSE>>=
+te.fc <- te(fit_commute)
+@
+%
+Telework reduces weekly kilometers traveled across all groups, with the exception of NTWers who would be slightly more mobile when switching from NTWing to NUTWing (\Sexpr{round(te.fc[1, 1], 2)} km; column \code{NTWer}, row \code{NTWing -> NUTWing}). The treatment effects when switching from NTWing to NUTWing are strongest for UTWers (\Sexpr{round(te.fc[1, 3], 2)} km) compared to NTWers (\Sexpr{round(te.fc[1, 1], 2)} km) and NUTWers (\Sexpr{round(te.fc[1, 2], 2)} km). Treatment effects for NTWing to UTWing are similar across all three groups, again slightly stronger for UTWers (\Sexpr{round(te.fc[2, 3], 2)} km). Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (\Sexpr{round(te.fc[1, 1], 2)} km; NTWing to NUTWing) but then substantially decreasing weekly kilometers with more telework (\Sexpr{round(te.fc[3, 1], 2)} km; NUTWing to UTWing). An explanation could be, that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show somewhat an inverse pattern, first (NTWing to NUTWing) strongly reducing weekly kilometers (\Sexpr{round(te.fc[1, 3], 2)} km) but upon further telework adoption (NUTWing to UTWing) only minimally adjusting weekly kilometers (\Sexpr{round(te.fc[3, 3], 2)} km). A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices. One can therefore conclude, that the treatment effect over the full range (NTWing to UTWing) is similar across all groups but the main travel reduction happens at different treatment intensities. Figure~\ref{fig:treatment} (panel d) visualizes these treatment effects and shows the linear pattern for NUTWers and the (mirrored) hockey stick pattern for NTWers and UTWers.
 
-While the discussion above was based on average treatment effects, Figure~\ref{fig:treatment} shows the distributions of predicted weekly distance traveled by teleworker group. Each panel presents a pair of (un)treated telework statuses as the margins and the dashed lines are the empirical sample means. The solid black reference line marks the instances where weekly distance traveled is equal for both of the paired (un)treated telework statuses. I.e., points below the reference line indicate more travel under the regime depicted on the x-axis.
+While the discussion above was based on averaged group-level treatment effects, Figure~\ref{fig:treatment} shows the distributions of predicted weekly distance traveled by teleworker group. Each panel presents a pair of (un)treated telework statuses as the margins and the dashed lines are the empirical sample means. The solid black reference line marks the instances where weekly distance traveled is equal for both of the paired (un)treated telework statuses. I.e., points below the reference line indicate more travel under the regime depicted on the x-axis.
 %
 <<hidden, echo=FALSE>>=
 plot_treat_avg <- function(object, x, ylim, col, main,
@@ -797,7 +808,7 @@ plot_treat_obs <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = 
 \setkeys{Gin}{width=\textwidth}
 \begin{figure}[t!]
 \centering
-<<plot-treatment, echo=FALSE, fig=TRUE, height=8, width=8>>=
+<<plot-treatment, echo=FALSE, fig=TRUE, height=8.3, width=8.3>>=
 x <- aggregate(wfh_days ~ wfh, data = timeuse_data, FUN = mean)$wfh_days
 
 fit <- fit_commute
@@ -864,11 +875,11 @@ fit_nocor <- opsr(f_red, timeuse_data, start = start, fixed = fixed,
   printLevel = 0)
 @
 %
-The average treatment effects are
+The treatment effects are
 %
 <<>>=
-ate(fit_red)
-ate(fit_nocor)
+te(fit_red)
+te(fit_nocor)
 @
 %
 While resulting treatment effects based on \code{fit_red} are comparable to the ones based on \code{fit_commute}, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled.
@@ -880,7 +891,7 @@ start <- coef(fit_commute)
 start[fixed] <- 0
 fit_nocor2 <- opsr(fit_commute$formula, timeuse_data, start = start,
   fixed = fixed, printLevel = 0)
-ate(fit_nocor2)
+te(fit_nocor2)
 @
 %
 where now the direction of the treatment effects aligns with the OPSR models but the values are still considerably different. Since \code{fit_nocor2} is a nested model of \code{fit_commute} we can conduct a likelihood ratio test
@@ -908,7 +919,7 @@ twdiff2 <- top[i, "UTWers"] - top[i, "NTWers"]
 twdiff3 <- top[i, "UTWers"] - top[i, "NUTWers"]
 
 twdiff <- matrix(c(rep(twdiff1, 3), rep(twdiff2, 3), rep(twdiff3, 3)), nrow = 3)
-bottom <- ate(fit_commute) / twdiff
+bottom <- te(fit_commute) / twdiff
 
 ute <- rbind(top, bottom)
 ute
