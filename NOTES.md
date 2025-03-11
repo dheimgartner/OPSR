@@ -33,7 +33,9 @@
 ## Paper update
 
 -[ ] Respond to Xinyi's comments and update paper
+  - Make her aware of Acknowledgements section
 -[ ] Work through github issues
+-[ ] Prepare cran update (in particular bump version number such that CRAN version conforms to paper version)
 -[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
 -[ ] Add paper vignette after corrections
   - https://www.jstatsoft.org/style#how-can-i-turn-my-jss-paper-into-an-r-package-vignette
