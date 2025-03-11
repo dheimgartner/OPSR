@@ -748,12 +748,16 @@ plot_treat_obs <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = 
       points(px[[i]], py[[i]], col = scales::alpha(col[i], alpha), pch = pch,
              cex = cex.point)
       abline(v = mpx[[i]], col = col[i], lty = lty, lwd = lwd)
-      text(x = mpx[[i]], y = ylim[1] + 10, labels = round(mpx[[i]], digits),
-           col = col[i], adj = c(-0.1, 1), cex = cex.text)
       abline(h = mpy[[i]], col = col[i], lty = lty, lwd = lwd)
-      text(x = xlim[1] + 10, y = mpy[[i]], labels = round(mpy[[i]], digits),
-           col = col[i], adj = c(0.3, -0.1), cex = cex.text)
     }
+    add_text <- function(mpx, mpy) {
+      usr <- par("usr")
+      labels <- paste(round(as.numeric(mpx)), round(as.numeric(mpy)), sep = ", ")
+      for (i in seq_along(labels)) {
+        text(usr[1], usr[4]+20-i*20, labels = labels[i], col = col[i], adj = c(-0.1, 1.2))
+      }
+    }
+    add_text(mpx, mpy)
     abline(a = 0, b = 1, lty = 1, lwd = lwd)
     legend(legend.position, legend = legend.entry, col = col, pch = pch, bty = "n")
   }
@@ -808,7 +812,7 @@ plot_treat_obs <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = 
 \setkeys{Gin}{width=\textwidth}
 \begin{figure}[t!]
 \centering
-<<plot-treatment, echo=FALSE, fig=TRUE, height=8.3, width=8.3>>=
+<<plot-treatment, echo=FALSE, fig=TRUE, height=8.5, width=8.5>>=
 x <- aggregate(wfh_days ~ wfh, data = timeuse_data, FUN = mean)$wfh_days
 
 fit <- fit_commute

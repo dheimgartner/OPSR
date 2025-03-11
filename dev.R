@@ -875,3 +875,31 @@ devtools::load_all("../TWTE")
 ate <- TWTE:::opsr_ate(fit, type = "unlog-response")
 
 
+
+
+
+## numbers in plot_treat_obs()
+colvec <- RColorBrewer::brewer.pal(n = 3, "Dark2")
+pch <- 19
+lty <- 3
+alpha <- 0.3
+lwd <- 3
+fit <- fit_commute
+plot_treat_obs(fit, x = 1, y = 2, type = "unlog-response",
+               main = "a) Not TWing vs. TWing < 3 times/week",
+               xlab = "Weekly distance when NTWing (km)",
+               ylab = "Weekly distance when NUTWing (km)", col = colvec, alpha = alpha,
+               cex.point = 1.5, pch = pch, lty = lty, lwd = lwd,
+               legend.entry = c("NTWers", "NUTWers", "UTWers"),
+               legend.position = "bottomright")
+## x1, x2, y1, y2
+add_text <- function(mpx, mpy) {
+  usr <- par("usr")
+  labels <- paste(round(as.numeric(mpx)), round(as.numeric(mpy)), sep = ", ")
+  for (i in seq_along(labels)) {
+    text(usr[1], usr[4]+10-i*10, labels = labels[i], col = col[i], adj = c(-0.1, 1.1))
+  }
+}
+
+
+
