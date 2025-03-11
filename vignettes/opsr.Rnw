@@ -869,6 +869,22 @@ gridExtra::grid.arrange(g1grob, g2grob, g3grob, g4grob, ncol = 2)
 \caption{\label{fig:treatment} Treatment effects.}
 \end{figure}
 
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|l|>{\centering\arraybackslash}p{2cm}|p{7.4cm}|}
+\hline
+Model & Parent & \centering Error \\ correlation & Description \\
+\hline
+\code{fit_full} & & $\bullet$ & Full identified model, including all variables as linear effects \\
+\code{fit_red} & \code{fit_full} & $\bullet$ & Excluding all variables not significant at the 10\% level \\
+\code{fit_commute} & \code{fit_red} & $\bullet$ & Adding \code{log_commute_km} \\
+\code{fit_nocor} & \code{fit_red} & $\circ$ & Fixing the \code{rho} coefficients at 0 \\
+\code{fit_nocor2} & \code{fit_commute} & $\circ$ & Fixing the \code{rho} coefficients at 0 \\
+\hline
+\end{tabular}
+\caption{\label{tab:model-overview} Model overview.}
+\end{table}
+
 As already alluded, not controlling for commute distance implies that selection on unobservables exists, leading to error correlation and selection bias if not accounted for. As we will illustrate now, this also compromises treatment effects. Recalling that \code{fit_red} is our final model without commute distance (but significant error correlation, as we have seen), we derive a model (\code{fit_nocor}) without error correlation by setting the \code{rho} coefficients to 0. I.e., this is the same as separately estimating an ordered probit model and three linear regression models.
 %
 <<no-cor>>=
