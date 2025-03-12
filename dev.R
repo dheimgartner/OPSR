@@ -904,3 +904,28 @@ add_text <- function(mpx, mpy) {
 
 
 
+
+## wrap lines
+## TODO
+## shouldn't break latex code...
+wrap_sweave_text <- function(file, width = 80) {
+  lines <- readLines(file, warn = FALSE)
+  in_chunk <- FALSE
+
+  wrapped_lines <- lapply(lines, function(line) {
+    if (grepl("^<<.*>>=", line)) in_chunk <<- TRUE
+    if (grepl("^@", line)) in_chunk <<- FALSE
+
+    if (!in_chunk && !grepl("^%", line)) {
+      stringr::str_wrap(line, width = width)
+    } else {
+      line
+    }
+  })
+
+  writeLines(unlist(wrapped_lines), file)
+}
+
+wrap_sweave_text("./vignettes/opsr.Rnw")
+
+
