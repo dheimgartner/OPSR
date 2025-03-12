@@ -51,9 +51,6 @@ library(OPSR)
 #> If you have questions, suggestions, or comments regarding the 'OPSR' package, please open an issue on https://github.com/dheimgartner/OPSR
 #> 
 #> To see these entries in BibTeX format, use 'citation('OPSR')'
-```
-
-``` r
 
 f <-
   ## ordinal and continuous outcome
@@ -89,7 +86,7 @@ summary(fit)
 #> 
 #> BFGS maximization, 182 iterations
 #> Return code 0: successful convergence 
-#> Runtime: 4.8 secs
+#> Runtime: 5.17 secs
 #> Number of regimes: 3 
 #> Number of observations: 1584 (535, 322, 727)
 #> Estimated parameters: 56 
@@ -99,7 +96,7 @@ summary(fit)
 #> BIC: 7490.105 
 #> Pseudo R-squared (EL): 0.4868 
 #> Pseudo R-squared (MS): 0.462 
-#> Multiple R-squared: 0.2367 (0.282, 0.2262, 0.2146)
+#> Multiple R-squared: 0.2367 (0.1787, 0.1806, 0.1244)
 #> 
 #> Estimates:
 #>                               Estimate Std. error t value  Pr(> t)    
@@ -164,8 +161,5 @@ summary(fit)
 #> 
 #> Wald chi2 (null): 1261.888 on 45 DF, p-value: < 0
 #> Wald chi2 (rho): 21.9907 on 3 DF, p-value: < 1e-04
-```
-
-``` r
 # texreg::screenreg(fit, beside = TRUE, include.pseudoR2 = TRUE, include.R2 = TRUE)
 ```
