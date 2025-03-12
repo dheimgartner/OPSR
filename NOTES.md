@@ -35,21 +35,8 @@
 -[x] Respond to Xinyi's comments and update paper
   - Make her aware of Acknowledgements section
 -[x] Work through github issues
--[ ] Prepare cran update (in particular bump version number such that CRAN version conforms to paper version)
--[ ] Break lines after n characters (final paper) => `knitr::wrap_rmd("./vignettes/opsr.Rnw", width = 81)`
--[ ] Add paper vignette after corrections
-  - https://www.jstatsoft.org/style#how-can-i-turn-my-jss-paper-into-an-r-package-vignette
-  - add
-    %\VignetteIndexEntry{OPSR: A Package for Estimating Ordered Probit Switching Regression}
-    %\VignetteDepends{}
-    %\VignetteKeywords{}
-    %\VignettePackage{OPSR}
--[ ] Archive paper vignette on RC
--[ ] Update please cite (point to RC)
--[ ] Update TWTE cite (point to RC)
--[ ] New release and push to CRAN
+-[ ] New release and push to CRAN (see Release OPSR 0.2.0 issue)
 -[ ] Submit to JSS
--[ ]	Pack usefule accompanying functions (e.g., cross-validation, treatment effects, ploting funcs, etc.) in separate package: OPSRtools => submit to CRAN (use OPSRtools in paper [?])
 
 ## Next steps
 

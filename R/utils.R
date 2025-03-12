@@ -51,8 +51,8 @@ ll_probit <- function(object) {
 }
 
 r2 <- function(object) {
-  z <- OPSR:::get_z(object)
-  y <- OPSR:::get_y(object)
+  z <- get_z(object)
+  y <- get_y(object)
   RS <- residuals(object)^2
   TS <- (y - mean(y))^2
   R2o <- unlist(lapply(seq_len(object$nReg), function(i) {

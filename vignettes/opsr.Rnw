@@ -817,8 +817,8 @@ x <- aggregate(wfh_days ~ wfh, data = timeuse_data, FUN = mean)$wfh_days
 
 fit <- fit_commute
 
-colvec <- c("#023047", "#fb8500", "#058c42")
-colvec <- RColorBrewer::brewer.pal(n = 3, "Dark2")
+# colvec <- RColorBrewer::brewer.pal(n = 3, "Dark2")
+colvec <- c("#1B9E77", "#D95F02", "#7570B3")
 pch <- 19
 lty <- 3
 alpha <- 0.3
@@ -882,7 +882,7 @@ Model & Parent & \centering Error \\ correlation & Description \\
 \code{fit_nocor2} & \code{fit_commute} & $\circ$ & Fixing the \code{rho} coefficients at 0 \\
 \hline
 \end{tabular}
-\caption{\label{tab:model-overview} Model overview.}
+\caption{\label{tab:model-overview} Model overview. The model is based on \emph{Parent} as elaborated under \emph{Description}.}
 \end{table}
 
 As already alluded, not controlling for commute distance implies that selection on unobservables exists, leading to error correlation and selection bias if not accounted for. As we will illustrate now, this also compromises treatment effects. Recalling that \code{fit_red} is our final model without commute distance (but significant error correlation, as we have seen), we derive a model (\code{fit_nocor}) without error correlation by setting the \code{rho} coefficients to 0. I.e., this is the same as separately estimating an ordered probit model and three linear regression models.

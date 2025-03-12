@@ -1,14 +1,14 @@
 # OPSR (development version)
 
-* Added GOF indicators to print.summary.opsr()
-* Added timeuse data
-* R2 for each regime in texreg functions.
-* Nicer summary printing and setting fixed values in null model to NA.
+* `print.summary.opsr()` now shows GOF indicators.
+* Added `timeuse_data` from the TimeUse+ study.
+* `extract.opsr()`: R2 for each regime in `texreg` functions (and don't repeat GOFs if `beside = TRUE`).
+* Nicer summary printing and setting fixed values in null model to `NA`.
 * Added `.loglik` arg to `opsr()` to return log-likelihood vector.
 * Detects and warns on singularity issues.
 * Resolved memory leak.
 * Corrected outcome-specific R2 computations.
-* Added `type = "Xb"` in `predict.opsr()`
+* Added `type = "Xb"` in `predict.opsr()`.
 * Works for only 2 treatment regimes.
 
 # OPSR 0.1.2
