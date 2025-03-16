@@ -23,16 +23,17 @@
 #' If the `type` argument is `"response"` then the continuous outcome is predicted.
 #' Use `"unlog-response"` if the outcome response was log-transformed during estimation.
 #' `"prob"` returns the probability vector of belonging to `group`, `"mills"`
-#' returns the inverse mills ratio and `"Xb"` returns \eqn{X \beta}.
+#' returns the inverse mills ratio, `"correction"` the heckman correction (i.e.,
+#' \eqn{\rho_j * \sigma_j * \text{mills}}) and `"Xb"` returns \eqn{X \beta}.
 #'
 #' @example R/examples/ex-predict.R
 #' @export
 predict.opsr <- function(object, newdata, group, counterfact = NULL,
-                         type = c("response", "unlog-response", "prob", "mills", "Xb"),
+                         type = c("response", "unlog-response", "prob", "mills", "correction", "Xb"),
                          ...) {
   type <- match.arg(type)
   predict_opsr <- function(X_j, W_j, beta_j, rho_j, sigma_j, kappa_j_1, kappa_j, gamma,
-                           type = c("response", "unlog-response", "prob", "mills", "Xb")) {
+                           type = c("response", "unlog-response", "prob", "mills", "correction", "Xb")) {
     type <- match.arg(type)
     Xb <- X_j %*% beta_j  # xbif(j)
     Wg <- W_j %*% gamma  # xbsel
@@ -54,25 +55,25 @@ predict.opsr <- function(object, newdata, group, counterfact = NULL,
              ),
              "prob" = as.vector(stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)),
              "mills" = as.vector(imr),
+             "correction" = as.vector(rho_j * sigma_j * imr),
              "Xb" = as.vector(Xb)
       )
 
     out
   }
 
-  ## so X_j and W_j are always the factual data matrices
+  ## W_j is always the factual data matrix
   mm <- model.matrix(object, data = newdata)
   X <- mm$X[[group]]
   W <- mm$W[[group]]
   coefs_j <- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[group]]
 
-  ## for the counterfactuals we pass beta_j', rho_j' and sigma_j'
+  ## for the counterfactuals we pass X', beta_j', rho_j' and sigma_j'
   ## if type == prob we even pass kappa_j', kappa_j_1'
   if (!is.null(counterfact)) {
     mm <- model.matrix(object, data = newdata, .filter = group)
     coefs_j_<- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[counterfact]]
     X <- mm$X[[counterfact]]
-    W <- mm$W[[counterfact]]
     coefs_j[["beta_j"]] <- coefs_j_[["beta_j"]]
     coefs_j[["rho_j"]] <- coefs_j_[["rho_j"]]
     coefs_j[["sigma_j"]] <- coefs_j_[["sigma_j"]]

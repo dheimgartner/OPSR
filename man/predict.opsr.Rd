@@ -9,7 +9,7 @@
   newdata,
   group,
   counterfact = NULL,
-  type = c("response", "unlog-response", "prob", "mills", "Xb"),
+  type = c("response", "unlog-response", "prob", "mills", "correction", "Xb"),
   ...
 )
 }
@@ -42,7 +42,8 @@ regime (selection outcome). This ensures consistent output length.
 If the \code{type} argument is \code{"response"} then the continuous outcome is predicted.
 Use \code{"unlog-response"} if the outcome response was log-transformed during estimation.
 \code{"prob"} returns the probability vector of belonging to \code{group}, \code{"mills"}
-returns the inverse mills ratio and \code{"Xb"} returns \eqn{X \beta}.
+returns the inverse mills ratio, \code{"correction"} the heckman correction (i.e.,
+\eqn{\rho_j * \sigma_j * \text{mills}}) and \code{"Xb"} returns \eqn{X \beta}.
 }
 \examples{
 sim_dat <- opsr_simulate()

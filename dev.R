@@ -929,3 +929,31 @@ wrap_sweave_text <- function(file, width = 80) {
 wrap_sweave_text("./vignettes/opsr.Rnw")
 
 
+
+
+
+## predict
+## https://github.com/dheimgartner/OPSR/issues/26
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, data = dat)
+
+plot.it <- function(fit) {
+  xb <- predict2(fit, group = 3, counterfact = 3, type = "Xb")
+  correction <- predict2(fit, group = 3, counterfact = 3, type = "correction")
+  p <- predict2(fit, group = 3, counterfact = 3, type = "response")
+  plot(x = xb - correction, y = p)  # ! minus
+  abline(a = 0, b = 1, col = "red", lty = 2)
+}
+
+plot.it(fit)
+fit2 <- fit
+fit2$estimate["rho3"] <- -0.6
+plot.it(fit2)
+
+## TODO
+## convert above to test case
+## update predict
+## check xinyi TE again
+## update papers... :S
