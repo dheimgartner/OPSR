@@ -871,11 +871,20 @@ start <- c(
 
 fit <- opsr(f, telework_data, start = start, printLevel = 0)
 
-devtools::load_all("../TWTE")
-fit$weights <- telework_data$weight
-ate <- TWTE:::opsr_ate(fit, type = "unlog-response")
-ate
+out <- matrix(nrow = 3, ncol = 3)
+for (i in 1:3) {
+  for (j in 1:3) {
+    p <- predict(fit, group = i, counterfact = j, type = "unlog-response")
+    mean(p, na.rm = TRUE)
+    out[j, i] <- weighted.mean(p, telework_data$weight, na.rm = TRUE)
+  }
+}
 
+devtools::load_all("../OPSRtools")
+ate <- OPSRtools::opsr_ate(fit, type = "unlog-response")
+ate
+ate.w <- OPSRtools::opsr_ate(fit, weights = telework_data$weight, type = "unlog-response")
+ate.w
 
 
 
@@ -940,9 +949,9 @@ dat <- sim_dat$data
 fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, data = dat)
 
 plot.it <- function(fit) {
-  xb <- predict2(fit, group = 3, counterfact = 3, type = "Xb")
-  correction <- predict2(fit, group = 3, counterfact = 3, type = "correction")
-  p <- predict2(fit, group = 3, counterfact = 3, type = "response")
+  xb <- predict(fit, group = 3, counterfact = 3, type = "Xb")
+  correction <- predict(fit, group = 3, counterfact = 3, type = "correction")
+  p <- predict(fit, group = 3, counterfact = 3, type = "response")
   plot(x = xb - correction, y = p)  # ! minus
   abline(a = 0, b = 1, col = "red", lty = 2)
 }
