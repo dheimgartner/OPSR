@@ -960,9 +960,3 @@ plot.it(fit)
 fit2 <- fit
 fit2$estimate["rho3"] <- -0.6
 plot.it(fit2)
-
-## TODO
-## convert above to test case
-## update predict
-## check xinyi TE again
-## update papers... :S
