@@ -127,7 +127,7 @@ OPSR is available as a \proglang{Stata} command, \code{oheckman} \citep{Chiburis
 
 \pkg{OPSR} is tailored to one particular method, easy to use (understand, extend and maintain), fast and memory efficient. Unlike the implementations mentioned, this approach accommodates log-transformed continuous outcomes. Log transformation is a widely used technique in real-world applications to enhance data normality and meet model assumptions. In multi-layer models like OPSR, special consideration is required for computing conditional expectations on the original scale (i.e., back-transform from the log scale) to ensure meaningful real-world interpretations. \pkg{OPSR} obeys to \proglang{R}'s implicit modeling conventions (by providing a formula interface to a fitter function and by extending the established generics such as \fct{summary}, \fct{predict}, \fct{update}, \fct{anova} among others) and produces production-grade output tables. This work generalizes the learnings from \cite{Wang+Mokhtarian:2024} and makes the OPSR methodology readily available. The mathematical notation presented here translates to code almost verbatim which hopefully serves a pedagogical purpose for the curious reader.
 
-The remainder of this paper is organized as follows: Section~\ref{sec:model} outlines the ordered probit switching regression model, lists all the key formulas underlying the software implementation and details \pkg{OPSR}'s architecture. In Section~\ref{sec:illustrations} the key functionality is demonstrated both on simulated data and the data from \cite{Wang+Mokhtarian:2024} which we use to reproduce their core model. The case study in Section~\ref{sec:case-study} leverages tracking data from the TimeUse+ study \citep{Winkler+Meister+Axhausen:2024} investigating telework treatment effects on weekly distance traveled. There, we also compare the OPSR models to the ones not accounting for error correlation and discuss the implications for treatment effects. The summary in Section~\ref{sec:summary} concludes.
+The remainder of this paper is organized as follows: Section~\ref{sec:model} outlines the ordered probit switching regression model, lists all the key formulas underlying the software implementation and details \pkg{OPSR}'s architecture. In Section~\ref{sec:illustrations} the key functionality is demonstrated both on simulated data and the data from \cite{Wang+Mokhtarian:2024} which we use to reproduce their core model. Further, it is shown, that \pkg{OPSR} can be used to estimate the well-known Tobit-5 model and yields the same parameters as the implementation in \pkg{sampleSelection}. The case study in Section~\ref{sec:case-study} leverages tracking data from the TimeUse+ study \citep{Winkler+Meister+Axhausen:2024} investigating telework treatment effects on weekly distance traveled. There, we also compare the OPSR model to a model not accounting for error correlation and discuss the implications for treatment effects. The summary in Section~\ref{sec:summary} concludes.
 
 
 %% -- Manuscript ---------------------------------------------------------------
@@ -311,6 +311,8 @@ The likelihood function \fct{loglik\_cpp} is implemented in \proglang{C++} using
 
 We first illustrate how to specify a model using \pkg{Formula}'s extended syntax and simulated data. Then the main functionality of the package is demonstrated. We conclude this section by demonstrating some nuances, reproducing the core model of \cite{Wang+Mokhtarian:2024}. Finally, we show that \pkg{OPSR} can also estimate the classic Tobit-5 model and matches the results obtained with the implementation from \pkg{sampleSelection}.
 
+\subsection[OPSR core]{\pkg{OPSR} core} \label{sec:opsr-core}
+
 Let us simulate date from an OPSR process with three ordinal outcomes and distinct design matrices $\boldsymbol{W}$ and $\boldsymbol{X}$ (where $\boldsymbol{X} = \boldsymbol{X_j} \ \forall{j}$) by
 %
 <<sim-dat>>=
@@ -387,8 +389,8 @@ where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p
 \item \code{type = "unlog-response"}: Predicts the back-transformed response according to Equations~\ref{eq:log-cond-exp}-\ref{eq:log-counterfact-exp} if the continuous outcome was log-transformed (either in the \code{formula} or during data pre-processing).
 \item \code{type = "prob"}: Returns the probability vector of belonging to \code{group}.
 \item \code{type = "mills"}: Returns the ``inverse Mills ratio''.
-\item \code{type = "correction"}: Returns $\rho_j \sigma_j IMR$ respectively $\rho_{j'} \sigma_{j'} IMR$ (if \code{counterfact = j'}) from Equation~\ref{eq:cond-exp} or \ref{eq:counterfact-exp}.
-\item \code{type = "Xb"}: Returns $\Xb$ respectively $\Xbd$ (if \code{counterfact = j'}) from Equation~\ref{eq:cond-exp} or \ref{eq:counterfact-exp}.
+\item \code{type = "correction"}: Returns $\rho_j \sigma_j$IMR respectively $\rho_{j'} \sigma_{j'}$IMR (if \code{counterfact = j'} was specified) from Equation~\ref{eq:cond-exp} or \ref{eq:counterfact-exp}.
+\item \code{type = "Xb"}: Returns $\Xb$ respectively $\Xbd$ (if \code{counterfact = j'} was specified) from Equation~\ref{eq:cond-exp} or \ref{eq:counterfact-exp}.
 \end{itemize}
 Elements are \code{NA_real_} if the \code{group} does not correspond to the observed regime (selection outcome). This ensures consistent output length.
 
@@ -556,7 +558,7 @@ summary(tobit5_o)
 
 Now, that the reader is familiar with the main functionality of \pkg{OPSR}, this section demonstrates how to employ it in a real-world example. The emphasis, therefore, lies not on what each function does but on guiding the reader through the modeling and post-estimation steps. We investigate telework treatment effects on weekly distance traveled (aggregated over all modes of transport). This contrasts \citet{Wang+Mokhtarian:2024} who used vehicle miles driven (i.e., car only).
 
-We first discuss the model building strategy to arrive at an appropriately specified OPSR model. We then demonstrate, why error correlation occurs, having omitted a variable simultaneously influencing the selection and outcome process. The OPSR models are compared to models not accounting for this error correlation and implications for treatment effects are shown. The case study concludes with a discussion on unit treatment effects investigating to what degree teleworking influence total travel demand across all modes.
+We first discuss the model building strategy to arrive at an appropriately specified OPSR model. The OPSR model is then compared to a model not accounting for error correlation and implications for treatment effects are shown. The case study concludes with a discussion on unit treatment effects investigating to what degree teleworking influence total travel demand across all modes.
 
 %% The data
 We use the TimeUse+ dataset \citep{Winkler+Meister+Axhausen:2024}, a smartphone-based diary, recording travel, time use, and expenditure data. Our analytical sample comprises employed individuals and is based on what \citet{Winkler+Axhausen:2024} identified as valid days. A valid day has at least 20 hours of information where 70\% of the events were validated by the user. Users who did not have at least 14 valid days were excluded. For the remaining 824 participants mobility indicators for a typical week were constructed. The telework status is based on tracked (and labelled) work activities and three regimes are differentiated: Non-teleworkers (NTWers), Non-usual teleworkers (NUTWers; $<$3 days/week) and Usual teleworkers (UTWers; 3$+$ days/week).
@@ -646,19 +648,6 @@ summary(fit_red)
 %
 The reduced model specification (\code{fit_red}) is not rejected in the likelihood ratio test. Further, there is significant error correlation between the selection process and the outcome process for the UTWers (\code{rho3}). The Wald-test suggests that the null hypothesis (\code{rho1} = \code{rho2} = \code{rho3} = 0) can be rejected at the 5\% level, suggesting that OPSR is beneficial given our model assumptions.
 
-However, so far we have neglected the commute distance which likely impacts the propensity to telework (see Figure~\ref{fig:boxplot}) and naturally influences the weekly distance traveled. To illustrate this, the reduced model specification can be updated to include \code{log_commute_km}
-%
-<<adding-commute>>=
-fit_commute <- update(fit_red, ~ . + log_commute_km | . + log_commute_km | . +
-  log_commute_km | . + log_commute_km)
-
-print(summary(fit_commute), print.call = FALSE)
-@
-%
-where now all goodness of fit indicators improved (in particular R$^2$ for the continuous outcomes) and the rho coefficients are no longer significant at conventional levels. Similarly, the Wald-test (rho) can no longer reject the null at the 10\% level. Meanwhile, some of the coefficients slightly changed in magnitude and rendered insignificant or vice versa. For example, the effect of residential location (\code{o1_res_loc_rural} and \code{o2_res_loc_rural}) absorbed the effect of commute distance in \code{fit_red}, suggesting that individuals living in more rural locations tend to have longer commutes.
-
-While this discussion (of omitted variable bias and/or endogeneity) is common for all regression analysis, it highlights here, why error correlation can occur. Both model specifications (\code{fit_red} and \code{fit_commute}) produce similar insights in the post-estimation that follows. However, we will demonstrate later, that not accounting for error correlation can lead to reverse (and most likely false) conclusions.
-
 %% The treatment effects
 We first define some helper functions to compute treatment effects:\footnote{More rigorous treatment effect computations will be part of the \pkg{OPSRtools} package available from the Comprehensive \proglang{R} Archive Network (CRAN) in the near future.}
 \begin{itemize}
@@ -667,7 +656,7 @@ We first define some helper functions to compute treatment effects:\footnote{Mor
 \item \fct{pairwise\_diff}: The treatment effect is then the pairwise difference of these averaged conditional expectations.
 \item \fct{te}: Computes the treatment effect from an \class{opsr} fit object by combining all the steps above.
 \end{itemize}
-Unless otherwise mentioned, we use the \code{fit_commute} model in the remainder.
+Unless otherwise mentioned, we use the \code{fit_red} model in the remainder.
 %
 <<utils>>=
 tw_status <- c("NTW", "NUTW", "UTW")
@@ -717,14 +706,14 @@ te <- function(object) {
   te
 }
 
-te(fit_commute)
+te(fit_red)
 @
 %
 <<hidden, echo=FALSE>>=
-te.fc <- te(fit_commute)
+te.fr <- te(fit_red)
 @
 %
-Telework reduces weekly kilometers traveled across all groups, with the exception of NTWers who would be slightly more mobile when switching from NTWing to NUTWing (\Sexpr{round(te.fc[1, 1], 2)} km; column \code{NTWer}, row \code{NTWing -> NUTWing}). The treatment effects when switching from NTWing to NUTWing are strongest for UTWers (\Sexpr{round(te.fc[1, 3], 2)} km) compared to NTWers (\Sexpr{round(te.fc[1, 1], 2)} km) and NUTWers (\Sexpr{round(te.fc[1, 2], 2)} km). Treatment effects for NTWing to UTWing are similar across all three groups, again slightly stronger for UTWers (\Sexpr{round(te.fc[2, 3], 2)} km). Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (\Sexpr{round(te.fc[1, 1], 2)} km; NTWing to NUTWing) but then substantially decreasing weekly kilometers with more telework (\Sexpr{round(te.fc[3, 1], 2)} km; NUTWing to UTWing). An explanation could be, that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show somewhat an inverse pattern, first (NTWing to NUTWing) strongly reducing weekly kilometers (\Sexpr{round(te.fc[1, 3], 2)} km) but upon further telework adoption (NUTWing to UTWing) only minimally adjusting weekly kilometers (\Sexpr{round(te.fc[3, 3], 2)} km). A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices. One can therefore conclude, that the treatment effect over the full range (NTWing to UTWing) is similar across all groups but the main travel reduction happens at different treatment intensities. Figure~\ref{fig:treatment} (panel d) visualizes these treatment effects and shows the linear pattern for NUTWers and the (mirrored) hockey stick pattern for NTWers and UTWers.
+Telework reduces weekly kilometers traveled across all groups, with the exception of NTWers who would be more mobile when switching from NTWing to NUTWing (\Sexpr{round(te.fr[1, 1], 2)} km; column \code{NTWer}, row \code{NTWing -> NUTWing}) and UTWers who would travel more when further adopting telework from NUTWing (\Sexpr{round(te.fr[3, 3], 2)} km). The treatment effects when switching from NTWing to NUTWing are strongest for UTWers (\Sexpr{round(te.fr[1, 3], 2)} km) compared to NTWers (\Sexpr{round(te.fr[1, 1], 2)} km) and NUTWers (\Sexpr{round(te.fr[1, 2], 2)} km). Treatment effects for NTWing to UTWing are similar across all three groups, slightly stronger for NTWers (\Sexpr{round(te.fr[2, 1], 2)} km). Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (\Sexpr{round(te.fr[1, 1], 2)} km; NTWing to NUTWing) but then substantially decreasing weekly kilometers with more telework (\Sexpr{round(te.fr[3, 1], 2)} km; NUTWing to UTWing). An explanation could be, that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show exactly an inverse pattern, first (NTWing to NUTWing) strongly reducing weekly kilometers (\Sexpr{round(te.fr[1, 3], 2)} km) but upon further telework adoption (NUTWing to UTWing) only minimally adjusting weekly kilometers (\Sexpr{round(te.fr[3, 3], 2)} km). A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices. One can therefore conclude, that the treatment effect over the full range (NTWing to UTWing) is similar across all groups but the main travel reduction happens at different treatment intensities. Figure~\ref{fig:treatment} (panel d) visualizes these treatment effects and shows the linear pattern for NUTWers and the (mirrored) hockey stick pattern for NTWers and UTWers.
 
 While the discussion above was based on averaged group-level treatment effects, Figure~\ref{fig:treatment} shows the distributions of predicted weekly distance traveled by teleworker group. Each panel presents a pair of (un)treated telework statuses as the margins and the dashed lines are the empirical sample means. The solid black reference line marks the instances where weekly distance traveled is equal for both of the paired (un)treated telework statuses. I.e., points below the reference line indicate more travel under the regime depicted on the x-axis.
 %
@@ -864,7 +853,7 @@ plot_treat_obs <- function(object, x, y, type, xlim = NULL, ylim = NULL, main = 
 <<plot-treatment, echo=FALSE, fig=TRUE, height=8.5, width=8.5>>=
 x <- aggregate(wfh_days ~ wfh, data = timeuse_data, FUN = mean)$wfh_days
 
-fit <- fit_commute
+fit <- fit_red
 
 # colvec <- RColorBrewer::brewer.pal(n = 3, "Dark2")
 colvec <- c("#1B9E77", "#D95F02", "#7570B3")
@@ -926,15 +915,13 @@ Model & Parent & \centering Error \\ correlation & Description \\
 \hline
 \code{fit_full} & & $\bullet$ & Full identified model, including all variables as linear effects \\
 \code{fit_red} & \code{fit_full} & $\bullet$ & Excluding all variables not significant at the 10\% level \\
-\code{fit_commute} & \code{fit_red} & $\bullet$ & Adding \code{log_commute_km} \\
 \code{fit_nocor} & \code{fit_red} & $\circ$ & Fixing the \code{rho} coefficients at 0 \\
-\code{fit_nocor2} & \code{fit_commute} & $\circ$ & Fixing the \code{rho} coefficients at 0 \\
 \hline
 \end{tabular}
 \caption{\label{tab:model-overview} Model overview. The model is based on \emph{Parent} as elaborated under \emph{Description}.}
 \end{table}
 
-As already alluded, not controlling for commute distance implies that selection on unobservables exists, leading to error correlation and selection bias if not accounted for. As we will illustrate now, this also compromises treatment effects. Recalling that \code{fit_red} is our final model without commute distance (but significant error correlation, as we have seen), we derive a model (\code{fit_nocor}) without error correlation by setting the \code{rho} coefficients to 0. I.e., this is the same as separately estimating an ordered probit model and three linear regression models.
+We now demonstrate, that not controlling for error correlation leads to different and most likely wrong conclusions, since parameter estimates might be biased. We derive a model (\code{fit_nocor}) without error correlation by setting the \code{rho} coefficients to 0. I.e., this is the same as separately estimating an ordered probit model and three linear regression models.
 %
 <<no-cor>>=
 start <- coef(fit_red)
@@ -951,21 +938,9 @@ te(fit_red)
 te(fit_nocor)
 @
 %
-While resulting treatment effects based on \code{fit_red} are comparable to the ones based on \code{fit_commute} (in terms of both the direction and magnitude), \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled, consistent with previous cross-sectional studies that did not account for self-selection bias.
+As we see, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled, consistent with previous cross-sectional studies that did not account for self-selection bias.
 
-Recall that for \code{fit_commute}, the Wald-test (rho) could not reject the null ($p$~value \Sexpr{round(summary(fit_commute)$wald$rho$pval, 2)}). Therefore, adding \code{log_commute_km} to the model without error correlation (\code{fit_nocor}) might yield less biased treatment effects
-%
-<<no-cor-commute>>=
-start <- coef(fit_commute)
-start[fixed] <- 0
-fit_nocor2 <- opsr(fit_commute$formula, timeuse_data, start = start,
-  fixed = fixed, printLevel = 0)
-te(fit_nocor2)
-@
-%
-where now the direction of the treatment effects aligns with the OPSR models but the values are still considerably different. As a conclusion should be noted that the modeled covariance matrix (in particular the magnitude of \code{rho}) potentially strongly influences the treatment effects. Even if the ``rhos'' are not statistically significant (or the selection bias is not significant), OPSR still helps us obtain unbiased estimates of the outcome coefficients, and therefore more accurate treatment effect results.
-
-Lastly (using \code{fit_commute}), we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTWing to NUTWing vs. NUTWing to UTWing).
+Lastly (using \code{fit_red}), we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTWing to NUTWing vs. NUTWing to UTWing).
 %
 <<unit-treatment-effects>>=
 dat_ute <- subset(timeuse_data, select = c(commute_km, wfh, wfh_days))
@@ -982,19 +957,19 @@ twdiff2 <- top[i, "UTWers"] - top[i, "NTWers"]
 twdiff3 <- top[i, "UTWers"] - top[i, "NUTWers"]
 
 twdiff <- matrix(c(rep(twdiff1, 3), rep(twdiff2, 3), rep(twdiff3, 3)), nrow = 3)
-bottom <- te(fit_commute) / twdiff
+bottom <- te(fit_red) / twdiff
 
 ute <- rbind(top, bottom)
 ute
 @
 %
-Generally, telework reduces weekly distance traveled by less than the foregone commute distance, which indicates, that a rebound effect (compensating leisure travel) exists. For example, the NUTWers could save 43.33 km in commute travel but only reduce 5.2 km per marginal teleworking day when switching from NTWing to NUTWing. This compensating travel exists for all TW groups except the NTWers (NTWing to UTWing and NUTWing to UTWing), where we observe diminished travel activity beyond foregone commutes. The insights from the discussion on average treatment effects caries over: Adjustments in weekly distance traveled are very different both across the three teleworker groups but also across the regime switching.
+Generally, telework reduces weekly distance traveled by less than the foregone commute distance, which indicates, that a rebound effect (compensating leisure travel) exists. For example, the NUTWers could save 43.33 km in commute travel but only reduce \Sexpr{round(bottom[1, 2], 2)} km per marginal teleworking day when switching from NTWing to NUTWing. This compensating travel exists for all TW groups except the NTWers (NTWing to UTWing and NUTWing to UTWing), where we observe diminished travel activity beyond foregone commutes. The insights from the previous discussion on treatment effects carry over: Adjustments in weekly distance traveled are very different both across the three teleworker groups but also across the regime switching.
 
 %% -- Summary/conclusions/discussion -------------------------------------------
 
 \section{Summary and discussion} \label{sec:summary}
 
-In a real-world setting, the treatment is usually not exogenously prescribed but self-selected. Various methods in various statistical environments exist to account for selection-bias which arises if unobserved factors simultaneously influence both the selection and outcome process. OPSR is introduced as a special case of endogenous switching regression to account selection biases for ordinal treatments. The model frame for such Heckman-type models as well as their implementation in the \proglang{R} system for statistical computing is reviewed. The here presented \proglang{R} implementation in package \pkg{OPSR} re-uses design and functionality of the corresponding \proglang{R} software. Hence, the new function \fct{opsr} is straightforward to apply for model fitting and diagnostics. Further, it is fast and memory efficient thanks to the \proglang{C++} implementation of the log-likelihood function which can also be parallelized. \pkg{OPSR} handles log-transformed outcomes which need special consideration when computing conditional expectations and thus treatment effects. In the case study, the OPSR method is applied to a tracking and activity diary dataset collected in Switzerland, investigating the telework treatment effects on weekly distance traveled across all modes. We demonstrate, first, why error correlation occurs and second, in how far computed treatment effects differ if the error correlation is not accounted for. We find that, overall, telework reduces travel. Non-teleworkers tend to have shorter commutes and adjust mobility patterns mainly when switching from non-usual telework to usual telework. On the other hand, weekly distance traveled slightly increases when initially adopting some telework. Contrary, usual teleworkers (had they not been teleworking) adjust mobility patterns strongly when adopting some telework but then only marginally reduce distance traveled when further adopting telework. Comparing the unit treatment effects to the two-way commute distance indicates that telework generally reduces weekly distance traveled and it does so by less than the foregone commute. Therefore, some compensating travel (rebound effects) exists for most of the teleworker groups.
+In a real-world setting, the treatment is usually not exogenously prescribed but self-selected. Various methods in various statistical environments exist to account for selection-bias which arises if unobserved factors simultaneously influence both the selection and outcome process. OPSR is introduced as a special case of endogenous switching regression to account selection biases for ordinal treatments (where the well-known Tobit-5 model is a special case of OPSR, i.e., with only two treatment regimes). The model frame for such Heckman-type models as well as their implementation in the \proglang{R} system for statistical computing is reviewed. The here presented \proglang{R} implementation in package \pkg{OPSR} re-uses design and functionality of the corresponding \proglang{R} software. Hence, the new function \fct{opsr} is straightforward to apply for model fitting and diagnostics. Further, it is fast and memory efficient thanks to the \proglang{C++} implementation of the log-likelihood function which can also be parallelized. \pkg{OPSR} handles log-transformed outcomes which need special consideration when computing conditional expectations and thus treatment effects. In the case study, the OPSR method is applied to a tracking and activity diary dataset collected in Switzerland, investigating the telework treatment effects on weekly distance traveled across all modes. We demonstrate, first, how to specify an appropriate model and check for error correlation, and second, in how far computed treatment effects differ if the error correlation is not accounted for. We find that, overall, telework reduces travel. Non-teleworkers tend to have shorter commutes and adjust mobility patterns mainly when switching from non-usual telework to usual telework. On the other hand, weekly distance traveled slightly increases when initially adopting some telework. Contrary, usual teleworkers (had they not been teleworking) adjust mobility patterns strongly when adopting some telework but then only marginally adjust distance traveled when further adopting telework. Comparing the unit treatment effects to the two-way commute distance indicates that telework generally reduces weekly distance traveled and it does so by less than the foregone commute. Therefore, some compensating travel (rebound effects) exists for most of the teleworker groups.
 
 
 %% -- Optional special unnumbered sections -------------------------------------
@@ -1003,7 +978,7 @@ In a real-world setting, the treatment is usually not exogenously prescribed but
 
 The results in this paper were obtained using
 \proglang{R}~\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the packages
-\pkg{OPSR}~\Sexpr{packageVersion("OPSR")}, \pkg{MASS}~\Sexpr{packageVersion("MASS")}, \pkg{texreg}~\Sexpr{packageVersion("texreg")}, \pkg{gridExtra}~\Sexpr{packageVersion("gridExtra")} and \pkg{gridGraphics}~\Sexpr{packageVersion("gridGraphics")}. \proglang{R} itself
+\pkg{OPSR}~\Sexpr{packageVersion("OPSR")}, \pkg{MASS}~\Sexpr{packageVersion("MASS")}, \pkg{texreg}~\Sexpr{packageVersion("texreg")}, \pkg{sampleSelection}~\Sexpr{packageVersion("sampleSelection")}, \pkg{mvtnorm}~\Sexpr{packageVersion("mvtnorm")}, \pkg{gridExtra}~\Sexpr{packageVersion("gridExtra")} and \pkg{gridGraphics}~\Sexpr{packageVersion("gridGraphics")}. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at
 \url{https://CRAN.R-project.org/}.
