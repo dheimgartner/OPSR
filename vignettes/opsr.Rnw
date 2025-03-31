@@ -540,7 +540,7 @@ head(dat)
 Using \pkg{sampleSelection}, the estimation call reads
 %
 <<tobit-5-ss>>=
-tobit5_s <- selection(ys~xs, list(yo1 ~ xo1, yo2 ~ xo2), data = dat)
+tobit5_s <- selection(ys ~ xs, list(yo1 ~ xo1, yo2 ~ xo2), data = dat)
 summary(tobit5_s)
 @
 %
