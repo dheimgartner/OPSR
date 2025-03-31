@@ -40,7 +40,8 @@ Elements are \code{NA_real_} if the \code{group} does not correspond to the obse
 regime (selection outcome). This ensures consistent output length.
 
 If the \code{type} argument is \code{"response"} then the continuous outcome is predicted.
-Use \code{"unlog-response"} if the outcome response was log-transformed during estimation.
+Use \code{"unlog-response"} if the outcome response was log-transformed (i.e., either
+in the \code{formula} specification or during data pre-processing).
 \code{"prob"} returns the probability vector of belonging to \code{group}, \code{"mills"}
 returns the inverse mills ratio, \code{"correction"} the heckman correction (i.e.,
 \eqn{\rho_j * \sigma_j * \text{mills}}) and \code{"Xb"} returns \eqn{X \beta}.

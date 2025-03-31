@@ -21,7 +21,8 @@
 #' regime (selection outcome). This ensures consistent output length.
 #'
 #' If the `type` argument is `"response"` then the continuous outcome is predicted.
-#' Use `"unlog-response"` if the outcome response was log-transformed during estimation.
+#' Use `"unlog-response"` if the outcome response was log-transformed (i.e., either
+#' in the `formula` specification or during data pre-processing).
 #' `"prob"` returns the probability vector of belonging to `group`, `"mills"`
 #' returns the inverse mills ratio, `"correction"` the heckman correction (i.e.,
 #' \eqn{\rho_j * \sigma_j * \text{mills}}) and `"Xb"` returns \eqn{X \beta}.

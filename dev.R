@@ -960,3 +960,41 @@ plot.it(fit)
 fit2 <- fit
 fit2$estimate["rho3"] <- -0.6
 plot.it(fit2)
+
+
+
+## compare to sampleSelection
+devtools::load_all()
+library(sampleSelection)
+library(mvtnorm)
+set.seed(0)
+vc <- diag(3)
+vc[lower.tri(vc)] <- c(0.9, 0.5, 0.1)
+vc[upper.tri(vc)] <- vc[lower.tri(vc)]
+eps <- rmvnorm(500, c(0,0,0), vc)
+xs <- runif(500)
+ys <- xs + eps[,1] > 0
+xo1 <- runif(500)
+yo1 <- xo1 + eps[,2]
+xo2 <- runif(500)
+yo2 <- xo2 + eps[,3]
+
+fit.ss <- selection(ys~xs, list(yo1 ~ xo1, yo2 ~ xo2))
+summary(fit.ss)
+
+dat <- data.frame(
+  ys,
+  yo1,
+  yo2,
+  xs,
+  xo1,
+  xo2
+)
+dat$yo <- with(dat, ifelse(ys, yo2, yo1))
+dat$ys <- as.numeric(dat$ys) + 1
+head(dat)
+fit.opsr <- opsr(ys | yo ~ xs | xo1 | xo2, data = dat)
+summary(fit.opsr)
+
+summary(fit.ss)
+summary(fit.opsr)
