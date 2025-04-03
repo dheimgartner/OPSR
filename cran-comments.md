@@ -5,7 +5,10 @@
 
 ## R CMD check results
 
-0 errors | 1 warnings | 2 notes
+I am using 'packageStartupMessage'. The 'print' call (formatting the citation) is wrapped in
+'utils::capture.output'.
+
+0 errors | 1 warnings | 3 notes
 
 ❯ checking compiled code ... OK
    WARNING
@@ -13,6 +16,15 @@
 
 ❯ checking for future file timestamps ... NOTE
   unable to verify current time
+
+❯ checking R code for possible problems ... NOTE
+  File ‘OPSR/R/zzz.R’:
+    .onAttach calls:
+      print(utils::citation(pkgname))
+  
+  Package startup functions should use ‘packageStartupMessage’ to
+    generate messages.
+  See section ‘Good practice’ in '?.onAttach'.
 
 ❯ checking HTML version of manual ... NOTE
   Skipping checking HTML validation: no command 'tidy' found
