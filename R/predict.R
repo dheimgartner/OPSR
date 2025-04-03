@@ -55,8 +55,8 @@ predict.opsr <- function(object, newdata, group, counterfact = NULL,
                  (stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)) - 1
              ),
              "prob" = as.vector(stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)),
-             "mills" = as.vector(imr),
-             "correction" = as.vector(rho_j * sigma_j * imr),
+             "mills" = as.vector(-imr),  # -!
+             "correction" = as.vector(rho_j * sigma_j * -imr),  # -!
              "Xb" = as.vector(Xb)
       )
 
