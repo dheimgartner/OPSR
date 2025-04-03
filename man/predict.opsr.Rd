@@ -10,6 +10,7 @@
   group,
   counterfact = NULL,
   type = c("response", "unlog-response", "prob", "mills", "correction", "Xb"),
+  delta = 1,
   ...
 )
 }
@@ -25,6 +26,9 @@
 
 \item{type}{type of prediction. Can be abbreviated. See 'Details' section for
 more information.}
+
+\item{delta}{constant that was added during the continuity correction
+(\eqn{log(Y_j + \delta)}). Only applies for \code{type = "unlog-response"}.}
 
 \item{...}{further arguments passed to or from other methods.}
 }

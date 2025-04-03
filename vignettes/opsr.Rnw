@@ -257,7 +257,7 @@ To obtain unbiased treatment effects, we must further evaluate the ``counterfact
 \end{aligned}
 \end{equation}
 %
-Let's assume that $y_j = \ln(Y_j + 1)$ in the previous equations. I.e., the continuous outcome was log-transformed as is usual in regression analysis. We have to note, that in such cases the Equations~\ref{eq:cond-exp}-\ref{eq:counterfact-exp} provide the conditional expectation of the log-transformed outcome. Therefore we need to back-transform $Y_j = \exp(y_j) - 1$ which yields
+Let's assume that $y_j = \ln(Y_j + \delta)$ in the previous equations. I.e., the continuous outcome was log-transformed as is usual in regression analysis. We have to note, that in such cases the Equations~\ref{eq:cond-exp}-\ref{eq:counterfact-exp} provide the conditional expectation of the log-transformed outcome. Therefore we need to back-transform $Y_j = \exp(y_j) - \delta$ which yields
 %
 \begin{equation} \label{eq:log-cond-exp}
 \E[Y_j \mid Z = j] =
@@ -265,7 +265,7 @@ Let's assume that $y_j = \ln(Y_j + 1)$ in the previous equations. I.e., the cont
 \left[
 \frac{\Phi(\kappa_j - \Wg - \rho_j\sigma_j) - \Phi(\kappa_{j-1} - \Wg - \rho_j\sigma_j)}
 {\Phi(\kappa_j - \Wg) - \Phi(\kappa_{j-1} - \Wg)}
-\right] - 1
+\right] - \delta
 \end{equation}
 %
 for the factual case, and
@@ -276,7 +276,7 @@ for the factual case, and
 \left[
 \frac{\Phi(\kappa_j - \Wg - \rho_{j'}\sigma_{j'}) - \Phi(\kappa_{j-1} - \Wg - \rho_{j'}\sigma_{j'})}
 {\Phi(\kappa_j - \Wg) - \Phi(\kappa_{j-1} - \Wg)}
-\right] - 1
+\right] - \delta
 \end{equation}
 %
 for the counterfactual case \citep{Wang+Mokhtarian:2024}.
@@ -386,7 +386,7 @@ p2 <- predict(fit, group = 1, counterfact = 2, type = "response")
 where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p2} is the counterfactual outcome resulting from Equation~\ref{eq:counterfact-exp}. The following \code{type} arguments are available
 \begin{itemize}
 \item \code{type = "response"}: Predicts the continuous outcome according to the Equations referenced above.
-\item \code{type = "unlog-response"}: Predicts the back-transformed response according to Equations~\ref{eq:log-cond-exp}-\ref{eq:log-counterfact-exp} if the continuous outcome was log-transformed (either in the \code{formula} or during data pre-processing).
+\item \code{type = "unlog-response"}: Predicts the back-transformed response according to Equations~\ref{eq:log-cond-exp}-\ref{eq:log-counterfact-exp} if the continuous outcome was log-transformed (either in the \code{formula} or during data pre-processing). The smoothing constant used during the continuity correction (i.e., the $\delta$ in $y_j = \ln(Y_j + \delta)$) can be specified via the \code{delta} argument and defaults to 1.
 \item \code{type = "prob"}: Returns the probability vector of belonging to \code{group}.
 \item \code{type = "mills"}: Returns the ``inverse Mills ratio''.
 \item \code{type = "correction"}: Returns $\rho_j \sigma_j$IMR respectively $\rho_{j'} \sigma_{j'}$IMR (if \code{counterfact = j'} was specified) from Equation~\ref{eq:cond-exp} or \ref{eq:counterfact-exp}.

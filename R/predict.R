@@ -10,6 +10,8 @@
 #' @param counterfact counterfactual group.
 #' @param type type of prediction. Can be abbreviated. See 'Details' section for
 #'   more information.
+#' @param delta constant that was added during the continuity correction
+#'   (\eqn{log(Y_j + \delta)}). Only applies for `type = "unlog-response"`.
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @return a vector of length `nrow(newdata)` (or data used during estimation).
@@ -31,7 +33,7 @@
 #' @export
 predict.opsr <- function(object, newdata, group, counterfact = NULL,
                          type = c("response", "unlog-response", "prob", "mills", "correction", "Xb"),
-                         ...) {
+                         delta = 1, ...) {
   type <- match.arg(type)
   predict_opsr <- function(X_j, W_j, beta_j, rho_j, sigma_j, kappa_j_1, kappa_j, gamma,
                            type = c("response", "unlog-response", "prob", "mills", "correction", "Xb")) {
@@ -52,7 +54,7 @@ predict.opsr <- function(object, newdata, group, counterfact = NULL,
              "unlog-response" = as.vector(
                exp(Xb + (sigma_j**2) / 2) *
                  (stats::pnorm(kappa_j_Wg - rho_j * sigma_j) - stats::pnorm(kappa_j_1_Wg - rho_j * sigma_j)) /
-                 (stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)) - 1
+                 (stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)) - delta
              ),
              "prob" = as.vector(stats::pnorm(kappa_j_Wg) - stats::pnorm(kappa_j_1_Wg)),
              "mills" = as.vector(-imr),  # -!
