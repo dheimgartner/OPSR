@@ -10,6 +10,7 @@
 * Corrected outcome-specific R2 computations.
 * Added `type = "Xb"` and `type = "correction"` in `predict.opsr()`.
 * Works for only 2 treatment regimes (i.e., the Tobit-5 model).
+* Smoothing constant (used in continuity correction) can be passed to `predict.opsr()` via `delta` arg.
 
 # OPSR 0.1.2
 
