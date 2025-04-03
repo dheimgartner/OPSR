@@ -998,3 +998,111 @@ summary(fit.opsr)
 
 summary(fit.ss)
 summary(fit.opsr)
+
+
+
+
+## compare prediction vectors
+## (treatment effects)
+devtools::load_all()
+library(OPSRtools)
+library(tidyverse)
+f <-
+  ## ordinal and continuous outcome
+  twing_status | vmd_ln ~
+  ## selection model
+  edu_2 + edu_3 + hhincome_2 + hhincome_3 +
+  flex_work + work_fulltime + twing_feasibility +
+  att_proactivemode + att_procarowning +
+  att_wif + att_proteamwork +
+  att_tw_effective_teamwork + att_tw_enthusiasm + att_tw_location_flex |
+  ## outcome model NTW
+  female + age_mean + age_mean_sq +
+  race_black + race_other +
+  vehicle + suburban + smalltown + rural +
+  work_fulltime +
+  att_prolargehouse + att_procarowning +
+  region_waa |
+  ## outcome model NUTW
+  edu_2 + edu_3 + suburban + smalltown + rural +
+  work_fulltime +
+  att_prolargehouse + att_proactivemode + att_procarowning |
+  ## outcome model UTW
+  female + hhincome_2 + hhincome_3 +
+  child + suburban + smalltown + rural +
+  att_procarowning +
+  region_waa
+
+start <- c(
+  1.2, 2.4,  # kappa 1 & 2
+  0.2, 0.4, 0.1, 0.3, 0.3, 0.2, 0.1, 0.1, -0.1, 0.1, 0.1, 0.3, 0.1, 0.1,  # selection
+  3.744, -0.208, 0.010, 0.000, -0.392, -0.019, 0.130, 0.010, 0.415, 0.494, 0.437, 0.186, 0.124, -0.240,  # outcome 1
+  2.420, 0.224, 0.670, 0.445, 0.219, 0.824, 0.704, 0.164, -0.176, 0.171,  # outcome 2
+  2.355, -0.375, 0.476, 0.317, 0.187, 0.290, 0.313, 0.856, 0.248, -0.275,  # outcome 3
+  1.193, 1.248, 1.413,  # sigma
+  0.068, 0.128, 0.340  # rho
+)
+
+fit <- opsr(f, telework_data, start = start)
+
+## xinyi's computations
+xinyi <- tibble(read.delim("./dev/xinyi/E53_VMT_expectation_results.csv", sep = ","))
+
+tw_dat <- telework_data
+tw_dat$RespponseId <- xinyi$ResponseId
+
+## example
+## first respondent is group = 3
+NTW <- predict(fit, group = 3, counterfact = 1, type = "unlog-response")
+ln_NTW <- predict(fit, group = 3, counterfact = 1, type = "response")
+
+ate <- opsr_ate(fit, type = "response")
+ln_resp <- Reduce(function(x, y) ifelse(is.na(x), y, x), ate$ce.by.groups)
+colnames(ln_resp) <- c("ln_NTW", "ln_NUTW", "ln_UTW")
+
+ate <- opsr_ate(fit, type = "unlog-response")
+resp <- Reduce(function(x, y) ifelse(is.na(x), y, x), ate$ce.by.groups)
+colnames(resp) <- c("NTW", "NUTW", "UTW")
+
+dani <- tibble(as.data.frame(cbind(xinyi$ResponseId, ln_resp, resp)))
+colnames(dani) <- c("ResponseId", colnames(ln_resp), colnames(resp))
+
+## compare
+colnames(xinyi) <- colnames(dani)
+
+library(tidyverse)
+xinyi_long <-
+  xinyi %>%
+  pivot_longer(-ResponseId)
+xinyi_long$who <- "xinyi"
+
+dani_long <-
+  dani %>%
+  pivot_longer(-ResponseId)
+dani_long$who <- "dani"
+
+dat <-
+  rbind(xinyi_long, dani_long) %>%
+  mutate(value = as.numeric(value)) %>%
+  pivot_wider(names_from = who, values_from = value) %>%
+  mutate(name = factor(name))
+
+plot(xinyi ~ dani, data = dat, col = dat$name)
+abline(a = 0, b = 1, col = "red")
+
+## separate for ln
+dat_ln <- filter(dat, str_starts(name, "ln_"))
+dat_reg <- filter(dat, !str_starts(name, "ln_"))
+
+plot.it <- function() {
+  op <- par(no.readonly = TRUE)
+  on.exit(par(op))
+  par(mfrow = c(1, 2))
+  f <- function(x, main) {
+    plot(xinyi ~ dani, data = x, col = dat$name, main = main)
+    abline(a = 0, b = 1, col = "red")
+  }
+  f(dat_ln, "log-weekly VMD")
+  f(dat_reg, "weekly VMD")
+}
+plot.it()
