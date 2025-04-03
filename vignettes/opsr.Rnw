@@ -938,7 +938,7 @@ te(fit_red)
 te(fit_nocor)
 @
 %
-As we see, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled, consistent with previous cross-sectional studies that did not account for self-selection bias.
+As we see, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled, consistent with previous cross-sectional studies that did not account for self-selection bias \citep[for studies indicating that telework increases travel demand, see][]{Zhu+Mason:2014,He+Hu:2015,Kim+Etal:2015}.
 
 Lastly (using \code{fit_red}), we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTWing to NUTWing vs. NUTWing to UTWing).
 %
