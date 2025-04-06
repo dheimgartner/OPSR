@@ -1106,3 +1106,13 @@ plot.it <- function() {
   f(dat_reg, "weekly VMD")
 }
 plot.it()
+
+## treatment effects
+library(OPSRtools)
+ate.rg <- opsr_ate(fit, type = "response", weights = telework_data$weight)
+ate.ln <- opsr_ate(fit, type = "unlog-response", weights = telework_data$weight)
+
+te.rg <- summary(ate.rg)$te
+te.ln <- summary(ate.ln)$te
+te.rg
+te.ln

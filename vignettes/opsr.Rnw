@@ -145,7 +145,7 @@ The remainder of this paper is organized as follows: Section~\ref{sec:model} out
 
 In the following, we outline the ordered probit switching regression model as well as list all the key formulas underlying the software implementation. \pkg{OPSR} follows the \proglang{R}-typical formula interface to a workhorse fitter function. Its architecture is detailed after the mathematical part.
 
-As alluded, OPSR is a two-step model: One process governs the ordinal outcome and separate processes (for each ordinal outcome) govern the continuous outcomes. The ordinal outcome can also be thought of as a regime or treatment. In the subsequent exposition, we will refer to the two processes as \emph{selection} and \emph{outcome} process.
+As alluded, OPSR contains two layers: One process governs the ordinal outcome and separate processes (for each ordinal outcome) govern the continuous outcomes. The ordinal outcome can also be thought of as a regime or treatment. In the subsequent exposition, we will refer to the two processes as \emph{selection} and \emph{outcome} process.
 
 We borrow the notation from \cite{Wang+Mokhtarian:2024} where also all the derivations are detailed. For a similar exhibition, \citet{Chiburis+Lokshin:2007} can be consulted. Individual subscripts are suppressed throughout, for simplicity.
 
@@ -367,7 +367,7 @@ Several models can be compared with a likelihood-ratio test using
 anova(fit_null, fit_intercept, fit)
 @
 %
-If only a single object is passed, then the model is compared to the null model. If more than one object is specified a likelihood ratio test is conducted for each pair of neighboring models. As expected, both tests reject the null.
+If only a single object is passed, then the model is compared to the null model. If more than one object is specified a likelihood ratio test is conducted for each pair of neighboring models. As expected, both tests reject the null hypothesis.
 
 Models can be compared side-by-side using the \pkg{texreg} package \citep{Leifeld:2013}, which also allows the user to build production-grade tables as illustrated later.
 %
@@ -392,7 +392,7 @@ where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p
 \item \code{type = "correction"}: Returns $\rho_j \sigma_j$IMR respectively $\rho_{j'} \sigma_{j'}$IMR (if \code{counterfact = j'} was specified) from Equation~\ref{eq:cond-exp} or \ref{eq:counterfact-exp}.
 \item \code{type = "Xb"}: Returns $\Xb$ respectively $\Xbd$ (if \code{counterfact = j'} was specified) from Equation~\ref{eq:cond-exp} or \ref{eq:counterfact-exp}.
 \end{itemize}
-Elements are \code{NA_real_} if the \code{group} does not correspond to the observed regime (selection outcome). This ensures consistent output length.
+Elements are \code{NA_real_} if the \code{group} does not correspond to the observed regime. This ensures consistent output length.
 
 Now that the user understands the basic workflow, we illustrate some nuances by reproducing a key output of \cite{Wang+Mokhtarian:2024} where they investigate the treatment effect of telework (TW) on weekly vehicle miles driven. The data is attached, documented (\code{?telework_data}) and can be loaded by
 %
@@ -940,7 +940,7 @@ te(fit_nocor)
 %
 As we see, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled, consistent with previous cross-sectional studies that did not account for self-selection bias \citep[for studies indicating that telework increases travel demand, see][]{Zhu+Mason:2014,He+Hu:2015,Kim+Etal:2015}.
 
-Lastly (using \code{fit_red}), we would like to investigate to what degree foregone commute distance (when teleworking) is compensated with leisure travel. Therefore, we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTWing to NUTWing vs. NUTWing to UTWing).
+Lastly (using \code{fit_red}), we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTWing to NUTWing vs. NUTWing to UTWing).
 %
 <<unit-treatment-effects>>=
 dat_ute <- subset(timeuse_data, select = c(commute_km, wfh, wfh_days))
