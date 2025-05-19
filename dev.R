@@ -1116,3 +1116,18 @@ te.rg <- summary(ate.rg)$te
 te.ln <- summary(ate.ln)$te
 te.rg
 te.ln
+
+
+
+
+
+
+## plot method
+## wrapper around pairs
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+weights <- runif(nrow(dat))
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat = dat, weights = weights,
+            printLevel = 0)
+plot.opsr(fit, type = "response")

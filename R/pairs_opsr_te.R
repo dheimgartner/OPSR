@@ -1,6 +1,6 @@
-#' Pairs Plot for OPSR ATE Objects
+#' Pairs Plot for OPSR TE Objects
 #'
-#' @param x an object of class `"opsr.ate"`.
+#' @param x an object of class `"opsr.te"`.
 #' @param pch plotting 'character', i.e., symbol to use. See also [`pch`].
 #' @param labels.diag labels used in the diagonal panels.
 #' @param labels.reg labels for the treatment regimes.
@@ -29,16 +29,16 @@
 #' depict again the weighted mean values. The upper triangular panels show
 #' (weighted) average treatment effects.
 #'
-#' @method pairs opsr.ate
+#' @method pairs opsr.te
 #' @seealso [`pairs`]
-#' @example R/examples/ex-opsr_ate.R
+#' @example R/examples/ex-opsr_te.R
 #' @export
-pairs.opsr.ate <- function(x, pch = 21, labels.diag = paste0("T", 1:x$nReg),
-                           labels.reg = paste0("G", 1:x$nReg), col = 1:x$nReg,
-                           add.rug = TRUE, lower.digits = 0, diag.digits = 0,
-                           lwd.dens = 1.5, diag.cex.text = 1, upper.digits = 2,
-                           upper.cex.text = 2, prefix = "", postfix = "",
-                           lty.diag = 1, ...) {
+pairs.opsr.te <- function(x, pch = 21, labels.diag = paste0("T", 1:x$nReg),
+                          labels.reg = paste0("G", 1:x$nReg), col = 1:x$nReg,
+                          add.rug = TRUE, lower.digits = 0, diag.digits = 0,
+                          lwd.dens = 1.5, diag.cex.text = 1, upper.digits = 2,
+                          upper.cex.text = 2, prefix = "", postfix = "",
+                          lty.diag = 1, ...) {
   ## x is opsr.ate
   preprocess <- function() {
     dat <-

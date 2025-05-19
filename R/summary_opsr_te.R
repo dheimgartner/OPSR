@@ -1,20 +1,20 @@
-#' Summarizing OPSR ATE Objects
+#' Summarizing OPSR TE Objects
 #'
 #' This function computes weighted treatment effects and corresponding weighted
 #' paired t-tests.
 #'
-#' @param object an object of class `"opsr.ate"`.
+#' @param object an object of class `"opsr.te"`.
 #' @param ... further arguments passed to or from other methods.
 #'
-#' @return An object of class `"summary.opsr.ate"` containing among others:
-#' * `ate`: An object of class `"ate"`. See also [`print.ate`].
-#' * `te`: An object of class `"te"`. See also [`print.te`].
+#' @return An object of class `"summary.opsr.te"` containing among others:
+#' * `ate`: An object of class `"ate"`.
+#' * `te`: An object of class `"te"`.
 #'
 #' The p-values of the weighted paired t-test are attached as attributes.
 #'
-#' @method summary opsr.ate
+#' @method summary opsr.te
 #' @export
-summary.opsr.ate <- function(object, ...) {
+summary.opsr.te <- function(object, ...) {
   make.dim.names <- function(object) {
     nm <- paste0("T", 1:object$nReg)
     list(nm, nm)
@@ -140,6 +140,6 @@ summary.opsr.ate <- function(object, ...) {
   out$te <- te(object)
   out$ate.mat <- ate.mat(object)
   out$ate <- ate(object)
-  class(out) <- c("summary.opsr.ate", class(out))
+  class(out) <- c("summary.opsr.te", class(out))
   out
 }

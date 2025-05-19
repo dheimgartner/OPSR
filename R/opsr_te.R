@@ -6,15 +6,15 @@
 #'   be used.
 #' @param ... additional arguments passed to [`predict.opsr`].
 #'
-#' @return An object of class `"opsr.ate"`.
+#' @return An object of class `"opsr.te"`.
 #'
 #' @details
-#' This function only prepares the input to a further call to [`summary.opsr.ate`].
+#' This function only prepares the input to a further call to [`summary.opsr.te`].
 #'
-#' @seealso [`summary.opsr.ate`]
-#' @example R/examples/ex-opsr_ate.R
+#' @seealso [`summary.opsr.te`]
+#' @example R/examples/ex-opsr_te.R
 #' @export
-opsr_ate <- function(object, type, weights = NULL, ...) {
+opsr_te <- function(object, type, weights = NULL, ...) {
   if (is.null(weights)) {
     weights <- object$weights
   }
@@ -93,6 +93,6 @@ opsr_ate <- function(object, type, weights = NULL, ...) {
   out$nReg <- object$nReg
   out$weights <- weights
 
-  class(out) <- c("opsr.ate", class(out))
+  class(out) <- c("opsr.te", class(out))
   out
 }
