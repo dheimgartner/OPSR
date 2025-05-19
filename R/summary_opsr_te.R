@@ -124,14 +124,6 @@ summary.opsr.te <- function(object, ...) {
     ate
   }
 
-  ## TODO
-  ## atet = E[Y(1) - Y(0) | Treated]
-  ## atent = E[Y(1) - Y(0) | Not-treated]
-  ## I think it is more reasonable in OPSR to assume any selection outcome as
-  ## form of treatment => treatment = the ones who were observed having that
-  ## selection outcome level ("received" the xs) and the untreated are all
-  ## the others. Xinyi defined the untreated as NTWers...
-
   ## opsr.ate
   out <- list()
   out$call <- match.call()
