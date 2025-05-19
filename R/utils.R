@@ -98,3 +98,11 @@ to.signif.codes <- function(pv) {
                    symbols = c("***", "**", "*", ".", " "))
   Signif
 }
+
+pleaseCite <- function(pkgname) {
+  pc <- utils::capture.output(print(utils::citation(pkgname)))
+  pc <- paste(pc, collapse = "\n")
+  pc
+}
+
+

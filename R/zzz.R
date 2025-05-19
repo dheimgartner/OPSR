@@ -1,8 +1,6 @@
 .onAttach <- function(libname, pkgname) {
-  please_cite <- utils::capture.output(print(utils::citation(pkgname)))
-  please_cite <- paste(please_cite, collapse = "\n")
   packageStartupMessage(
-    please_cite,
+    pleaseCite(pkgname),
     comain = NULL, appendLF = TRUE
   )
 }
