@@ -1155,3 +1155,10 @@ predict(fit, group = 3, newdata = dat[1:2, ], counterfact = 2)
 predict(fit, group = 1, newdata = dat[1:4, ])
 
 
+## passing the null model as sole argument to anova
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat = dat)
+fit_null <- opsr_null_model(fit)
+anova(fit_null)
