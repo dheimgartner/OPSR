@@ -394,6 +394,14 @@ where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p
 \end{itemize}
 Elements are \code{NA_real_} if the \code{group} does not correspond to the observed regime. This ensures consistent output length.
 
+The function \fct{opsr\_te} wraps the required \fct{predict} calls and prepares the inputs for treatment effect computations returning an object of class \class{opsr.te}. A subsequent call to \fct{summary} actually computes the treatment effects (TE) and average treatment effects (ATE). An associated \fct{print} method presents the final computations. \fct{print.opsr.te} internally calls \fct{summary} and therefore the explicit call to \fct{summary} can be omitted, if the analyst does not require the underlying computed objects
+%
+<<opsr-te>>=
+print(opsr_te(fit, type = "response"))
+@
+%
+where (weighted) paired $t$~tests indicate, whether the treatment effects are significantly different from zero (not accounting for parameter uncertainty). For TE, the columns reflect the factual regime or group, whereas the rows reflect all possible pairs of treatment combinations. For ATE, the columns reflect the treatment combinations.
+
 Now that the user understands the basic workflow, we illustrate some nuances by reproducing a key output of \cite{Wang+Mokhtarian:2024} where they investigate the treatment effect of telework (TW) on weekly vehicle miles driven. The data is attached, documented (\code{?telework_data}) and can be loaded by
 %
 <<telework-data>>=
@@ -515,6 +523,27 @@ Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are for
 \item The output formatting can be controlled flexibly, by reordering, renaming and grouping coefficients (the fiddly but trivial details are hidden here for brevity).
 \end{enumerate}
 
+Weighted treatment effects in the original (log-backtransformed scale) can be obtained as follows
+%
+<<replica-te>>=
+te <- opsr_te(fit, type = "unlog-response", weights = telework_data$weight)
+ste <- summary(te)
+print(ste)
+@
+%
+where all ATEs are negative. Only \code{G3} (the current UTWers) would increase weekly VMD when switching from NTWing to NUTWing (\Sexpr{round(ste$te[1, 3], 3)} km). All treatment effects are significantly different from zero, except \code{G2 T1->T2}, e.g., the NUTWers switching from NTWing to NUTWing.
+
+Last, there is a \fct{plot} method for model fits of class \class{opsr}. The method wraps \fct{pairs.opsr.te} and visualizes the treatment effects in a matrix of scatterplots. Figure~\ref{fig:pairs} presents all potential (counterfactual) outcome combinations. The diagonal depicts outcome distributions in any given treatment regime and separate by the current (factual) treatment group. The weighted mean values are shown as red numbers. The lower triangular panels compare the model-implied (predicted) outcomes of two treatment regimes again separate by current treatment group. The red line indicates the 45-degree line of equal outcomes while the red squares depict again the weighted mean values. The upper triangular panels show (weighted) average treatment effects.
+
+\setkeys{Gin}{width=\textwidth}
+\begin{figure}[t!]
+\centering
+<<pairs, echo=TRUE, fig=TRUE, height=6.25, width=7>>=
+plot(fit, type = "unlog-response", weights = telework_data$weight)
+@
+\caption{\label{fig:pairs} Pairs plot for model fits of class \class{opsr}.}
+\end{figure}
+
 \subsection[Tobit-5 model and comparison to sampleSelection]{Tobit-5 model and comparison to \pkg{sampleSelection}} \label{sec:tobit-5}
 
 As noted in Section~\ref{sec:intro}, the Tobit-5 model can be seen as a form of OPSR with only two selection outcomes and can be fitted with the \proglang{R}-package \pkg{sampleSelection}. In this section, we illustrate that \pkg{OPSR} can estimate Tobit-5 models (as all the other examples involve three regimes) and that the results match the ones obtained with \pkg{sampleSelection}. The example, using simulated data, is directly taken from the vignette \citet[Section~4.2]{Toomet+Henningsen:2020} \code{vignette("selection", package = "sampleSelection")}.
@@ -608,7 +637,7 @@ fit_step$anova
 %
 The resulting selection process specification can then be passed to \fct{opsr}, along with a common (or separate) process specification for the outcome processes. \pkg{OPSR} recognizes potential identification problems (e.g., colinear variables or missing factor levels in one of the groups), raises a warning if such problems arise and fixes the causing coefficients at 0. Through this process, we have identified two singularity issues for the UTWers: First, \code{shift_work} is a constant and second, \code{parking_home} is colinear with \code{car_access}.
 
-We then follow the conventional (somewhat heuristic) model building strategy to specify the full identified model and then exclude all variables that do not produce significant estimates (at the 10\% level). The formula specification of the full model is hidden here for brevity.
+We then follow the conventional (somewhat heuristic) model building strategy to specify the full identified model and then exclude all variables that do not produce significant estimates (at the 10\% level). The function \fct{opsr\_step} can help in this iterative process, as it excludes all coefficients from the model specification with $p$~values below some threshold (see \code{?opsr_step}). The formula specification of the full model is hidden here for brevity.
 %
 <<hidden, echo=FALSE>>=
 f_full <- wfh | log_weekly_km ~
