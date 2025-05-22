@@ -5,7 +5,8 @@
 #'
 #' @param object an object of class `"opsr"`.
 #' @param newdata an optional data frame in which to look for variables used in
-#'   `object$formula`. See also [`model.matrix.opsr`].
+#'   `object$formula`. See also [`model.matrix.opsr`]. Ensure that at least one
+#'   selection outcome matches the 'group' argument (see 'Examples').
 #' @param group predict outcome of this group (regime).
 #' @param counterfact counterfactual group.
 #' @param type type of prediction. Can be abbreviated. See 'Details' section for
@@ -34,6 +35,10 @@
 predict.opsr <- function(object, newdata, group, counterfact = NULL,
                          type = c("response", "unlog-response", "prob", "mills", "correction", "Xb"),
                          delta = 1, ...) {
+  args <- as.list(match.call())
+  if (!("group" %in% names(args))) {
+    stop("'group' argument is required")
+  }
   type <- match.arg(type)
   predict_opsr <- function(X_j, W_j, beta_j, rho_j, sigma_j, kappa_j_1, kappa_j, gamma,
                            type = c("response", "unlog-response", "prob", "mills", "correction", "Xb")) {
@@ -70,6 +75,11 @@ predict.opsr <- function(object, newdata, group, counterfact = NULL,
   X <- mm$X[[group]]
   W <- mm$W[[group]]
   coefs_j <- opsr_prepare_coefs(coefficients(object), nReg = object$nReg)[[group]]
+
+  if (is.null(X) || is.null(W)) {
+    stop("'newdata' does not feature observations from 'group'. Ensure that at",
+         " least one selection outcome matches the 'group' argument.")
+  }
 
   ## for the counterfactuals we pass X', beta_j', rho_j' and sigma_j'
   ## if type == prob we even pass kappa_j', kappa_j_1'

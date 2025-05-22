@@ -33,6 +33,15 @@ test_that("can predict on a single new data point", {
   expect_no_error(p <- predict(fit, group = group, newdata = newdat))
 })
 
+test_that("can predict on new data points", {
+  sim_dat <- load_sim_dat()
+  dat <- sim_dat$data
+  fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat, printLevel = 0)
+  newdat <- dat[1:4, ]
+  expect_error(predict(fit, group = 3, newdata = newdat))
+  expect_no_error(predict(fit, group = 2, newdata = newdat))
+})
+
 test_that("produces numeric vector of length n for all type args", {
   sim_dat <- load_sim_dat()
   dat <- sim_dat$data

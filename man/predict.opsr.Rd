@@ -18,7 +18,8 @@
 \item{object}{an object of class \code{"opsr"}.}
 
 \item{newdata}{an optional data frame in which to look for variables used in
-\code{object$formula}. See also \code{\link{model.matrix.opsr}}.}
+\code{object$formula}. See also \code{\link{model.matrix.opsr}}. Ensure that at least one
+selection outcome matches the 'group' argument (see 'Examples').}
 
 \item{group}{predict outcome of this group (regime).}
 
@@ -51,6 +52,7 @@ returns the inverse mills ratio, \code{"correction"} the heckman correction (i.e
 \eqn{\rho_j * \sigma_j * \text{mills}}) and \code{"Xb"} returns \eqn{X \beta}.
 }
 \examples{
+set.seed(123)
 sim_dat <- opsr_simulate()
 dat <- sim_dat$data
 model <- ys | yo ~ xs1 + xs2 | xo1 + xo2
@@ -59,6 +61,12 @@ p <- predict(fit, group = 1, type = "response")
 
 fit_log <- update(fit, . | log(yo) ~ .)
 p_unlog <- predict(fit, group = 1, type = "unlog-response")
+
+## newdata
+newdat <- dat[1:4, ]
+unique(newdat$ys)  # available selection outcomes
+predict(fit, newdata = newdat, group = 2)
+
 }
 \seealso{
 \code{\link[stats:predict]{stats::predict}}

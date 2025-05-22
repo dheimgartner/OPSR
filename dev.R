@@ -1131,3 +1131,27 @@ weights <- runif(nrow(dat))
 fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat = dat, weights = weights,
             printLevel = 0)
 plot.opsr(fit, type = "response")
+
+
+
+
+# The predict method could do more argument checking and provide informative error
+# messages. In particular the man page also does not show how to use the newdata argument:
+# R> predict(fit)
+# Error in mm$X[[group]] : missing subscript
+# R> predict(fit, group = 1, newdata = dat[1:2,])
+# Error in X_j %*% beta_j : requires numeric/complex matrix/vector arguments
+devtools::load_all()
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat = dat)
+?predict.opsr
+predict(fit, group = 1)
+predict(fit, group = 1, newdata = dat[1:2, ])
+## problem here: dat[1:2, ] only features group == 3
+## this works
+predict(fit, group = 3, newdata = dat[1:2, ])
+predict(fit, group = 3, newdata = dat[1:2, ], counterfact = 2)
+predict(fit, group = 1, newdata = dat[1:4, ])
+
+
