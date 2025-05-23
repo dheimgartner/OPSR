@@ -32,10 +32,9 @@ print.te <- function(x, digits = max(3L, getOption("digits") - 3L),
   df <- as.data.frame(mat)
   rownames(df) <- rownames(x)
   make.col.names <- function(nReg) {
-    nm <- lapply(seq_len(nReg), function(i) {
-      c(paste0("G", i), "")
-    })
-    Reduce(c, nm)
+    on <- colnames(x)
+    blanks <- rep("", length(on))
+    c(rbind(on, blanks))
   }
   colnames(df) <- make.col.names(nReg)
   print.data.frame(df)
