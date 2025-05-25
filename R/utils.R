@@ -105,4 +105,8 @@ pleaseCite <- function(pkgname) {
   pc
 }
 
+is_tobit_5 <- function(object) {
+  methods::is(object, "tobit.5") || object$nReg == 2
+}
+
 
