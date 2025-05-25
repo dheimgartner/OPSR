@@ -534,6 +534,10 @@ te <- opsr_te(fit, type = "unlog-response", weights = telework_data$weight)
 print(te)
 @
 %
+<<hidden, echo=FALSE>>=
+ste <- summary(te)
+@
+%
 where all ATEs are negative. Only \code{G3} (the current UTWers) would increase weekly VMD when switching from NTWing to NUTWing (\Sexpr{round(ste$te[1, 3], 3)} km). All treatment effects are significantly different from zero, except \code{G2 T1->T2}, e.g., the NUTWers switching from NTWing to NUTWing.
 
 \subsection[Tobit-5 model and comparison to sampleSelection]{Tobit-5 model and comparison to \pkg{sampleSelection}} \label{sec:tobit-5}
