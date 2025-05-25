@@ -75,12 +75,18 @@ summary.opsr.te <- function(object, ...) {
       te = x[idx]
     )
     nm <- paste(df$from, df$to, sep = "->")
+    if (is_tobit_5(object)) {
+      nm <- ""
+    }
     setNames(df$te, nm)
   }
 
   t.test.from.mat <- function(x) {
     t.test <- attr(x, "t.test")
     df <- as.data.frame(Reduce(rbind, t.test))
+    if (is_tobit_5(object)) {
+      df <- t(df)
+    }
     from_to <- sapply(t.test, function(x) attr(x, "idx.papply"))
     nm <- paste0("T", from_to[1, ], "->T", from_to[2, ])
     setNames(df[, "Pr(>|t|)"], nm)
@@ -90,6 +96,11 @@ summary.opsr.te <- function(object, ...) {
     x <- te.mat(object)
     te <- sapply(x, vec.from.mat)
     p.vals <- sapply(x, t.test.from.mat)
+    if (is_tobit_5(object)) {
+      te <- as.matrix(t(te))
+      rownames(te) <- "T"
+      p.vals <- as.matrix(t(p.vals))
+    }
     cn <- paste0("G", 1:object$nReg)
     colnames(te) <- cn
     colnames(p.vals) <- cn
