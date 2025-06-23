@@ -730,7 +730,7 @@ While the discussion above was based on averaged group-level treatment effects, 
 \begin{figure}[t!]
 \centering
 <<pairs, echo=TRUE, fig=TRUE, height=7, width=8>>=
-plot(fit_red, type = "unlog-response",
+plot(fit_red, type = "unlog-response", col = c(1, 3, 4),
   labels.diag = c("NTWing", "NUTWing", "UTWing"),
   labels.reg = c("NTWers", "NUTWers", "UTWers"),
   xlim = c(0, 400), ylim = c(0, 400), cex = 1.5)
