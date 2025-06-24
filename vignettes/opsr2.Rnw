@@ -712,11 +712,11 @@ plot.it <- function() {
     apply(x, 2, mean, na.rm = TRUE)
   })
   matplot(x = x, mat, type = "b", xlab = "Telework treatment", ylab = "Weekly distance (km)",
-          axes = FALSE, pch = 19, lty = 1, lwd = 2.5)
+          axes = FALSE, pch = 19, lty = 1, lwd = 2.5, col = c(1, 3, 4))
   axis(1, at = x, labels = xlabs, padj = 0.5)
   axis(2)
   grid()
-  legend("topright", legend = c("NTWers", "NUTWers", "UTWers"), pch = 19, col = 1:3, lwd = 2.5, bty = "n")
+  legend("topright", legend = c("NTWers", "NUTWers", "UTWers"), pch = 19, col = c(1, 3, 4), lwd = 2.5, bty = "n")
   box()
 }
 plot.it()
