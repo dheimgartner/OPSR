@@ -4,6 +4,7 @@
 # OPSR <img src="man/figures/logo.svg" align="right" height="139" alt="" />
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 Estimates ordered probit switching regression (OPSR) models - a Heckman
@@ -42,15 +43,23 @@ modeling effort in spirit of Heckman.
 
 ``` r
 library(OPSR)
+#> To cite package 'OPSR' in publications use:
 #> 
-#> Please cite the 'OPSR' package as:
-#> Heimgartner, D. and X. Wang (2024) OPSR: A package for estimating ordered probit switching regression models in R. tbc.
+#>   Heimgartner D, Wang X (2025). "OPSR: A package for estimating ordered
+#>   probit switching regression models in R." Arbeitsbericht Verkehrs-
+#>   und Raumplanung 1907, IVT, ETH Zurich. doi:10.3929/ethz-b-000729641
+#>   <https://doi.org/10.3929/ethz-b-000729641>.
 #> 
-#> Wang, X. and P. L. Mokhtarian (2024) Examining the treatment effect of teleworking on vehicle-miles driven: Applying an ordered probit selection model and incorporating the role of travel stress, Transportation Research Part A, 186, 104072, doi:10.1016/j.tra.2024.104072.
+#>   Wang X, Mokhtarian PL (2024). "Examining the treatment effect of
+#>   teleworking on vehicle-miles driven: Applying an ordered probit
+#>   selection model and incorporating the role of travel stress."
+#>   _Transportation Research Part A_, *186*, 104072.
+#>   doi:10.1016/j.tra.2024.104072
+#>   <https://doi.org/10.1016/j.tra.2024.104072>.
 #> 
-#> If you have questions, suggestions, or comments regarding the 'OPSR' package, please open an issue on https://github.com/dheimgartner/OPSR
-#> 
-#> To see these entries in BibTeX format, use 'citation('OPSR')'
+#> To see these entries in BibTeX format, use 'print(<citation>,
+#> bibtex=TRUE)', 'toBibtex(.)', or set
+#> 'options(citation.bibtex.max=999)'.
 
 f <-
   ## ordinal and continuous outcome
@@ -86,7 +95,7 @@ summary(fit)
 #> 
 #> BFGS maximization, 182 iterations
 #> Return code 0: successful convergence 
-#> Runtime: 5.17 secs
+#> Runtime: 5.28 secs
 #> Number of regimes: 3 
 #> Number of observations: 1584 (535, 322, 727)
 #> Estimated parameters: 56 
