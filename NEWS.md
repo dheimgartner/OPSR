@@ -1,3 +1,5 @@
+# OPSR (development version)
+
 # OPSR 1.0.0
 
 * `print.summary.opsr()` now shows GOF indicators.
