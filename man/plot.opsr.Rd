@@ -14,14 +14,14 @@
 \item{weights}{a vector of weights. If \code{NULL} then weights from \code{object} will
 be used.}
 
-\item{...}{further arguments passed to \code{\link{pairs.opsr.ate}}.}
+\item{...}{further arguments passed to \code{\link{pairs.opsr.te}}.}
 }
 \value{
 Returns \code{x} invisibly.
 }
 \description{
-Wrapper around \code{\link{pairs.opsr.ate}}.
+Wrapper around \code{\link{pairs.opsr.te}}.
 }
 \seealso{
-\code{\link{opsr_te}}, \code{\link{pairs.opsr.ate}}
+\code{\link{opsr_te}}, \code{\link{pairs.opsr.te}}
 }

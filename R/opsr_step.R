@@ -5,9 +5,10 @@
 #' @param object an object of class `"opsr"`.
 #' @param pval coefficients with p-values < `pval` are dropped.
 #' @param log environment to keep track of changes to `object` (in particular
-#'   variables being eliminated).
-#' @param .step used to generate identifier in `log` environment. Used in
-#'   [`opsr_select`].
+#'   variables being eliminated). This could be useful in a function that
+#'   repeatedly calls `opsr_step` internally in order to keep track of the full
+#'   elimination history.
+#' @param .step used to generate identifier in `log` environment.
 #' @param ... additional arguments passed to [`update`] (and hence [`opsr`]).
 #'
 #' @return An object of class `"opsr"`.
@@ -20,7 +21,7 @@ opsr_step <- function(object, pval, log = new.env(), .step = 1, ...) {
   }
 
   vars_from_f <- function(formula, rhs) {
-    attr(terms(formula(formula, rhs = rhs)), "term.labels")
+    attr(stats::terms(stats::formula(formula, rhs = rhs)), "term.labels")
   }
 
   get_factors <- function(object) {

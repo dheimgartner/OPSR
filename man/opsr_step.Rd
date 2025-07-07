@@ -12,10 +12,11 @@ opsr_step(object, pval, log = new.env(), .step = 1, ...)
 \item{pval}{coefficients with p-values < \code{pval} are dropped.}
 
 \item{log}{environment to keep track of changes to \code{object} (in particular
-variables being eliminated).}
+variables being eliminated). This could be useful in a function that
+repeatedly calls \code{opsr_step} internally in order to keep track of the full
+elimination history.}
 
-\item{.step}{used to generate identifier in \code{log} environment. Used in
-\code{\link{opsr_select}}.}
+\item{.step}{used to generate identifier in \code{log} environment.}
 
 \item{...}{additional arguments passed to \code{\link{update}} (and hence \code{\link{opsr}}).}
 }
