@@ -190,6 +190,10 @@ opsr <- function(formula, data, subset, weights, na.action, start = NULL,
   fit$weights <- weights
   fit$singular <- singular
 
+  if (nReg == 2) {
+    class(fit) <- c("tobit.5", class(fit))
+  }
+
   class(fit) <- c("opsr", class(fit))
 
   fit

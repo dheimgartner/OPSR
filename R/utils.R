@@ -90,3 +90,23 @@ is_opsr_null <- function(object) {
 `%||%` <- function(x, y) {
   if (is.null(x)) y else x
 }
+
+## creds to stats::printCoefmat
+to.signif.codes <- function(pv) {
+  Signif <- stats::symnum(pv, corr = FALSE, na = FALSE,
+                          cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                          symbols = c("***", "**", "*", ".", " "))
+  Signif
+}
+
+pleaseCite <- function(pkgname) {
+  pc <- utils::capture.output(print(utils::citation(pkgname)))
+  pc <- paste(pc, collapse = "\n")
+  pc
+}
+
+is_tobit_5 <- function(object) {
+  methods::is(object, "tobit.5") || object$nReg == 2
+}
+
+

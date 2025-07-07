@@ -20,6 +20,9 @@
 anova.opsr <- function(object, ...) {
   ## general architecture inspired by anova.glm and anova.glmlist
   dotargs <- list(...)
+  if (is_opsr_null(object) && length(dotargs) == 0) {
+    stop("you are comparing the null model to itself")
+  }
   named <- if (is.null(names(dotargs)))
     rep_len(FALSE, length(dotargs))
   else (names(dotargs) != "")

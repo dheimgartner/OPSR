@@ -1,4 +1,6 @@
-# OPSR 0.2.0
+# OPSR (development version)
+
+# OPSR 1.0.0
 
 * `print.summary.opsr()` now shows GOF indicators.
 * Added `timeuse_data` from the TimeUse+ study.
@@ -11,6 +13,11 @@
 * Added `type = "Xb"` and `type = "correction"` in `predict.opsr()`.
 * Works for only 2 treatment regimes (i.e., the Tobit-5 model).
 * Smoothing constant (used in continuity correction) can be passed to `predict.opsr()` via `delta` arg.
+* Added `opsr_te()` for treatment effect computations.
+* Added `plot()` method for treatment effect visualization.
+* Improved `predict()`'s argument argument checking and error messages as well as the man pages.
+* Passing the null model as sole argument to `anova()` will raise an error.
+* Added vignette corresponding to the JSS submission.
 
 # OPSR 0.1.2
 
