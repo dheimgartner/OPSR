@@ -12,7 +12,6 @@
 #' @param ... additional arguments passed to [`update`] (and hence [`opsr`]).
 #'
 #' @return An object of class `"opsr"`.
-#' @seealso [`opsr_select`]
 #' @example R/examples/ex-opsr_step.R
 #' @export
 opsr_step <- function(object, pval, log = new.env(), .step = 1, ...) {
@@ -33,7 +32,7 @@ opsr_step <- function(object, pval, log = new.env(), .step = 1, ...) {
 
   get_terms2drop <- function(object, pval) {
     coef_table <- summary(object)$coef_table
-    candi <- row.names(subset(coef_table, subset = `Pr(> t)` > pval))
+    candi <- row.names(coef_table[coef_table[["Pr(> t)"]] > pval, ])
     candi <- candi[grepl("^s_|^o[0-9]_", candi)]
     nm <- sub("^((s|o[0-9])).*", "\\1", candi)
     candi <- sub("^s_|^o[0-9]_", "", candi)
@@ -78,7 +77,7 @@ opsr_step <- function(object, pval, log = new.env(), .step = 1, ...) {
       rhs <- paste(terms2drop[[i]], collapse = " + ")
       u <- paste0(". -(", rhs, ")")
       fs <- paste0(". ~ ", paste(rep(". | ", i-1), collapse = ""), u)
-      fu <- as.formula(fs)
+      fu <- stats::as.formula(fs)
       form <- update(form, fu)
     }
     form

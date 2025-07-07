@@ -22,7 +22,7 @@ summary.opsr.te <- function(object, ...) {
 
   wtd.paired.t.test <- function(x, y, weights = NULL) {
     diff <- y - x
-    fit <- lm(diff ~ 1, weights = weights)
+    fit <- stats::lm(diff ~ 1, weights = weights)
     s <- summary(fit)
     t.test <- s$coefficients[1, c("t value", "Pr(>|t|)")]
     class(t.test) <- c("wtd.paired.t.test", class(t.test))
@@ -30,7 +30,7 @@ summary.opsr.te <- function(object, ...) {
   }
 
   papply <- function(mat, FUN, ...) {
-    cbn <- combn(ncol(mat), 2)
+    cbn <- utils::combn(ncol(mat), 2)
     out <- lapply(1:ncol(cbn), function(i) {
       idx <- cbn[, i]
       x <- mat[, idx[1]]
@@ -78,7 +78,7 @@ summary.opsr.te <- function(object, ...) {
     if (is_tobit_5(object)) {
       nm <- ""
     }
-    setNames(df$te, nm)
+    stats::setNames(df$te, nm)
   }
 
   t.test.from.mat <- function(x) {
@@ -89,7 +89,7 @@ summary.opsr.te <- function(object, ...) {
     }
     from_to <- sapply(t.test, function(x) attr(x, "idx.papply"))
     nm <- paste0("T", from_to[1, ], "->T", from_to[2, ])
-    setNames(df[, "Pr(>|t|)"], nm)
+    stats::setNames(df[, "Pr(>|t|)"], nm)
   }
 
   te <- function(object) {
@@ -115,7 +115,7 @@ summary.opsr.te <- function(object, ...) {
     w <- rep(object$weights, object$nReg)
     t.test <- papply(dat, wtd.paired.t.test, weights = w)
     ate <- apply(dat, 2, function(x) {
-      x. <- na.omit(x)
+      x. <- stats::na.omit(x)
       w. <- w[-attr(x., "na.action")]
       stats::weighted.mean(x., w = w.)
     })

@@ -60,10 +60,10 @@ pairs.opsr.te <- function(x, pch = 21, labels.diag = paste0("T", 1:x$nReg),
     dots <- list(...)
     y <- dots[[1]]
     n <- length(unique(g))
-    points(x, ...)
+    graphics::points(x, ...)
     if (add.rug) {
-      rug(x, ticksize = 0.02)
-      rug(y, ticksize = 0.02, side = 2)
+      graphics::rug(x, ticksize = 0.02)
+      graphics::rug(y, ticksize = 0.02, side = 2)
     }
     xw <- as.numeric(
       by(x, g, function(x) stats::weighted.mean(x, w = w, na.rm = TRUE))
@@ -71,23 +71,23 @@ pairs.opsr.te <- function(x, pch = 21, labels.diag = paste0("T", 1:x$nReg),
     yw <- as.numeric(
       by(y, g, function(y) stats::weighted.mean(y, w = w, na.rm = TRUE))
     )
-    abline(a = 0, b = 1, col = "red", lty = lty.diag, lwd = 2)
-    points(xw, yw, pch = 15, col = "red", cex = 2 * par("cex"))
-    tmp <- legend("topleft", legend = unique(g), pch = dots$pch, pt.bg = unique(dots$bg), bty = "n")
+    graphics::abline(a = 0, b = 1, col = "red", lty = lty.diag, lwd = 2)
+    graphics::points(xw, yw, pch = 15, col = "red", cex = 2 * graphics::par("cex"))
+    tmp <- graphics::legend("topleft", legend = unique(g), pch = dots$pch, pt.bg = unique(dots$bg), bty = "n")
     xwr <- round(xw, lower.digits)
     ywr <- round(yw, lower.digits)
-    text(tmp$rect$left + tmp$rect$w, tmp$text$y, paste0("(", xwr, ", ", ywr, ")"), col = "red", pos = 4)
+    graphics::text(tmp$rect$left + tmp$rect$w, tmp$text$y, paste0("(", xwr, ", ", ywr, ")"), col = "red", pos = 4)
   }
 
   ## x are actually the treatment effects
   panel.diag <- function(x, ...) {
     dots <- list(...)
-    usr <- par("usr")
-    par(usr = c(usr[1:2], 0, 1.5))  # sets height of ploting area!
+    usr <- graphics::par("usr")
+    graphics::par(usr = c(usr[1:2], 0, 1.5))  # sets height of ploting area!
     preprocess <- function() {
       i <- 1
       by(x, g, function(x) {
-        df <- data.frame(x = na.omit(x))
+        df <- data.frame(x = stats::na.omit(x))
         df$group <- i
         df$col <- col[i]
         i <<- i + 1
@@ -97,14 +97,14 @@ pairs.opsr.te <- function(x, pch = 21, labels.diag = paste0("T", 1:x$nReg),
     p.density <- function(dl) {
       dfl <-
         lapply(dl, function(x) {
-          d <- density(x$x)
+          d <- stats::density(x$x)
           df <- data.frame(x = d$x, y = d$y, col = unique(x$col))
         })
       maxy <- max(Reduce(rbind, dfl)$y)
       lapply(dfl, function(x) {
         ## rescale (ploting area was set via usr)
         x$y <- x$y / maxy
-        lines(x$x, x$y, col = x$col, lwd = lwd.dens, ...)
+        graphics::lines(x$x, x$y, col = x$col, lwd = lwd.dens, ...)
       })
     }
     p.markers <- function() {
@@ -113,8 +113,8 @@ pairs.opsr.te <- function(x, pch = 21, labels.diag = paste0("T", 1:x$nReg),
       )
       # points(xw, rep(0, length(xw)), pch = "|", col = "red", cex = cex.marker)
       labels <- round(xw, diag.digits)
-      text(xw, y = rep(0, length(xw)), labels = labels, srt = 90, col = "red",
-           cex = diag.cex.text, adj = c(-0.1, 0.5))
+      graphics::text(xw, y = rep(0, length(xw)), labels = labels, srt = 90, col = "red",
+                     cex = diag.cex.text, adj = c(-0.1, 0.5))
     }
     dl <- preprocess()
     p.density(dl)
@@ -122,11 +122,11 @@ pairs.opsr.te <- function(x, pch = 21, labels.diag = paste0("T", 1:x$nReg),
   }
 
   panel.upper <- function(x, y, ...) {
-    par(usr = c(0, 1, 0, 1))
+    graphics::par(usr = c(0, 1, 0, 1))
     ## careful: weights do not align and need to be prepared like below
-    xo <- na.omit(x)
+    xo <- stats::na.omit(x)
     xi <- attr(xo, "na.action")
-    yo <- na.omit(y)
+    yo <- stats::na.omit(y)
     yi <- attr(yo, "na.action")
     x.weights <- rep(w, object$nReg)[-xi]
     y.weights <- rep(w, object$nReg)[-yi]
@@ -135,18 +135,18 @@ pairs.opsr.te <- function(x, pch = 21, labels.diag = paste0("T", 1:x$nReg),
     te <- xw - yw
     txt <- format(c(te, 0.123456789), digits = upper.digits)[1]
     txt <- paste0(prefix, txt, postfix)
-    text(0.5, 0.5, txt, cex = upper.cex.text)
+    graphics::text(0.5, 0.5, txt, cex = upper.cex.text)
   }
 
   dat <- preprocess()
   w <- x$weights
   g <- dat$group
   object <- x
-  pairs(dat[, -ncol(dat)], pch = pch, bg = col[dat$group],
-        lower.panel = panel.lower,
-        diag.panel = panel.diag,
-        upper.panel = panel.upper,
-        ...)
+  graphics::pairs(dat[, -ncol(dat)], pch = pch, bg = col[dat$group],
+                  lower.panel = panel.lower,
+                  diag.panel = panel.diag,
+                  upper.panel = panel.upper,
+                  ...)
 
   invisible(x)
 }

@@ -93,9 +93,9 @@ is_opsr_null <- function(object) {
 
 ## creds to stats::printCoefmat
 to.signif.codes <- function(pv) {
-  Signif <- symnum(pv, corr = FALSE, na = FALSE,
-                   cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                   symbols = c("***", "**", "*", ".", " "))
+  Signif <- stats::symnum(pv, corr = FALSE, na = FALSE,
+                          cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                          symbols = c("***", "**", "*", ".", " "))
   Signif
 }
 

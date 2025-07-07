@@ -36,6 +36,3 @@ fit <- OPSR::opsr(f, dat, printLevel = 0)
 fit_step <- opsr_step(fit, pval = 0.1)
 texreg::screenreg(list(fit, fit_step))
 }
-\seealso{
-\code{\link{opsr_select}}
-}

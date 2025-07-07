@@ -13,6 +13,6 @@
 #' @export
 plot.opsr <- function(x, type, weights = NULL, ...) {
   te <- opsr_te(x, type = type, weights = weights)
-  pairs(te, ...)
+  graphics::pairs(te, ...)
   invisible(x)
 }
