@@ -2,11 +2,11 @@
 
 > See: https://github.com/dheimgartner/OPSR/issues/42
 
-- [ ] Add convergence diagnostics (standard second order conditions) to `summary.opsr()`
+- [x] Add convergence diagnostics (standard second order conditions) to `summary.opsr()`
 but probably in a separate `opsr_diagnostics()` function:
-  - [ ] Maximum absolute gradient.
-  - [ ] Whether the Hessian is positive definite.
-  - [ ] Possibly eigenvalues or conditioning diagnostics (?).
+  - [x] Maximum absolute gradient.
+  - [x] Whether the Hessian is positive definite.
+  - [x] Possibly eigenvalues or conditioning diagnostics (?).
 - [ ] What simulation exercise did Lokshin perform (see `literature`)?
 - [ ] Replicate (or extend).
   - [ ] What is challenging for identification?
