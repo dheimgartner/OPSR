@@ -115,6 +115,7 @@ summary.opsr <- function(object, rob = TRUE, ...) {
   ms$iterations <- model$iterations
   ms$return_code <- model$code
   ms$message <- model$message
+  ms$diagnostics <- opsr_diagnostics(model)
   ms$coef_table <- coef_table
   ms$varcov <- cofi$varcov
   ms$nReg <- model$nReg

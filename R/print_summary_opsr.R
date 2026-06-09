@@ -27,6 +27,7 @@ print.summary.opsr <- function(x, digits = max(3L, getOption("digits") - 3L),
   cat(x$maxim_type, ", ", x$iterations, " iterations\n", sep = "")
   cat("Return code ", x$return_code, ": ", x$message, "\n", sep = "")
   cat("Runtime: ", format(unclass(x$runtime), digits = 3), " ", attr(x$runtime, "units"), "\n", sep = "")
+  print(x$diagnostics, .print.title = FALSE)
   cat("Number of regimes:", x$nReg, "\n")
   cat("Number of observations: "); cat(x$nObs[1], "("); cat(x$nObs[-1], sep = ", "); cat(")\n")
   cat("Estimated parameters:", x$nParams, "\n\n")
