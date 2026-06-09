@@ -1171,11 +1171,4 @@ devtools::load_all()
 sim_dat <- opsr_simulate()
 dat <- sim_dat$data
 fit <- opsr(ys | yo ~ xs1 + xs2 | xo1 + xo2, dat = dat)
-
-## to be called from summary()
-opsr_diagnostics(fit)
-
-debugonce(summary.opsr)
 summary(fit)
-
-
