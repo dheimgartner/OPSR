@@ -12,6 +12,7 @@ but probably in a separate `opsr_diagnostics()` function:
   - [ ] What is challenging for identification?
 - [ ] Implement metrics to provide empirical evidence for identification.
 - [ ] Rewrite paper.
+- [ ] Make sure man is in sync.
 - [ ] Update on CRAN.
 - [ ] Resubmit: When you have uploaded Revisions for all required files above 
 (including your point-to-point response), you need to inform the editors that 
