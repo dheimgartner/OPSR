@@ -4,7 +4,7 @@
 #' @param digits minimum number of significant digits for numeric output.
 #' @param print.gradient if `TRUE`, prints the full gradient vector.
 #' @param print.eigenvalues if `TRUE`, prints all eigenvalues of the Hessian.
-#' @param .print_title flag to disable printing when called from [`print.summary.opsr`].
+#' @param .print.title flag to disable printing when called from [`print.summary.opsr`].
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @return Prints diagnostics and returns `x` invisibly.
