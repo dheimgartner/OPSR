@@ -44,7 +44,9 @@ opsr_lr_instrument <- function(object, instrument, printLevel = 0, ...) {
                            printLevel = printLevel, ...)
   )
 
-  anova.opsr(fit_restricted, object)
+  result <- anova.opsr(fit_restricted, object)
+  result$restriction <- list(row = 1L, instrument = instrument)
+  result
 }
 
 
