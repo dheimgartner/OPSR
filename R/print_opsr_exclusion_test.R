@@ -17,12 +17,19 @@ print.opsr.profile.rho <- function(x, digits = max(3L, getOption("digits") - 3L)
   cat("Profile log-likelihood for rho\n\n")
 
   for (j in seq_len(nReg)) {
-    sub      <- x[x$regime == j, ]
-    ll_range <- range(sub$profile_loglik, na.rm = TRUE)
-    drop     <- max_ll - ll_range[1]
+    sub <- x[x$regime == j, ]
 
     cat(sprintf("Regime %d  (rho_hat = %s):\n", j,
                 format(rho_hat[j], digits = digits)))
+
+    if (all(is.na(sub$profile_loglik))) {
+      cat("  [WARNING] All profile evaluations failed -- no profile available\n")
+      next
+    }
+
+    ll_range <- range(sub$profile_loglik, na.rm = TRUE)
+    drop     <- max_ll - ll_range[1]
+
     cat(sprintf("  Profile LL range: [%s, %s]  |  drop from MLE: %s\n",
                 format(ll_range[1], digits = digits),
                 format(ll_range[2], digits = digits),
