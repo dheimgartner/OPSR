@@ -9,3 +9,4 @@ src/*.dll
 /Meta/
 ..Rcheck/*
 check/*
+Rplots.pdf

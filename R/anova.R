@@ -118,7 +118,13 @@ print.anova.opsr <- function(x, digits = max(getOption("digits") - 2L, 3L), sign
   cat("Likelihood Ratio Test\n\n")
   if (print.formula) {
     for (i in seq_along(x$formulas)) {
-      cat("Model ", i, ": ", parse_formula(x$formulas[[i]]), "\n", sep = "")
+      label <- parse_formula(x$formulas[[i]])
+      if (!is.null(x$restriction) && x$restriction$row == i) {
+        label <- paste0(label, "  [",
+                        paste(x$restriction$instrument, collapse = ", "),
+                        " restricted to 0 in selection]")
+      }
+      cat("Model ", i, ": ", label, "\n", sep = "")
     }
   }
   stats::printCoefmat(x$table, digits = digits, signif.stars = signif.stars, na.print = "", ...)

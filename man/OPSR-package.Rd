@@ -6,6 +6,8 @@
 \alias{OPSR-package}
 \title{OPSR: Ordered Probit Switching Regression}
 \description{
+\if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
+
 Estimates ordered probit switching regression models - a Heckman type selection model with an ordinal selection and continuous outcomes. Different model specifications are allowed for each treatment/regime. For more details on the method, see Wang & Mokhtarian (2024) \doi{10.1016/j.tra.2024.104072} or Chiburis & Lokshin (2007) \doi{10.1177/1536867X0700700202}.
 }
 \seealso{
@@ -21,6 +23,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Daniel Heimgartner \email{d.heimgartners@gmail.com} (\href{https://orcid.org/0000-0002-0643-8690}{ORCID}) [copyright holder]
   \item Xinyi Wang \email{xinyi174@mit.edu} (\href{https://orcid.org/0000-0002-3564-9147}{ORCID})
 }
 

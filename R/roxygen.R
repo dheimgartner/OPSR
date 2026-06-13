@@ -7,8 +7,7 @@
 NULL
 
 ## Generics outside OPSR
-#' @importFrom stats AIC BIC coef coefficients fitted model.frame model.matrix
-#'   model.weights predict residuals update nobs
+#' @importFrom stats AIC BIC coef coefficients fitted model.frame model.matrix model.weights predict residuals setNames update nobs
 NULL
 
 #' @importFrom methods setMethod
