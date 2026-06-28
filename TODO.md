@@ -7,10 +7,10 @@ but probably in a separate `opsr_diagnostics()` function:
   - [x] Maximum absolute gradient.
   - [x] Whether the Hessian is positive definite.
   - [x] Possibly eigenvalues or conditioning diagnostics (?).
-- [ ] What simulation exercise did Lokshin perform (see `literature`)?
-- [ ] Replicate (or extend).
-  - [ ] What is challenging for identification?
-- [ ] Implement metrics to provide empirical evidence for identification.
+- [x] What simulation exercise did Lokshin perform (see `literature`)?
+- [x] Replicate (or extend).
+  - [x] What is challenging for identification?
+- [x] Implement metrics to provide empirical evidence for identification.
 - [ ] Rewrite paper.
 - [ ] Make sure man is in sync.
 - [ ] Update on CRAN.
