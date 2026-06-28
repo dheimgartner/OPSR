@@ -266,6 +266,7 @@ for (.cas in diag_cases) {
 
 diag <- do.call(rbind, diag_rows)
 diag$run <- factor(diag$run, levels = unique(diag$run))
+rownames(diag) <- NULL
 
 ## =========================================================
 ## 7.  Bundle and save
