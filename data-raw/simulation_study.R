@@ -270,6 +270,6 @@ diag$run <- factor(diag$run, levels = unique(diag$run))
 ## =========================================================
 ## 7.  Bundle and save
 ## =========================================================
-simulation_study <- list(mc = mc, diag = diag)
+simulation_study <- list(monte_carlo = mc, diagnostics = diag)
 usethis::use_data(simulation_study, overwrite = TRUE)
 cat("\nSaved to data/simulation_study.rda\n")
