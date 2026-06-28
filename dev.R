@@ -1198,3 +1198,12 @@ plot(test$profile_rho)
 ## the two components are also available individually:
 opsr_lr_instrument(fit, instrument = "xs2")
 opsr_profile_rho(fit, grid = seq(-0.99, 0.99, length.out = 11))
+
+
+
+
+
+## OPSR::simulation_study
+devtools::load_all()
+
+OPSR::simulation_study

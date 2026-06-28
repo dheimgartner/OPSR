@@ -30,7 +30,7 @@
 # representative dataset.
 ###############################################################################
 
-library(OPSR)
+devtools::load_all()
 library(mvtnorm)
 
 set.seed(2007)
