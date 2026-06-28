@@ -667,20 +667,25 @@ make_row <- function(run_id) {
   vals <- vapply(seq_len(nrow(sub)), function(i) {
     sprintf("%.3f (%.0f\\%%)", sub$mean_beta[i], sub$coverage[i])
   }, character(1))
-  c(run_labels[run_id], vals)
+  paste(c(run_labels[run_id], vals), collapse = " & ")
 }
 
-tab <- do.call(rbind, lapply(levels(fiml$run), make_row))
+data_rows <- paste0(sapply(levels(fiml$run), make_row), " \\\\")
 
-cat("\\begin{table}[htbp]\n\\centering\n")
-cat("\\caption{\\label{tab:sim} FIML mean $\\hat\\beta$ and 95\\% CI coverage at ",
-    "$N = 1000$ across three regimes. True $\\beta = 1$.}\n")
-cat("\\begin{tabular}{lccc}\\toprule\n")
-cat("Condition & Regime~1 & Regime~2 & Regime~3 \\\\\n\\midrule\n")
-for (i in seq_len(nrow(tab))) {
-  cat(paste(tab[i, ], collapse = " & "), "\\\\\n")
-}
-cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+writeLines(c(
+  "\\begin{table}[htbp]",
+  "\\centering",
+  paste0("\\caption{\\label{tab:sim} FIML mean $\\hat{\\beta}$ and 95\\% CI ",
+         "coverage at $N = 1000$ across three regimes. True $\\beta = 1$.}"),
+  "\\begin{tabular}{lccc}",
+  "\\toprule",
+  "Condition & Regime~1 & Regime~2 & Regime~3 \\\\",
+  "\\midrule",
+  data_rows,
+  "\\bottomrule",
+  "\\end{tabular}",
+  "\\end{table}"
+))
 @
 %
 The baseline and high-$\rho$ conditions achieve near-nominal coverage for all three regimes with negligible bias, confirming that FIML performs well when a valid exclusion restriction is in place. Non-normal shocks (run~3 in the original paper) primarily hurt the exterior regimes (1 and 3), while the interior regime~2 remains close to nominal because the near-linearity of its Mills-ratio correction makes FIML approximately equivalent to a linear correction there.
@@ -710,22 +715,31 @@ fmt_p <- function(p) {
   sprintf("%.3f", p)
 }
 
-cat("\\begin{table}[htbp]\n\\centering\n")
-cat("\\caption{\\label{tab:sim-diag} Diagnostics for one representative dataset ",
-    "per condition ($N = 1000$). Profile range is the log-likelihood drop ",
-    "across the $\\rho$ grid for the interior regime~2; smaller values ",
-    "indicate a flatter (weaker) profile.}\n")
-cat("\\begin{tabular}{lccc}\\toprule\n")
-cat("Condition & Cond.~number & Profile range & LR $p$-value \\\\\n\\midrule\n")
-for (i in seq_len(nrow(diag_r2))) {
+data_rows2 <- vapply(seq_len(nrow(diag_r2)), function(i) {
   run_id <- as.character(diag_r2$run[i])
-  label  <- run_labels2[run_id]
-  pval   <- fmt_p(diag_r2$lr_pval[i])
-  cat(sprintf("%s & %.0f & %.1f & %s \\\\\n",
-              label, diag_r2$cond_number[i],
-              diag_r2$profile_range[i], pval))
-}
-cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+  sprintf("%s & %.0f & %.1f & %s \\\\",
+          run_labels2[run_id],
+          diag_r2$cond_number[i],
+          diag_r2$profile_range[i],
+          fmt_p(diag_r2$lr_pval[i]))
+}, character(1))
+
+writeLines(c(
+  "\\begin{table}[htbp]",
+  "\\centering",
+  paste0("\\caption{\\label{tab:sim-diag} Diagnostics for one representative ",
+         "dataset per condition ($N = 1000$). Profile range is the ",
+         "log-likelihood drop across the $\\rho$ grid for the interior ",
+         "regime~2; smaller values indicate a flatter (weaker) profile.}"),
+  "\\begin{tabular}{lccc}",
+  "\\toprule",
+  "Condition & Cond.~number & Profile range & LR $p$-value \\\\",
+  "\\midrule",
+  data_rows2,
+  "\\bottomrule",
+  "\\end{tabular}",
+  "\\end{table}"
+))
 @
 %
 The diagnostics correctly signal identification problems for runs~5 and~7: the condition number is an order of magnitude larger than the baseline ($> 900$ vs.\ $\sim 34$), the profile log-likelihood for regime~2 is near-flat (range $< 2$ LL units, compared to $> 90$ for the baseline), and the LR test is non-significant. For a valid but strong instrument (run~1) or high error correlation (run~2) these quantities show healthy values.
