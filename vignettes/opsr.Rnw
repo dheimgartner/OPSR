@@ -291,12 +291,12 @@ The severity of functional-form-only identification depends on the regime struct
 
 Three failure modes arise in practice, with different consequences (foreshadowing the simulation results):
 \begin{enumerate}
-\item \textbf{No exclusion restriction}: all variables in $\boldsymbol{W}$ also appear in all $\boldsymbol{X_j}$. Identification relies entirely on functional form. FIML estimates appear precise but are downward biased, with coverage collapsing well below 95\%; the two-step estimator has enormous variance.
-\item \textbf{Weak instrument}: the excluded variable has negligible first-stage predictive power for $Z$. Numerically similar to the no-exclusion case; the condition number of the Hessian inflates and the profile likelihood for $\rho_j$ is near-flat.
-\item \textbf{Invalid exclusion restriction}: the excluded variable directly affects $y_j$ and should appear in $\boldsymbol{X_j}$. Both FIML and the two-step estimator converge confidently to the wrong answer (bias can exceed 80\%; coverage collapses to 0\%). No model-internal diagnostic can detect this failure mode --- it requires substantive subject-matter reasoning.
+\item \textbf{No exclusion restriction}: all variables in $\boldsymbol{W}$ also appear in all $\boldsymbol{X_j}$. Identification relies entirely on functional form. FIML estimates appear precise but are downward biased, with coverage collapsing well below 95\%, while the two-step estimator has enormous variance.
+\item \textbf{Weak instrument}: the excluded variable has negligible first-stage predictive power for $Z$. This case is numerically similar to the no-exclusion case: the condition number of the Hessian inflates and the profile likelihood for $\rho_j$ is near-flat.
+\item \textbf{Invalid exclusion restriction}: the excluded variable directly affects $y_j$ and should appear in $\boldsymbol{X_j}$. Both FIML and the two-step estimator converge confidently to the wrong answer (bias can exceed 80\% and coverage collapses to 0\%). No model-internal diagnostic can detect this failure mode --- it requires substantive subject-matter reasoning.
 \end{enumerate}
 
-\pkg{OPSR} provides two complementary tools for failure modes~(1) and~(2): a likelihood-ratio test for instrument relevance (\fct{opsr\_lr\_instrument}) and a per-regime profile log-likelihood for $\rho_j$ (\fct{opsr\_profile\_rho}), combined in \fct{opsr\_test\_exclusion\_restriction}. These are demonstrated in Section~\ref{sec:diagnostics} and Section~\ref{sec:cs-identification}; the simulation evidence for all three failure modes is presented in Section~\ref{sec:simulation}.
+\pkg{OPSR} provides two complementary tools for failure modes~(1) and~(2): a likelihood-ratio test for instrument relevance (\fct{opsr\_lr\_instrument}) and a per-regime profile log-likelihood for $\rho_j$ (\fct{opsr\_profile\_rho}), combined in \fct{opsr\_test\_exclusion\_restriction}. These are demonstrated in Section~\ref{sec:diagnostics} and Section~\ref{sec:cs-identification}. The simulation evidence for all three failure modes is presented in Section~\ref{sec:simulation}.
 
 \subsection{Software} \label{sec:software}
 
@@ -304,7 +304,7 @@ This concludes the mathematical treatment and we briefly outline \pkg{OPSR}'s ar
 \begin{itemize}
 \item We provide the usual formula interface to specify a model. To allow for multiple parts and multiple responses, we rely on the \pkg{Formula} package \citep{Zeileis+Croissant:2010}.
 \item After parsing the formula object, checking the user inputs and computing the model matrices, the Heckman two-step estimator is called in \fct{opsr\_2step} to generate reasonable starting values.
-\item These are then passed together with the data to the basic computation engine \fct{opsr.fit}. The main estimates are retrieved using maximum likelihood estimation by passing the log-likelihood function \fct{loglik\_cpp} (Equation~\ref{eq:log-lik}) to \fct{maxLik} from the \pkg{maxLik} package \citep{Henningsen+Toomet:2011}. No analytical gradient or Hessian is implemented; \fct{maxLik} uses numerical finite-difference approximations by default. Reported standard errors and Wald statistics are derived from the negative inverse of this numerical Hessian. Near identification failure the Hessian may be numerically imprecise, which is flagged by the condition number diagnostic in \fct{opsr\_diagnostics}.
+\item These are then passed together with the data to the basic computation engine \fct{opsr.fit}. The main estimates are retrieved using maximum likelihood estimation by passing the log-likelihood function \fct{loglik\_cpp} (Equation~\ref{eq:log-lik}) to \fct{maxLik} from the \pkg{maxLik} package \citep{Henningsen+Toomet:2011}. No analytical gradient or Hessian is implemented, so \fct{maxLik} uses numerical finite-difference approximations by default. Reported standard errors and Wald statistics are derived from the negative inverse of this numerical Hessian. Near identification failure the Hessian may be numerically imprecise, which is flagged by the condition number diagnostic in \fct{opsr\_diagnostics}.
 \item All the above calls are nested in the main interface \fct{opsr} which returns an object of class \class{opsr}. Several methods then exist to post-process this object as illustrated below.
 \end{itemize}
 
@@ -431,11 +431,11 @@ The second-order optimality conditions at the MLE estimate can be inspected with
 opsr_diagnostics(fit)
 @
 %
-The output reports (i) the maximum absolute gradient element (\code{max\_abs\_gradient}); (ii) whether the Hessian is negative definite (\code{hessian\_neg\_def}), a necessary condition for a proper local maximum rather than a saddle point; (iii) all eigenvalues; and (iv) the condition number (ratio of largest to smallest absolute eigenvalue). A large condition number --- typically above $10^3$--$10^4$ --- signals near-collinearity in the parameter space and suggests that some parameter combination is weakly identified.
+The output reports (i) the maximum absolute gradient element (\code{max\_abs\_gradient}), (ii) whether the Hessian is negative definite (\code{hessian\_neg\_def}) --- a necessary condition for a proper local maximum rather than a saddle point --- (iii) all eigenvalues, and (iv) the condition number (ratio of largest to smallest absolute eigenvalue). A large condition number --- typically above $10^3$--$10^4$ --- signals near-collinearity in the parameter space and suggests that some parameter combination is weakly identified.
 
 These second-order conditions are \emph{necessary but not sufficient} to confirm empirical identification. A model with a weak or absent exclusion restriction can produce a gradient close to zero and a negative-definite Hessian while $\rho_j$ is essentially unidentified: the log-likelihood surface is flat in the $\rho_j$ direction, not ill-shaped. The condition number provides a soft signal, but cannot alone distinguish identification failure from benign covariate collinearity.
 
-Two dedicated diagnostics address this. \fct{opsr\_lr\_instrument} performs a likelihood-ratio test that drops specified instrument(s) from the selection equation; a small LR statistic signals a weak instrument. \fct{opsr\_profile\_rho} fixes each $\rho_j$ on a grid and re-maximises over all other parameters, producing a profile log-likelihood curve per regime: a flat profile means the data carry almost no information about $\rho_j$ beyond the normality assumption. Both diagnostics are combined in \fct{opsr\_test\_exclusion\_restriction}:
+Two dedicated diagnostics address this. \fct{opsr\_lr\_instrument} performs a likelihood-ratio test that drops specified instrument(s) from the selection equation, where a small LR statistic signals a weak instrument. \fct{opsr\_profile\_rho} fixes each $\rho_j$ on a grid and re-maximises over all other parameters, producing a profile log-likelihood curve per regime: a flat profile means the data carry almost no information about $\rho_j$ beyond the normality assumption. Both diagnostics are combined in \fct{opsr\_test\_exclusion\_restriction}:
 %
 <<exclusion-test-sim>>=
 test_sim <- opsr_test_exclusion_restriction(fit, instrument = "xs2",
@@ -443,7 +443,7 @@ test_sim <- opsr_test_exclusion_restriction(fit, instrument = "xs2",
 print(test_sim)
 @
 %
-Because the simulated data uses \code{xs2} as a genuine excluded instrument, the LR test is strongly significant and the profile is peaked, confirming that $\rho_j$ is well identified by the data. A plot of the profile can be produced with \code{plot(test\_sim\$profile\_rho)}. The contrast with the weak-instrument and no-exclusion conditions is shown in Section~\ref{sec:simulation}; a real-data application is in Section~\ref{sec:cs-identification}.
+Because the simulated data uses \code{xs2} as a genuine excluded instrument, the LR test is strongly significant and the profile is peaked, confirming that $\rho_j$ is well identified by the data. A plot of the profile can be produced with \code{plot(test\_sim\$profile\_rho)}. The contrast with the weak-instrument and no-exclusion conditions is shown in Section~\ref{sec:simulation}, and a real-data application is in Section~\ref{sec:cs-identification}.
 
 \subsection[Reproducing Wang and Mokhtarian (2024)]{Reproducing \citet{Wang+Mokhtarian:2024}} \label{sec:wang-replica}
 
@@ -495,7 +495,7 @@ where we demonstrate that
 \begin{enumerate}
 \item Default starting values as computed by the Heckman two-step procedure can be retrieved (\code{.get2step = TRUE}).
 \item \code{start} values can be overridden (we have hidden the \code{start} vector here for brevity). If the user wishes to pass start values manually, some minimal conventions have to be followed as documented in \code{?opsr_check_start}.
-\item Alternative maximization methods (here ``Nelder-Mead''; \code{method = "NM"}) can be used (as in the original paper).
+\item Alternative maximization methods (here ``Nelder-Mead'' via \code{method = "NM"}) can be used (as in the original paper).
 \end{enumerate}
 %
 <<hidden, echo=FALSE>>=
@@ -632,18 +632,26 @@ diag_sim <- simulation_study$diagnostics
 
 \subsection{Design}
 
-The data-generating process (DGP) mirrors \citet{Chiburis+Lokshin:2007}: two standard-normal regressors $x_1, x_2$; bivariate-normal errors with correlation $\rho = 0.5$ (except run~2); an ordered-probit selection rule with thresholds $\kappa = (-1, 1)$ yielding three regimes; and outcome $y = \beta x_1 + \varepsilon$ (true $\beta = 1$). Variable $x_2$ enters the selection equation with coefficient $\alpha_2 = 1$ and is excluded from the outcome equation --- the exclusion restriction. Six conditions are run with $R = 100$ replications at $N = 1000$ (the baseline also varies $N \in \{50, 100, 200, 300, 500\}$):
+The data-generating process (DGP) mirrors \citet{Chiburis+Lokshin:2007}. It comprises two standard-normal regressors $x_1, x_2$, bivariate-normal errors with correlation $\rho = 0.5$ (except run~2), an ordered-probit selection rule with thresholds $\kappa = (-1, 1)$ yielding three regimes, and outcome $y = \beta x_1 + \varepsilon$ (true $\beta = 1$). Variable $x_2$ enters the selection equation with coefficient $\alpha_2 = 1$ and is excluded from the outcome equation --- the exclusion restriction. Six conditions are run with $R = 1000$ replications at $N = 1000$ (the baseline also varies $N \in \{50, 100, 200, 300, 500\}$), summarised in Table~\ref{tab:sim-design}.
 
-\begin{enumerate}
-\item \textbf{Baseline}: textbook DGP, valid exclusion restriction, six sample sizes.
-\item \textbf{High $\rho = 0.99$}: severe selection bias.
-\item \textbf{Non-normal shocks}: squared standard-normal errors (mean-centred).
-\item \textbf{No exclusion restriction}: $x_2$ absent from the selection equation ($\alpha_2 = 0$) and the outcome equation; identification via functional form only.
-\item \textbf{Violated exclusion restriction}: $x_2$ in the selection equation ($\alpha_2 = 1$) but also enters the outcome directly ($\beta_{x_2} = 1$); instrument is invalid.
-\item \textbf{Weak instrument}: $x_2$ in the selection equation with $\alpha_2 = 0$ (no predictive power) but correctly excluded from outcomes.
-\end{enumerate}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}clp{0.68\textwidth}@{}}
+\toprule
+Run & Condition & Description \\
+\midrule
+1 & Baseline & textbook DGP, valid exclusion restriction, six sample sizes \\
+2 & High $\rho = 0.99$ & severe selection bias \\
+4 & Non-normal shocks & squared standard-normal errors (mean-centred) \\
+5 & No exclusion restriction & $x_2$ absent from the selection equation ($\alpha_2 = 0$) and the outcome equation, leaving identification via functional form only \\
+6 & Violated exclusion restriction & $x_2$ in the selection equation ($\alpha_2 = 1$) but also enters the outcome directly ($\beta_{x_2} = 1$), making the instrument invalid \\
+7 & Weak instrument & $x_2$ in the selection equation with $\alpha_2 = 0$ (no predictive power) but correctly excluded from outcomes \\
+\bottomrule
+\end{tabular}
+\caption{\label{tab:sim-design} Simulation conditions.}
+\end{table}
 
-Results are stored for both the FIML estimator (default \fct{opsr}) and the Heckman two-step (\fct{opsr\_2step}); run~3 is omitted from the paper (included in the stored object) to match the numbering of \citet{Chiburis+Lokshin:2007}.
+Results are stored for both the FIML estimator (default \fct{opsr}) and the Heckman two-step (\fct{opsr\_2step}). Run~3 is omitted from the paper (but included in the stored object) to match the numbering of \citet{Chiburis+Lokshin:2007}.
 
 \subsection{Parameter recovery}
 
@@ -667,7 +675,8 @@ make_row <- function(run_id) {
   vals <- vapply(seq_len(nrow(sub)), function(i) {
     sprintf("%.3f (%.0f\\%%)", sub$mean_beta[i], sub$coverage[i])
   }, character(1))
-  paste(c(run_labels[run_id], vals), collapse = " & ")
+  run_no <- sub("_.*", "", run_id)
+  paste(c(run_no, run_labels[run_id], vals), collapse = " & ")
 }
 
 data_rows <- paste0(sapply(levels(fiml$run), make_row), " \\\\")
@@ -675,22 +684,22 @@ data_rows <- paste0(sapply(levels(fiml$run), make_row), " \\\\")
 writeLines(c(
   "\\begin{table}[htbp]",
   "\\centering",
-  paste0("\\caption{\\label{tab:sim} FIML mean $\\hat{\\beta}$ and 95\\% CI ",
-         "coverage at $N = 1000$ across three regimes. True $\\beta = 1$.}"),
-  "\\begin{tabular}{lccc}",
+  "\\begin{tabular}{clccc}",
   "\\toprule",
-  "Condition & Regime~1 & Regime~2 & Regime~3 \\\\",
+  "Run & Condition & Regime~1 & Regime~2 & Regime~3 \\\\",
   "\\midrule",
   data_rows,
   "\\bottomrule",
   "\\end{tabular}",
+  paste0("\\caption{\\label{tab:sim} FIML mean $\\hat{\\beta}$ and 95\\% CI ",
+         "coverage at $N = 1000$ across three regimes. True $\\beta = 1$.}"),
   "\\end{table}"
 ))
 @
 %
 The baseline and high-$\rho$ conditions achieve near-nominal coverage for all three regimes with negligible bias, confirming that FIML performs well when a valid exclusion restriction is in place. Non-normal shocks (run~3 in the original paper) primarily hurt the exterior regimes (1 and 3), while the interior regime~2 remains close to nominal because the near-linearity of its Mills-ratio correction makes FIML approximately equivalent to a linear correction there.
 
-The identification conditions reveal sharply different failure modes. With no exclusion restriction or a weak instrument (runs~5 and~7), coverage collapses substantially for the interior regime~2 --- exactly the regime predicted by \citet{Chiburis+Lokshin:2007} to suffer most from functional-form-only identification. With a violated exclusion restriction (run~6), all estimates are tightly concentrated but far from the truth (coverage $\approx 0\%$ for all regimes): the model converges confidently to the wrong answer.
+The identification conditions reveal sharply different failure modes. With no exclusion restriction or a weak instrument (runs~5 and~7), coverage collapses substantially for the interior regime~2 --- exactly the regime predicted by \citet{Chiburis+Lokshin:2007} to suffer most from functional-form-only identification. Under these two conditions FIML also fails to converge in a non-negligible share of replications (about 25\% in run~5 and 7\% in run~7), and the reported summaries are based on the converged replications only. With a violated exclusion restriction (run~6), all estimates are tightly concentrated but far from the truth (coverage $\approx 0\%$ for all regimes): the model converges confidently to the wrong answer.
 
 \subsection{Diagnostic performance}
 
@@ -717,7 +726,9 @@ fmt_p <- function(p) {
 
 data_rows2 <- vapply(seq_len(nrow(diag_r2)), function(i) {
   run_id <- as.character(diag_r2$run[i])
-  sprintf("%s & %.0f & %.1f & %s \\\\",
+  run_no <- sub("_.*", "", run_id)
+  sprintf("%s & %s & %.0f & %.1f & %s \\\\",
+          run_no,
           run_labels2[run_id],
           diag_r2$cond_number[i],
           diag_r2$profile_range[i],
@@ -727,22 +738,22 @@ data_rows2 <- vapply(seq_len(nrow(diag_r2)), function(i) {
 writeLines(c(
   "\\begin{table}[htbp]",
   "\\centering",
-  paste0("\\caption{\\label{tab:sim-diag} Diagnostics for one representative ",
-         "dataset per condition ($N = 1000$). Profile range is the ",
-         "log-likelihood drop across the $\\rho$ grid for the interior ",
-         "regime~2; smaller values indicate a flatter (weaker) profile.}"),
-  "\\begin{tabular}{lccc}",
+  "\\begin{tabular}{clccc}",
   "\\toprule",
-  "Condition & Cond.~number & Profile range & LR $p$-value \\\\",
+  "Run & Condition & Cond.~number & Profile range & LR $p$-value \\\\",
   "\\midrule",
   data_rows2,
   "\\bottomrule",
   "\\end{tabular}",
+  paste0("\\caption{\\label{tab:sim-diag} Diagnostics for one representative ",
+         "dataset per condition ($N = 1000$). Profile range is the ",
+         "log-likelihood drop across the $\\rho$ grid for the interior ",
+         "regime~2, where smaller values indicate a flatter (weaker) profile.}"),
   "\\end{table}"
 ))
 @
 %
-The diagnostics correctly signal identification problems for runs~5 and~7: the condition number is an order of magnitude larger than the baseline ($> 900$ vs.\ $\sim 34$), the profile log-likelihood for regime~2 is near-flat (range $< 2$ LL units, compared to $> 90$ for the baseline), and the LR test is non-significant. For a valid but strong instrument (run~1) or high error correlation (run~2) these quantities show healthy values.
+The diagnostics correctly signal identification problems for runs~5 and~7: the condition number is more than an order of magnitude larger than the baseline ($1434$ and $649$ vs.\ $\sim 32$), the profile log-likelihood for regime~2 is near-flat (range $< 1$ LL unit, compared to $\sim 160$ for the baseline), and the LR test is either non-significant ($p = 0.97$ in run~7) or not applicable at all (in run~5 the instrument is absent from the DGP, leaving nothing to drop). For a valid but strong instrument (run~1) or high error correlation (run~2) these quantities show healthy values.
 
 Critically, the violated exclusion restriction (run~6) is \emph{not} flagged: the LR test is strongly significant, the profile is curved, and the condition number is similar to the baseline. The model estimates $\rho_j$ with apparent precision, but the estimates are wrong because the normality-driven correction has absorbed the misspecified direct effect of $x_2$ on the outcome. This is the key practical limitation: instrument validity requires subject-matter justification, not just a significant LR test. Practitioners should therefore apply \fct{opsr\_test\_exclusion\_restriction} as a \emph{necessary} check, while treating a clean result as evidence of instrument \emph{relevance}, not validity.
 
@@ -754,7 +765,7 @@ Now, that the reader is familiar with the main functionality of \pkg{OPSR}, this
 We first discuss the model building strategy to arrive at an appropriately specified OPSR model. The OPSR model is then compared to a model not accounting for error correlation and implications for treatment effects are shown. The case study concludes with a discussion on unit treatment effects investigating to what degree teleworking influence total travel demand across all modes.
 
 %% The data
-We use the TimeUse+ dataset \citep{Winkler+Meister+Axhausen:2024}, a smartphone-based diary, recording travel, time use, and expenditure data. Our analytical sample comprises employed individuals and is based on what \citet{Winkler+Axhausen:2024} identified as valid days. A valid day has at least 20 hours of information where 70\% of the events were validated by the user. Users who did not have at least 14 valid days were excluded. For the remaining 824 participants mobility indicators for a typical week were constructed. The telework status is based on tracked (and labelled) work activities and three regimes are differentiated: Non-teleworkers (NTWers), Non-usual teleworkers (NUTWers; $<$3 days/week) and Usual teleworkers (UTWers; 3$+$ days/week).
+We use the TimeUse+ dataset \citep{Winkler+Meister+Axhausen:2024}, a smartphone-based diary, recording travel, time use, and expenditure data. Our analytical sample comprises employed individuals and is based on what \citet{Winkler+Axhausen:2024} identified as valid days. A valid day has at least 20 hours of information where 70\% of the events were validated by the user. Users who did not have at least 14 valid days were excluded. For the remaining 824 participants mobility indicators for a typical week were constructed. The telework status is based on tracked (and labelled) work activities and three regimes are differentiated: Non-teleworkers (NTWers), Non-usual teleworkers (NUTWers, $<$3 days/week) and Usual teleworkers (UTWers, 3$+$ days/week).
 
 The data, underlying this analysis, is attached, documented (\code{?timeuse_data}) and can be loaded by
 %
@@ -788,74 +799,57 @@ plot.it()
 \end{figure}
 
 %% The model
-As discussed in Section~\ref{sec:identification}, the analyst must designate valid exclusion restrictions: variables that enter the selection equation but are excluded from all outcome equations. In our application, we use occupation type (ISCO-08 categories) and shift-work status as instruments --- these variables predict telework adoption (professional and managerial workers telework more; shift workers cannot) but are not expected to directly affect weekly travel distance after controlling for sociodemographic and residential variables. To simplify model specification, we first estimate the ordered probit model separately, using \fct{polr} from the \pkg{MASS} package \citep{Venables+Ripley:2002}. It should be noted here, that the resulting parameter estimates of the selection process are unbiased.
+As discussed in Section~\ref{sec:identification}, the analyst must designate valid exclusion restrictions: variables that enter the selection equation but are excluded from all outcome equations. In our application, we use task-based teleworkability shifters as instruments: shift-work status and occupation type (ISCO-08 categories). Shift workers have to be physically present at fixed times and therefore cannot telework, site-bound manual occupations (the ISCO-08 major groups 6--9, comprising craft, plant operation, elementary, and agricultural work) involve tasks that cannot be performed remotely, while clerical work is highly teleworkable. These variables determine the \emph{opportunity} to telework but --- conditional on workload, income, education, household structure, and workplace fixity --- have no direct channel to weekly distance traveled. The one credible threat to validity, namely that manual workers may travel to changing job sites, is blocked by retaining \code{fixed_workplace} in every outcome equation.
+
+Sparse instrument categories deserve special attention. Only four respondents work in elementary occupations and all of them are non-teleworkers, so entering \code{isco_elementary} as a separate regressor perfectly predicts the lowest regime (quasi-complete separation): its selection coefficient diverges to $-\infty$, the likelihood has no interior maximum, and the Hessian cannot be negative definite at the reported estimate (compare Section~\ref{sec:diagnostics}). We therefore group the site-bound manual occupations into a single indicator:
 %
-<<fit-polr>>=
-drop <- c("id", "weekly_km", "log_weekly_km", "commute_km", "log_commute_km",
-  "wfh_days")
-dat_polr <- subset(timeuse_data, select = !(names(timeuse_data) %in% drop))
-dat_polr$wfh <- factor(dat_polr$wfh)
-fit_polr <- MASS::polr(wfh ~ ., dat_polr, method = "probit")
+<<isco-manual>>=
+timeuse_data$isco_manual <- with(timeuse_data,
+  pmin(1, isco_craft + isco_elementary + isco_plant + isco_agri))
+table(timeuse_data$isco_manual, timeuse_data$wfh)
 @
 %
-The \fct{stepAIC} function chooses a selection model specification by AIC in a stepwise algorithm.
-%
-<<step>>=
-fit_step <- MASS::stepAIC(fit_polr, trace = FALSE)
-fit_step$anova
-@
-%
-A caveat is warranted here and for the significance-based outcome pruning that follows: automated variable selection can inadvertently create invalid exclusion restrictions. If a covariate is retained in the selection equation but pruned from all outcome equations, it silently becomes an instrument --- one whose validity must be verified by subject-matter reasoning. We validate the exclusion restriction explicitly in Section~\ref{sec:cs-identification}. Additionally, reported p-values for selected variables are optimistic due to post-selection bias.
+The full model is then specified according to two rules: the designated instruments (\code{shift_work}, \code{isco_manual}, \code{isco_tech} and \code{isco_clerical}) enter the selection equation only, while every other selection covariate also enters each outcome equation. Travel-specific variables (e.g., \code{car_access}, \code{parking_work}, \code{driverlicense}, or residential location) enter the outcome equations only, because vehicle accessibility and the residential context directly predict travel distance but are not expected to primarily determine telework status after conditioning on occupation type. The formula specification of the full model is hidden here for brevity.
 
-The resulting selection specification guides the choice of instruments: occupation type (ISCO-08) and shift-work status enter the selection equation as exclusion restrictions. Workers in craft, technical, and clerical occupations face different telework feasibility constraints that plausibly affect \emph{telework adoption} but have no direct effect on weekly travel distance after controlling for sociodemographic variables. The resulting selection process specification can then be passed to \fct{opsr}, along with separate process specifications for the outcome equations.
-
-We then follow a conventional (somewhat heuristic) model building strategy: specify the full identified model and then exclude all variables that do not produce significant estimates (at the 10\% level). The function \fct{opsr\_step} can help in this iterative process, as it excludes all coefficients from the model specification with $p$~values below some threshold (see \code{?opsr_step} for further details). The formula specification of the full model is hidden here for brevity; note that \code{car\_access} and \code{parking\_home} appear in the outcome equations (not in the selection equation) because vehicle accessibility directly predicts travel distance but is not expected to primarily determine telework status after conditioning on occupation type.
+Starting from the full model, we exclude variables that do not produce significant estimates (at the 10\% level). The function \fct{opsr\_step} can help in this iterative process, as it excludes all coefficients from the model specification with $p$~values below some threshold (see \code{?opsr_step} for further details). A caveat is warranted here: significance-based pruning can inadvertently create invalid exclusion restrictions. If a covariate is retained in the selection equation but pruned from all outcome equations, it silently becomes an instrument --- one whose validity must be verified by subject-matter reasoning. We therefore never remove a non-instrument selection covariate from all outcome equations: \code{educ_higher} and \code{hh_income}, in particular, are retained in every outcome equation despite individually insignificant estimates, since income and education plausibly affect travel directly and would be theoretically invalid instruments. Conversely, \code{isco_tech} is dropped altogether in the reduced model because of its weak first stage (it neither predicts selection nor belongs in the outcomes). Additionally, reported p-values for selected variables are optimistic due to post-selection bias.
 %
 <<hidden, echo=FALSE>>=
 f_full <- wfh | log_weekly_km ~
   age + educ_higher + hh_income + young_kids + workload + fixed_workplace +
-  shift_work + permanent_employed + isco_craft + isco_tech + isco_clerical +
-  isco_elementary + parking_home + freq_onl_order +
-  grocery_shopper |
-  sex_male + age + educ_higher + swiss + married + res_loc + dogs + hh_size +
-  young_kids + n_children + workload + fixed_workplace + permanent_employed +
-  driverlicense + car_access + parking_home + parking_work + rents_home +
-  freq_onl_order + vacation + grocery_shopper |
-  sex_male + age + educ_higher + swiss + married + res_loc + dogs + hh_size +
-  young_kids + n_children + workload + fixed_workplace + permanent_employed +
-  driverlicense + car_access + parking_home + parking_work + rents_home +
-  freq_onl_order + vacation + grocery_shopper |
-  sex_male + age + educ_higher + swiss + married + res_loc + dogs + hh_size +
-  young_kids + n_children + workload + fixed_workplace + permanent_employed +
-  driverlicense + car_access + parking_work + rents_home +
-  freq_onl_order + vacation + grocery_shopper
+  permanent_employed + shift_work + isco_manual + isco_tech + isco_clerical |
+  age + educ_higher + hh_income + young_kids + workload + fixed_workplace +
+  permanent_employed + sex_male + swiss + res_loc + hh_size + n_children +
+  driverlicense + car_access + parking_work + rents_home + vacation
 @
 %
 <<full-reduced>>=
 fit_full <- opsr(f_full, timeuse_data, printLevel = 0)
 f_red <- wfh | log_weekly_km ~
-  age + educ_higher + hh_income + young_kids + workload + fixed_workplace +
-  shift_work + permanent_employed + isco_craft + isco_tech + isco_clerical +
-  isco_elementary + parking_home + freq_onl_order +
-  grocery_shopper |
-  sex_male + res_loc + workload + permanent_employed + parking_work |
-  swiss + res_loc + young_kids + workload + parking_work |
-  sex_male + swiss + fixed_workplace + permanent_employed + parking_work
+  educ_higher + hh_income + young_kids + workload + fixed_workplace +
+  shift_work + isco_manual + isco_clerical |
+  educ_higher + hh_income + young_kids + workload + fixed_workplace +
+  permanent_employed + parking_work |
+  educ_higher + hh_income + young_kids + workload + fixed_workplace +
+  swiss + res_loc + parking_work |
+  educ_higher + hh_income + young_kids + workload + fixed_workplace +
+  permanent_employed + sex_male + swiss + parking_work
 
 fit_red <- opsr(f_red, timeuse_data, printLevel = 0)
+fit_red <- opsr(f_red, timeuse_data, start = coef(fit_red), method = "NR",
+  printLevel = 0)
 print(anova(fit_red, fit_full), print.formula = FALSE)
 summary(fit_red)
 @
 %
-The reduced model specification (\code{fit_red}) is not rejected in the likelihood ratio test. Further, the Wald-test of joint significance of the \code{rho} coefficients can be assessed from the summary output; rejection of the null (\code{rho1} = \code{rho2} = \code{rho3} = 0) indicates that the selection correction is beneficial given our model assumptions.
+The second call to \fct{opsr} polishes the BFGS solution with a Newton-Raphson step (starting from the BFGS estimate), which tightens the gradient at the reported maximum without changing the log-likelihood. The reduced model specification (\code{fit_red}) is not rejected in the likelihood ratio test. Further, the Wald-test of joint significance of the \code{rho} coefficients can be assessed from the summary output. Rejection of the null (\code{rho1} = \code{rho2} = \code{rho3} = 0) indicates that the selection correction is beneficial given our model assumptions. The estimates suggest positive selection on unobservables into the boundary regimes (\code{rho1} $= \Sexpr{round(coef(fit_red)["rho1"], 2)}$, \code{rho3} $= \Sexpr{round(coef(fit_red)["rho3"], 2)}$): unobserved factors that make telework more likely are associated with longer weekly distances among NTWers and UTWers.
 
 %% Exclusion restriction validation
 \subsection{Exclusion restriction and identification} \label{sec:cs-identification}
 
-Before interpreting treatment effects, we validate the exclusion restriction of the fitted model. The instruments are the occupation and shift-work variables that appear in the selection equation but not in the outcome equations. We test their joint relevance with \fct{opsr\_test\_exclusion\_restriction} and inspect the per-regime profile likelihood for $\rho_j$:
+Before interpreting treatment effects, we validate the exclusion restriction of the fitted model. The instruments are the shift-work and occupation-teleworkability variables that appear in the selection equation but not in the outcome equations. We test their joint relevance with \fct{opsr\_test\_exclusion\_restriction} and inspect the per-regime profile likelihood for $\rho_j$:
 %
 <<exclusion-test-cs>>=
-instruments_cs <- c("shift_work", "isco_craft", "isco_tech", "isco_clerical")
+instruments_cs <- c("shift_work", "isco_manual", "isco_clerical")
 test_cs <- opsr_test_exclusion_restriction(fit_red,
   instrument = instruments_cs,
   grid = seq(-0.99, 0.99, length.out = 7), printLevel = 0)
@@ -870,7 +864,7 @@ The LR test is strongly significant (the instruments jointly improve the selecti
 <<profile-cs, echo=TRUE, fig=TRUE, height=3, width=9>>=
 plot(test_cs$profile_rho)
 @
-\caption{\label{fig:profile} Profile log-likelihood for $\rho_j$ per regime. Each panel fixes $\rho_j$ at the grid value and re-maximises over all other parameters. Peaked profiles indicate that $\rho_j$ is identified by the data.}
+\caption{\label{fig:profile} Profile log-likelihood for $\rho_j$ per regime. Each panel fixes $\rho_j$ at the grid value and re-maximises over all other parameters. Peaked profiles indicate that $\rho_j$ is identified by the data. Near-boundary grid values ($\rho_j$ close to $\pm 1$) can fail to converge and are omitted, which is why some panels appear truncated before the grid limits.}
 \end{figure}
 %
 Peaked profiles for all three regimes confirm that the error correlations are empirically identified, not merely pinned by the bivariate normality assumption. This stands in contrast to the flat profiles produced when no exclusion restriction is present (Section~\ref{sec:simulation}). The condition number from \fct{opsr\_diagnostics} provides a secondary confirmation:
@@ -901,7 +895,7 @@ te(fit_red)
 te.fr <- unclass(te(fit_red))
 @
 %
-The following treatment effects are derived from the correctly identified model (\code{fit\_red}) whose exclusion restriction was validated in Section~\ref{sec:cs-identification}. Telework reduces weekly kilometers traveled across all groups, with the exception of NTWers who would be more mobile when switching from NTWing to NUTWing (\Sexpr{round(te.fr[1, 1], 2)} km; column \code{NTWer}, row \code{NTWing -> NUTWing}) and UTWers who would travel more when further adopting telework from NUTWing (\Sexpr{round(te.fr[3, 3], 2)} km). The treatment effects when switching from NTWing to NUTWing are strongest for UTWers (\Sexpr{round(te.fr[1, 3], 2)} km) compared to NTWers (\Sexpr{round(te.fr[1, 1], 2)} km) and NUTWers (\Sexpr{round(te.fr[1, 2], 2)} km). Treatment effects for NTWing to UTWing are similar across all three groups, slightly stronger for NTWers (\Sexpr{round(te.fr[2, 1], 2)} km). Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (\Sexpr{round(te.fr[1, 1], 2)} km; NTWing to NUTWing) but then substantially decreasing weekly kilometers with more telework (\Sexpr{round(te.fr[3, 1], 2)} km; NUTWing to UTWing). An explanation could be, that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show exactly an inverse pattern, first (NTWing to NUTWing) strongly reducing weekly kilometers (\Sexpr{round(te.fr[1, 3], 2)} km) but upon further telework adoption (NUTWing to UTWing) only minimally adjusting weekly kilometers (\Sexpr{round(te.fr[3, 3], 2)} km). A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices. One can therefore conclude, that the treatment effect over the full range (NTWing to UTWing) is similar across all groups but the main travel reduction happens at different treatment intensities. Figure~\ref{fig:treatment} visualizes these treatment effects and shows the linear pattern for NUTWers and the (mirrored) hockey stick pattern for NTWers and UTWers.
+The following treatment effects are derived from the correctly identified model (\code{fit\_red}) whose exclusion restriction was validated in Section~\ref{sec:cs-identification}. Telework reduces weekly kilometers traveled across all groups, with the exception of NTWers who would be more mobile when switching from NTWing to NUTWing (\Sexpr{round(te.fr[1, 1], 2)} km --- column \code{NTWer}, row \code{NTWing -> NUTWing}) and UTWers who would travel slightly more when further adopting telework from NUTWing (\Sexpr{round(te.fr[3, 3], 2)} km). The treatment effects when switching from NTWing to NUTWing are strongest for UTWers (\Sexpr{round(te.fr[1, 3], 2)} km) compared to NTWers (\Sexpr{round(te.fr[1, 1], 2)} km) and NUTWers (\Sexpr{round(te.fr[1, 2], 2)} km). The treatment effect over the full range (NTWing to UTWing) increases in magnitude with the factual telework intensity of the group: \Sexpr{round(te.fr[2, 1], 2)} km for NTWers, \Sexpr{round(te.fr[2, 2], 2)} km for NUTWers and \Sexpr{round(te.fr[2, 3], 2)} km for UTWers. This ordering is exactly what self-selection on unobservables (the positive \code{rho1} and \code{rho3} estimates) implies: the individuals who stand to reduce their travel the most by teleworking are also the ones who telework the most. Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (\Sexpr{round(te.fr[1, 1], 2)} km, NTWing to NUTWing) but then substantially decreasing weekly kilometers with more telework (\Sexpr{round(te.fr[3, 1], 2)} km, NUTWing to UTWing). An explanation could be, that these individuals (living closer to their workplace) do initially not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show exactly an inverse pattern, first (NTWing to NUTWing) strongly reducing weekly kilometers (\Sexpr{round(te.fr[1, 3], 2)} km) but upon further telework adoption (NUTWing to UTWing) only minimally adjusting weekly kilometers (\Sexpr{round(te.fr[3, 3], 2)} km). A similar argument could be made, that these individuals (living further from their workplace) already from the start adjust activity chains and location choices. One can therefore conclude, that the main travel reduction happens at different treatment intensities for the different groups. Figure~\ref{fig:treatment} visualizes these treatment effects and shows the roughly linear pattern for NUTWers and the (mirrored) hockey stick pattern for NTWers and UTWers.
 
 \setkeys{Gin}{width=0.8\textwidth}
 \begin{figure}[t!]
@@ -948,8 +942,8 @@ plot(fit_red, type = "unlog-response", col = c(1, 3, 4),
 \hline
 Model & Parent & \centering Error \\ correlation & Description \\
 \hline
-\code{fit_full} & & $\bullet$ & Full identified model, including all variables as linear effects \\
-\code{fit_red} & \code{fit_full} & $\bullet$ & Excluding all variables not significant at the 10\% level \\
+\code{fit_full} & & $\bullet$ & Full identified model: instruments in the selection equation only, all other selection covariates in every outcome equation \\
+\code{fit_red} & \code{fit_full} & $\bullet$ & Excluding variables not significant at the 10\% level, while retaining the shared selection covariates in all outcome equations \\
 \code{fit_nocor} & \code{fit_red} & $\circ$ & Fixing the \code{rho} coefficients at 0 \\
 \hline
 \end{tabular}
@@ -973,7 +967,7 @@ te(fit_red)
 te(fit_nocor)
 @
 %
-As we see, \code{fit_nocor} yields completely different insights, in particular, that telework generally increases weekly distance traveled, consistent with previous cross-sectional studies that did not account for self-selection bias \citep[for studies indicating that telework increases travel demand, see][]{Zhu+Mason:2014,He+Hu:2015,Kim+Etal:2015}.
+As we see, \code{fit_nocor} yields completely different insights, in particular, that adopting telework increases weekly distance traveled for all groups (only the switch from NUTWing to UTWing shows a small reduction), consistent with previous cross-sectional studies that did not account for self-selection bias \citep[for studies indicating that telework increases travel demand, see][]{Zhu+Mason:2014,He+Hu:2015,Kim+Etal:2015}. The sign reversal relative to \code{fit_red} is a direct consequence of the positive error correlations: ignoring them attributes the longer distances of the (self-selected) teleworkers to the treatment itself.
 
 Lastly (using \code{fit_red}), we compute unit treatment effects and compare them to the average two-way commute distance for each group. The unit treatment effect is calculated by dividing the total treatment effect by the corresponding average teleworking frequency difference (\code{twdiff1} to \code{twdiff3} below). I.e., the treatment effect is standardized and therefore also comparable for different regime switching (e.g., NTWing to NUTWing vs. NUTWing to UTWing).
 %
@@ -991,14 +985,15 @@ twdiff1 <- top[i, "NUTWers"] - top[i, "NTWers"]
 twdiff2 <- top[i, "UTWers"] - top[i, "NTWers"]
 twdiff3 <- top[i, "UTWers"] - top[i, "NUTWers"]
 
-twdiff <- matrix(c(rep(twdiff1, 3), rep(twdiff2, 3), rep(twdiff3, 3)), nrow = 3)
+twdiff <- matrix(c(rep(twdiff1, 3), rep(twdiff2, 3), rep(twdiff3, 3)),
+  nrow = 3, byrow = TRUE)
 bottom <- te(fit_red) / twdiff
 
 ute <- rbind(top, bottom)
 ute
 @
 %
-Generally, telework reduces weekly distance traveled by less than the foregone commute distance, which indicates, that a rebound effect (compensating leisure travel) exists. For example, the NUTWers could save 43.33 km in commute travel but only reduce \Sexpr{round(bottom[1, 2], 2)} km per marginal teleworking day when switching from NTWing to NUTWing. This compensating travel exists for all TW groups except the NTWers (NTWing to UTWing and NUTWing to UTWing), where we observe diminished travel activity beyond foregone commutes. The insights from the previous discussion on treatment effects carry over: Adjustments in weekly distance traveled are very different both across the three teleworker groups but also across the regime switching.
+Over the full switching range (NTWing to UTWing), telework reduces weekly distance traveled by less than the foregone commute distance for all three groups (\Sexpr{round(abs(bottom[2, 1]), 2)} vs. \Sexpr{round(top[2, 1], 2)} km for NTWers, \Sexpr{round(abs(bottom[2, 2]), 2)} vs. \Sexpr{round(top[2, 2], 2)} km for NUTWers and \Sexpr{round(abs(bottom[2, 3]), 2)} vs. \Sexpr{round(top[2, 3], 2)} km for UTWers), which indicates, that a rebound effect (compensating leisure travel) exists. Individual switching margins deviate from this pattern, however. The NUTWers reduce travel roughly one-for-one with the foregone commute when initially adopting telework (\Sexpr{round(abs(bottom[1, 2]), 2)} vs. \Sexpr{round(top[2, 2], 2)} km). The NTWers (NUTWing to UTWing, \Sexpr{round(abs(bottom[3, 1]), 2)} km) and especially the UTWers (NTWing to NUTWing, \Sexpr{round(abs(bottom[1, 3]), 2)} km) reduce travel beyond their foregone commutes, consistent with the restructuring of activity chains and location choices discussed above. The insights from the previous discussion on treatment effects carry over: Adjustments in weekly distance traveled are very different both across the three teleworker groups but also across the regime switching.
 
 %% -- Summary/conclusions/discussion -------------------------------------------
 
@@ -1008,9 +1003,9 @@ In a real-world setting, the treatment is usually not exogenously prescribed but
 
 The package provides two layers of model-quality diagnostics. \fct{opsr\_diagnostics} inspects the second-order optimality conditions at the MLE (gradient magnitude, Hessian negative-definiteness, condition number), addressing whether the optimizer found a well-defined maximum. \fct{opsr\_test\_exclusion\_restriction} goes further by testing instrument relevance via a likelihood-ratio test and examining whether $\rho_j$ is empirically identified beyond distributional assumptions via the profile log-likelihood. Together these diagnostics make identification failure modes~---~absent instruments, weak instruments~---~visible before treatment effects are computed. The key limitation, shared with all Heckman-type models, is that an \emph{invalid} exclusion restriction (instrument that belongs in the outcome equation) cannot be detected from within the model and requires substantive judgment.
 
-A Monte Carlo study replicating \citet{Chiburis+Lokshin:2007} for the three-regime case confirms: FIML achieves near-nominal coverage when a valid instrument is in place; coverage collapses (especially for interior regimes) when identification relies on functional form alone; and a violated exclusion restriction produces confident but catastrophically wrong estimates with 0\% coverage. The simulation results are stored as the package data object \code{simulation\_study} and can be used as a benchmark for future extensions.
+A Monte Carlo study replicating \citet{Chiburis+Lokshin:2007} for the three-regime case confirms three findings. FIML achieves near-nominal coverage when a valid instrument is in place. Coverage collapses (especially for interior regimes) when identification relies on functional form alone. A violated exclusion restriction produces confident but catastrophically wrong estimates with 0\% coverage. The simulation results are stored as the package data object \code{simulation\_study} and can be used as a benchmark for future extensions.
 
-In the case study, the OPSR method is applied to a tracking and activity diary dataset collected in Switzerland, investigating the telework treatment effects on weekly distance traveled across all modes. We demonstrate, first, how to specify an appropriately identified model (using occupation-type and shift-work variables as exclusion restrictions), how to validate the exclusion restriction using the diagnostic tools, and second, in how far computed treatment effects differ if the error correlation is not accounted for. We find that, overall, telework reduces travel. Non-teleworkers tend to have shorter commutes and adjust mobility patterns mainly when switching from non-usual telework to usual telework. On the other hand, weekly distance traveled slightly increases when initially adopting some telework. Contrary, usual teleworkers (had they not been teleworking) adjust mobility patterns strongly when adopting some telework but then only marginally adjust distance traveled when further adopting telework. Comparing the unit treatment effects to the two-way commute distance indicates that telework generally reduces weekly distance traveled and it does so by less than the foregone commute. Therefore, some compensating travel (rebound effects) exists for most of the teleworker groups.
+In the case study, the OPSR method is applied to a tracking and activity diary dataset collected in Switzerland, investigating the telework treatment effects on weekly distance traveled across all modes. We demonstrate, first, how to specify an appropriately identified model (using shift-work status and grouped occupation-teleworkability indicators as exclusion restrictions, where grouping the sparse site-bound occupation categories avoids a quasi-complete separation that would otherwise leave the likelihood without an interior maximum), how to validate the exclusion restriction using the diagnostic tools, and second, in how far computed treatment effects differ if the error correlation is not accounted for. We find that, overall, telework reduces travel and that the reduction over the full switching range grows with the factual telework intensity of a group --- the pattern implied by positive selection on unobservables. Non-teleworkers tend to have shorter commutes and adjust mobility patterns mainly when switching from non-usual telework to usual telework; their weekly distance traveled even increases when initially adopting some telework. Contrary, usual teleworkers (had they not been teleworking) adjust mobility patterns strongly when adopting some telework but then only marginally adjust distance traveled when further adopting telework. Comparing the unit treatment effects to the two-way commute distance indicates that, over the full switching range, telework reduces weekly distance traveled by less than the foregone commute, so some compensating travel (rebound effects) exists; only for the sharpest adjustments (usual teleworkers initially adopting telework, and non-teleworkers moving from non-usual to usual telework) does the reduction exceed the foregone commute.
 
 
 %% -- Optional special unnumbered sections -------------------------------------

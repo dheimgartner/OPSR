@@ -177,7 +177,7 @@ run_mc <- function(run, n_vals, R, formula, sel_vars,
 ## =========================================================
 ## 5.  MC conditions
 ## =========================================================
-R      <- 100
+R      <- 1000
 FORM1  <- ys | yo ~ xs1 + xs2 | xs1
 FORM5  <- ys | yo ~ xs1       | xs1
 SEL12  <- c("xs1", "xs2")
