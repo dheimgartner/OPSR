@@ -12,10 +12,10 @@ print.opsr.exclusion.test <- function(x, ...) {
   cat("Exclusion restriction diagnostics\n")
   cat("Instrument(s):", paste(x$instrument, collapse = ", "), "\n\n")
 
-  cat("--- 1. LR test: instrument in selection equation ---\n")
+  cat("1. LR test: instrument in selection equation\n")
   print(x$lr_test, ...)
 
-  cat("\n--- 2. Profile likelihood for rho ---\n")
+  cat("\n2. Profile likelihood for rho\n")
   print(x$profile_rho, ...)
 
   invisible(x)
