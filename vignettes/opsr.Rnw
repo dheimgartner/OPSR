@@ -407,7 +407,7 @@ p1 <- predict(fit, group = 1, type = "response")
 p2 <- predict(fit, group = 1, counterfact = 2, type = "response")
 @
 %
-where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p2} is the counterfactual outcome resulting from Equation~\ref{eq:counterfact-exp}. The following \code{type} arguments are available
+where \code{p1} is the result of applying Equation~\ref{eq:cond-exp} and \code{p2} is the counterfactual outcome resulting from Equation~\ref{eq:counterfact-exp}. The following \code{type} arguments are available:
 \begin{itemize}
 \item \code{type = "response"}: Predicts the continuous outcome according to the Equations referenced above.
 \item \code{type = "unlog-response"}: Predicts the back-transformed response according to Equations~\ref{eq:log-cond-exp}-\ref{eq:log-counterfact-exp} if the continuous outcome was log-transformed (either in the \code{formula} or during data pre-processing). The smoothing constant used during the continuity correction (i.e., the $\delta$ in $y_j = \ln(Y_j + \delta)$) can be specified via the \code{delta} argument and defaults to 1.
@@ -430,7 +430,7 @@ Last, there is a \fct{plot} method for model fits of class \class{opsr}. The met
 
 \subsection[Convergence diagnostics and identification tests]{Convergence diagnostics and identification tests} \label{sec:diagnostics}
 
-The second-order optimality conditions at the MLE estimate can be inspected with \fct{opsr\_diagnostics}:
+The second-order optimality conditions at the MLE estimate can be inspected with \fct{opsr\_diagnostics}
 %
 <<diagnostics>>=
 opsr_diagnostics(fit)
@@ -440,7 +440,7 @@ The output reports (i) the maximum absolute gradient element (\code{max\_abs\_gr
 
 These second-order conditions are \emph{necessary but not sufficient} to confirm empirical identification. A model with a weak or absent exclusion restriction can produce a gradient close to zero and a negative-definite Hessian while $\rho_j$ is essentially unidentified: the log-likelihood surface is flat in the $\rho_j$ direction, not ill-shaped. The condition number provides a soft signal, but cannot alone distinguish identification failure from benign covariate collinearity.
 
-Two dedicated diagnostics address this. \fct{opsr\_lr\_instrument} performs a likelihood-ratio test that drops specified instrument(s) from the selection equation, where a small LR statistic signals a weak instrument. \fct{opsr\_profile\_rho} fixes each $\rho_j$ on a grid and re-maximises over all other parameters, producing a profile log-likelihood curve per regime: a flat profile means the data carry almost no information about $\rho_j$ beyond the normality assumption. Both diagnostics are combined in \fct{opsr\_test\_exclusion\_restriction}:
+Two dedicated diagnostics address this. \fct{opsr\_lr\_instrument} performs a likelihood-ratio test that drops specified instrument(s) from the selection equation, where a small LR statistic signals a weak instrument. \fct{opsr\_profile\_rho} fixes each $\rho_j$ on a grid and re-maximises over all other parameters, producing a profile log-likelihood curve per regime: a flat profile means the data carry almost no information about $\rho_j$ beyond the normality assumption. Both diagnostics are combined in \fct{opsr\_test\_exclusion\_restriction}
 %
 <<exclusion-test-sim>>=
 test_sim <- opsr_test_exclusion_restriction(fit, instrument = "xs2",
@@ -496,7 +496,7 @@ fit <- opsr(f, telework_data, start = start, method = "NM", iterlim = 50e3,
   printLevel = 0)
 @
 %
-where we demonstrate that
+where we demonstrate that:
 \begin{enumerate}
 \item Default starting values as computed by the Heckman two-step procedure can be retrieved (\code{.get2step = TRUE}).
 \item \code{start} values can be overridden (we have hidden the \code{start} vector here for brevity). If the user wishes to pass start values manually, some minimal conventions have to be followed as documented in \code{?opsr_check_start}.
@@ -566,7 +566,7 @@ texreg::texreg(
 )
 @
 %
-Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are forwarded to a \proglang{S4} method \fct{extract} which extracts the variables of interest from a model fit (see also \code{?extract.opsr}). We demonstrate here that
+Dot arguments (\code{...}) passed to \fct{texreg} (or similar functions) are forwarded to a \proglang{S4} method \fct{extract} which extracts the variables of interest from a model fit (see also \code{?extract.opsr}). We demonstrate here that:
 \begin{enumerate}
 \item The model components can be printed side-by-side (\code{beside = TRUE}).
 \item Additional goodness-of-fit indicators can be included (\code{include.R2 = TRUE} and \code{include.pseudoR2 = TRUE}).
@@ -589,7 +589,7 @@ where all ATEs are negative. Only \code{G3} (the current UTWers) would increase 
 %% -- Simulation study ---------------------------------------------------------
 \section{Simulation study} \label{sec:simulation}
 
-To benchmark estimator performance and illustrate how the identification diagnostics behave under known conditions, we replicate and extend the Monte Carlo study of \citet{Chiburis+Lokshin:2007} for the three-regime OPSR case. Pre-computed results are available as the package data object \code{simulation\_study}:
+To benchmark estimator performance and illustrate how the identification diagnostics behave under known conditions, we replicate and extend the Monte Carlo study of \citet{Chiburis+Lokshin:2007} for the three-regime OPSR case. Pre-computed results are available as the package data object \code{simulation\_study}
 %
 <<sim-load>>=
 data("simulation_study", package = "OPSR")
@@ -771,7 +771,7 @@ plot.it()
 %% The model
 As discussed in Section~\ref{sec:identification}, the analyst must designate valid exclusion restrictions: variables that enter the selection equation but are excluded from all outcome equations. In our application, we use task-based teleworkability shifters as instruments: shift-work status and occupation type (ISCO-08 categories). Shift workers have to be physically present at fixed times and therefore cannot telework, site-bound manual occupations (the ISCO-08 major groups 6--9, comprising craft, plant operation, elementary, and agricultural work) involve tasks that cannot be performed remotely, while clerical work is highly teleworkable. These variables determine the \emph{opportunity} to telework but --- conditional on workload, income, education, household structure, and workplace fixity --- have no direct channel to weekly distance traveled. The one credible threat to validity, namely that manual workers may travel to changing job sites, is blocked by retaining \code{fixed_workplace} in every outcome equation.
 
-Sparse instrument categories deserve special attention. Only four respondents work in elementary occupations and all of them are non-teleworkers, so entering \code{isco_elementary} as a separate regressor perfectly predicts the lowest regime (quasi-complete separation): its selection coefficient diverges to $-\infty$, the likelihood has no interior maximum, and the Hessian cannot be negative definite at the reported estimate (compare Section~\ref{sec:diagnostics}). We therefore group the site-bound manual occupations into a single indicator:
+Sparse instrument categories deserve special attention. Only four respondents work in elementary occupations and all of them are non-teleworkers, so entering \code{isco_elementary} as a separate regressor perfectly predicts the lowest regime (quasi-complete separation): its selection coefficient diverges to $-\infty$, the likelihood has no interior maximum, and the Hessian cannot be negative definite at the reported estimate (compare Section~\ref{sec:diagnostics}). We therefore group the site-bound manual occupations into a single indicator
 %
 <<isco-manual>>=
 timeuse_data$isco_manual <- with(timeuse_data,
