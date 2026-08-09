@@ -17,17 +17,14 @@ print.opsr.diagnostics <- function(x, digits = max(3L, getOption("digits") - 3L)
                                    print.gradient = FALSE,
                                    print.eigenvalues = FALSE,
                                    .print.title = TRUE, ...) {
-  flag <- function(ok) if (ok) "[OK]" else "[WARNING]"
-
-  grad_ok <- x$max_abs_gradient < 1e-3
   if (.print.title) {
     cat("Convergence diagnostics\n\n")
   }
   cat("Max. absolute gradient: ",
       format(x$max_abs_gradient, digits = digits, scientific = TRUE),
-      " ", flag(grad_ok), "\n", sep = "")
+      "\n", sep = "")
   cat("Hessian negative definite: ", x$hessian_neg_def,
-      " ", flag(x$hessian_neg_def), "\n", sep = "")
+      "\n", sep = "")
   cat("Condition number (Hessian):",
       format(x$condition_number, digits = digits), "\n")
 

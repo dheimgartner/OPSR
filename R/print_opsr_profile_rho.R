@@ -23,7 +23,7 @@ print.opsr.profile.rho <- function(x, digits = max(3L, getOption("digits") - 3L)
                 format(rho_hat[j], digits = digits)))
 
     if (all(is.na(sub$profile_loglik))) {
-      cat("  [WARNING] All profile evaluations failed -- no profile available\n")
+      cat("  All profile evaluations failed -- no profile available\n")
       next
     }
 
@@ -36,7 +36,7 @@ print.opsr.profile.rho <- function(x, digits = max(3L, getOption("digits") - 3L)
                 format(drop, digits = digits)))
 
     if (diff(ll_range) < flat_tol) {
-      cat("  [WARNING] Flat profile -- rho may be poorly identified\n")
+      cat("  Flat profile -- rho may be poorly identified\n")
     }
   }
 

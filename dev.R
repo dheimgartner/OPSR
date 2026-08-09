@@ -1207,3 +1207,29 @@ opsr_profile_rho(fit, grid = seq(-0.99, 0.99, length.out = 11))
 devtools::load_all()
 
 OPSR::simulation_study
+
+
+
+
+## Identification tests
+devtools::load_all()
+
+sim_dat <- opsr_simulate()
+dat <- sim_dat$data
+
+model <- ys | yo ~ xs1 + xs2 | xo1 + xo2
+fit <- opsr(model, dat)
+
+opsr_lr_instrument(fit, instrument = c("xs1", "xs2"))
+profile_rho <- opsr_profile_rho(fit, grid = seq(-0.99, 0.99, length.out = 7))
+print(profile_rho)
+plot(profile_rho)
+
+test_sim <- opsr_test_exclusion_restriction(
+  fit,
+  instrument = c("xs1", "xs2"),
+  grid = seq(-0.99, 0.99, length.out = 7)
+)
+class(test_sim)
+debugonce(print)
+print(test_sim)
