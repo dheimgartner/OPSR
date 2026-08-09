@@ -127,9 +127,9 @@ OPSR is available as a \proglang{Stata} command, \code{oheckman} \citep{Chiburis
 
 \pkg{OPSR} is tailored to one particular method, easy to use (understand, extend and maintain), fast and memory efficient. Unlike the implementations mentioned, this approach accommodates log-transformed continuous outcomes. Log transformation is a widely used technique in real-world applications to enhance data normality and meet model assumptions. In multi-layer models like OPSR, special consideration is required for computing conditional expectations on the original scale (i.e., back-transform from the log scale) to ensure meaningful real-world interpretations. \pkg{OPSR} follows \proglang{R}'s implicit modeling conventions (by providing a formula interface to a fitter function and by extending the established generics such as \fct{summary}, \fct{predict}, \fct{update}, \fct{anova}, \fct{plot} among others) and produces production-grade output tables. Meanwhile, it is easy to compute and visualize treatment effects. This work generalizes the learnings from \cite{Wang+Mokhtarian:2024} and makes the OPSR methodology readily available. The mathematical notation presented here translates to code almost verbatim which hopefully serves a pedagogical purpose for the curious reader.
 
-The accommodation of log-transformed outcomes in addition to distinct specifications for the continuous outcome processes makes \pkg{OPSR} more powerful than \proglang{Stata}'s \code{oheckman} command. Compared to \pkg{switchSelection}, \pkg{OPSR} is tailored to one form of switching selection and supports the extended \pkg{Formula} syntax. Its methods provide more detailed insights for this particular model (inspired by \code{oheckman}) and provide tailored post-estimation routines such as the computation and visualization of factual estimates under the observed treatment status, counterfactual estimates under hypothetical treatment status and treatment effects. We therefore believe that \pkg{OPSR} is the most powerful and easiest to use implementation if modelers specifically wish to account for selection bias and calculate treatment effects for interventions with an ordinal nature.
+The accommodation of log-transformed outcomes in addition to distinct specifications for the continuous outcome processes makes \pkg{OPSR} more powerful than \proglang{Stata}'s \code{oheckman} command. Compared to \pkg{switchSelection}, \pkg{OPSR} is tailored to one form of switching selection and supports the extended \pkg{Formula} syntax. Its methods provide more detailed insights for this particular model (inspired by \code{oheckman}) and provide tailored post-estimation routines such as the computation and visualization of factual estimates under the observed treatment status, counterfactual estimates under hypothetical treatment status and treatment effects. Further, tools to diagnose convergence and identification tests are implemented, helping the modeler to assess optimality conditions as well as exclusion restrictions. We therefore believe that \pkg{OPSR} is the most powerful and easiest to use implementation if modelers specifically wish to account for selection bias and calculate treatment effects for interventions with an ordinal nature.
 
-The remainder of this paper is organized as follows: Section~\ref{sec:model} outlines the ordered probit switching regression model, lists all the key formulas underlying the software implementation, discusses identification, and details \pkg{OPSR}'s architecture. In Section~\ref{sec:illustrations} the key functionality is demonstrated both on simulated data and the data from \cite{Wang+Mokhtarian:2024} which we use to reproduce their core model. Further, it is shown that \pkg{OPSR} can be used to estimate the well-known Tobit-5 model and yields the same parameters as the implementation in \pkg{sampleSelection}. Section~\ref{sec:simulation} presents a simulation study replicating \citet{Chiburis+Lokshin:2007} for the three-regime switching case, comparing FIML and the Heckman two-step under baseline conditions and several identification failure modes. The case study in Section~\ref{sec:case-study} leverages tracking data from the TimeUse+ study \citep{Winkler+Meister+Axhausen:2024} investigating telework treatment effects on weekly distance traveled. There, we also compare the OPSR model to a model not accounting for error correlation and discuss the implications for treatment effects. The summary in Section~\ref{sec:summary} concludes.
+The remainder of this paper is organized as follows: Section~\ref{sec:model} outlines the ordered probit switching regression model, lists all the key formulas underlying the software implementation, discusses identification, and details \pkg{OPSR}'s architecture. In Section~\ref{sec:illustrations} the key functionality is demonstrated both on simulated data and the data from \cite{Wang+Mokhtarian:2024} which we use to reproduce their core model. Section~\ref{sec:simulation} presents a simulation study replicating \citet{Chiburis+Lokshin:2007} for the three-regime switching case, comparing estimates and diagnostics performance under baseline conditions and several identification failure modes. The case study in Section~\ref{sec:case-study} leverages tracking data from the TimeUse+ study \citep{Winkler+Meister+Axhausen:2024} investigating telework treatment effects on weekly distance traveled. There, we also compare the OPSR model to a model not accounting for error correlation and discuss the implications for treatment effects. The summary in Section~\ref{sec:summary} concludes.
 
 
 %% -- Manuscript ---------------------------------------------------------------
@@ -146,6 +146,10 @@ The remainder of this paper is organized as follows: Section~\ref{sec:model} out
 \section{Model and software} \label{sec:model}
 
 In the following, we outline the ordered probit switching regression model as well as list all the key formulas underlying the software implementation. \pkg{OPSR} follows the \proglang{R}-typical formula interface to a workhorse fitter function. Its architecture is detailed after the mathematical part.
+
+\subsection{The OPSR model} \label{sec:opsr-model}
+
+\subsubsection{Likelihood and conditional expectation} \label{sec:likelihood}
 
 As alluded to above, OPSR contains two layers: one process governs the ordinal outcome and separate processes (for each ordinal outcome) govern the continuous outcomes. The ordinal outcome can also be thought of as a regime or treatment. In the subsequent exposition, we will refer to the two processes as \emph{selection} and \emph{outcome} process.
 
@@ -283,20 +287,20 @@ for the factual case, and
 %
 for the counterfactual case \citep{Wang+Mokhtarian:2024}.
 
-\subsection{Identification} \label{sec:identification}
+\subsubsection{Identification} \label{sec:identification}
 
 The identification of $\rho_j$ is a critical practical concern. From Equation~\ref{eq:cond-exp} we see that if the inverse Mills ratio term is collinear with $\boldsymbol{X_j}$, the outcome regression cannot separately identify $\boldsymbol{\beta_j}$ and $\rho_j\sigma_j$. This collinearity arises whenever $\boldsymbol{W}$ and all $\boldsymbol{X_j}$ share exactly the same variables: the correction term becomes a near-linear function of $\boldsymbol{X_j\beta_j}$, so $\rho_j$ is identified only through the curvature of $\Phi(\cdot)$ --- a distributional assumption rather than genuine variation in the data \citep{Chiburis+Lokshin:2007}. This motivates the standard requirement that at least one variable in $\boldsymbol{W}$ must be excluded from all $\boldsymbol{X_j}$: the \emph{exclusion restriction} or \emph{instrument}.
 
 The severity of functional-form-only identification depends on the regime structure. \citet{Chiburis+Lokshin:2007} show that for \emph{interior} regimes (two finite thresholds $\kappa_{j-1}$ and $\kappa_j$), the generalized inverse Mills ratio is nearly linear in $\Wg$, rendering functional-form identification practically useless at empirically relevant sample sizes. For \emph{exterior} regimes (one infinite threshold), the nonlinearity is stronger, but still fragile. The consequence is that a weak or absent exclusion restriction leads to inflated standard errors for $\rho_j$, biased estimates of $\boldsymbol{\beta_j}$, and unreliable treatment effects --- even if the optimizer converges without numerical warning.
 
-Three failure modes arise in practice, with different consequences (foreshadowing the simulation results):
+Three failure modes arise in practice, with different consequences (foreshadowing the simulation results from Section~\ref{sec:simulation}):
 \begin{enumerate}
-\item \textbf{No exclusion restriction}: all variables in $\boldsymbol{W}$ also appear in all $\boldsymbol{X_j}$. Identification relies entirely on functional form. FIML estimates are downward biased, with coverage collapsing well below the nominal 95\%, while the two-step estimator has enormous variance.
+\item \textbf{No exclusion restriction}: all variables in $\boldsymbol{W}$ also appear in all $\boldsymbol{X_j}$. Identification relies entirely on functional form. Full information maximum likelihood (FIML) estimates are downward biased, with coverage collapsing well below the nominal 95\%, while the two-step estimator has enormous variance.
 \item \textbf{Weak instrument}: the excluded variable has negligible first-stage predictive power for $Z$. This case is numerically similar to the no-exclusion case: the condition number of the Hessian inflates and the profile likelihood for $\rho_j$ is near-flat.
 \item \textbf{Invalid exclusion restriction}: the excluded variable directly affects $y_j$ and should appear in $\boldsymbol{X_j}$. Both FIML and the two-step estimator converge confidently to the wrong answer (bias can exceed 80\% and coverage collapses to 0\%). No model-internal diagnostic can detect this failure mode --- it requires substantive subject-matter reasoning.
 \end{enumerate}
 
-\pkg{OPSR} provides two complementary tools for failure modes~(1) and~(2): a likelihood-ratio test for instrument relevance (\fct{opsr\_lr\_instrument}) and a per-regime profile log-likelihood for $\rho_j$ (\fct{opsr\_profile\_rho}), combined in \fct{opsr\_test\_exclusion\_restriction}. These are demonstrated in Section~\ref{sec:diagnostics} and Section~\ref{sec:cs-identification}. The simulation evidence for all three failure modes is presented in Section~\ref{sec:simulation}.
+\pkg{OPSR} provides two complementary tools for failure modes~(1) and~(2): a likelihood-ratio test for instrument relevance, \fct{opsr\_lr\_instrument}, and a per-regime profile log-likelihood for $\rho_j$, \fct{opsr\_profile\_rho}, combined in \fct{opsr\_test\_exclusion\_restriction}. These are demonstrated in Section~\ref{sec:diagnostics} and Section~\ref{sec:cs-identification}. The simulation evidence for all three failure modes is presented in Section~\ref{sec:simulation}.
 
 \subsection{Software} \label{sec:software}
 
@@ -328,7 +332,7 @@ The likelihood function \fct{loglik\_cpp} is implemented in \proglang{C++} using
 
 \section{Illustrations} \label{sec:illustrations}
 
-We first illustrate how to specify a model using \pkg{Formula}'s extended syntax and simulated data and demonstrate the main functionality of the package (Section~\ref{sec:opsr-core}). We then demonstrate the convergence diagnostics and identification tests (Section~\ref{sec:diagnostics}), followed by a replica of \citet{Wang+Mokhtarian:2024} illustrating nuances of the interface (Section~\ref{sec:wang-replica}). Finally, we show that \pkg{OPSR} can also estimate the classic Tobit-5 model and matches the results obtained with the implementation from \pkg{sampleSelection} (Section~\ref{sec:tobit-5}).
+We first illustrate how to specify a model using \pkg{Formula}'s extended syntax and simulated data and demonstrate the main functionality of the package (Section~\ref{sec:opsr-core}). We then demonstrate the convergence diagnostics and identification tests (Section~\ref{sec:diagnostics}), followed by a replica of \citet{Wang+Mokhtarian:2024} illustrating nuances of the interface (Section~\ref{sec:wang-replica}).
 
 \subsection[OPSR core]{\pkg{OPSR} core} \label{sec:opsr-core}
 
@@ -445,7 +449,7 @@ print(test_sim)
 %
 Because the simulated data uses \code{xs2} as a genuine excluded instrument, the LR test is strongly significant and the profile is peaked, confirming that $\rho_j$ is well identified by the data. A plot of the profile can be produced with \code{plot(test\_sim\$profile\_rho)}. The contrast with the weak-instrument and no-exclusion conditions is shown in Section~\ref{sec:simulation}, and a real-data application is in Section~\ref{sec:cs-identification}.
 
-\subsection[Reproducing Wang and Mokhtarian (2024)]{Reproducing \citet{Wang+Mokhtarian:2024}} \label{sec:wang-replica}
+\subsection{Replication exercise} \label{sec:wang-replica}
 
 Now that the user understands the basic workflow, we illustrate some nuances by reproducing a key output of \cite{Wang+Mokhtarian:2024} where they investigate the treatment effect of telework (TW) on weekly vehicle miles driven. The data is attached, documented (\code{?telework_data}) and can be loaded by
 %
@@ -581,44 +585,6 @@ ste <- summary(te)
 %
 where all ATEs are negative. Only \code{G3} (the current UTWers) would increase weekly VMD when switching from NTWing to NUTWing (\Sexpr{round(ste$te[1, 3], 3)} miles). All treatment effects are significantly different from zero, except \code{G2 T1->T2}, i.e., the NUTWers switching from NTWing to NUTWing.
 
-\subsection[Tobit-5 model and comparison to sampleSelection]{Tobit-5 model and comparison to \pkg{sampleSelection}} \label{sec:tobit-5}
-
-As noted in Section~\ref{sec:intro}, the Tobit-5 model can be seen as a form of OPSR with only two selection outcomes and can be fitted with the \proglang{R}-package \pkg{sampleSelection}. In this section, we illustrate that \pkg{OPSR} can estimate Tobit-5 models (as all the other examples involve three regimes) and that the results match the ones obtained with \pkg{sampleSelection}. The example, using simulated data, is directly taken from the vignette of \citet[Section~4.2]{Toomet+Henningsen:2020} (\code{vignette("selection", package = "sampleSelection")}).
-
-We create the following switching regression problem
-%
-<<tobit-5-data>>=
-set.seed(0)
-vc <- diag(3)
-vc[lower.tri(vc)] <- c(0.9, 0.5, 0.1)
-vc[upper.tri(vc)] <- vc[lower.tri(vc)]
-eps <- rmvnorm(500, c(0, 0, 0), vc)
-xs <- runif(500)
-ys <- xs + eps[, 1] > 0
-xo1 <- runif(500)
-yo1 <- xo1 + eps[, 2]
-xo2 <- runif(500)
-yo2 <- xo2 + eps[, 3]
-yo <- ifelse(ys, yo2, yo1)
-ys <- as.numeric(ys) + 1
-dat <- data.frame(ys, yo, yo1, yo2, xs, xo1, xo2)
-head(dat)
-@
-%
-Using \pkg{sampleSelection}, the estimation call reads
-%
-<<tobit-5-ss>>=
-tobit5_s <- selection(ys ~ xs, list(yo1 ~ xo1, yo2 ~ xo2), data = dat)
-summary(tobit5_s)
-@
-%
-which is equivalent to \pkg{OPSR}
-%
-<<tobit-5-opsr>>=
-tobit5_o <- opsr(ys | yo ~ xs | xo1 | xo2, data = dat, printLevel = 0)
-summary(tobit5_o)
-@
-
 %% -- Simulation study ---------------------------------------------------------
 \section{Simulation study} \label{sec:simulation}
 
@@ -636,13 +602,13 @@ The data-generating process (DGP) mirrors \citet{Chiburis+Lokshin:2007}. It comp
 
 \begin{table}[htbp]
 \centering
-\begin{tabular}{@{}clp{0.68\textwidth}@{}}
+\begin{tabular}{@{}clp{0.6\textwidth}@{}}
 \toprule
 Run & Condition & Description \\
 \midrule
-1 & Baseline & textbook DGP, valid exclusion restriction, six sample sizes \\
-2 & High $\rho = 0.99$ & severe selection bias \\
-4 & Non-normal shocks & squared standard-normal errors (mean-centred) \\
+1 & Baseline & Textbook DGP, valid exclusion restriction, six sample sizes \\
+2 & High $\rho = 0.99$ & Severe selection bias \\
+4 & Non-normal shocks & Squared standard-normal errors (mean-centred) \\
 5 & No exclusion restriction & $x_2$ absent from the selection equation ($\alpha_2 = 0$) and the outcome equation, leaving identification via functional form only \\
 6 & Violated exclusion restriction & $x_2$ in the selection equation ($\alpha_2 = 1$) but also enters the outcome directly ($\beta_{x_2} = 1$), making the instrument invalid \\
 7 & Weak instrument & $x_2$ in the selection equation with $\alpha_2 = 0$ (no predictive power) but correctly excluded from outcomes \\
@@ -720,7 +686,7 @@ run_labels2 <- c(
 )
 
 fmt_p <- function(p) {
-  if (is.na(p)) return("n/a")
+  if (is.na(p)) return("\\code{NA}")
   if (p < 0.001) return("$<$0.001")
   sprintf("%.3f", p)
 }
@@ -765,6 +731,8 @@ Now that the reader is familiar with the main functionality of \pkg{OPSR}, this 
 
 We first discuss the model building strategy to arrive at an appropriately specified OPSR model. The OPSR model is then compared to a model not accounting for error correlation and implications for treatment effects are shown. The case study concludes with a discussion on unit treatment effects investigating to what degree teleworking influence total travel demand across all modes.
 
+\subsection{Estimation} \label{sec:estimation}
+
 %% The data
 We use the TimeUse+ dataset \citep{Winkler+Meister+Axhausen:2024}, a smartphone-based diary, recording travel, time use, and expenditure data. Our analytical sample comprises employed individuals and is based on what \citet{Winkler+Axhausen:2024} identified as valid days. A valid day has at least 20 hours of information where 70\% of the events were validated by the user. Users who did not have at least 14 valid days were excluded. For the remaining 824 participants mobility indicators for a typical week were constructed. The telework status is based on tracked (and labelled) work activities and three regimes are differentiated: Non-teleworkers (NTWers), Non-usual teleworkers (NUTWers, $<$3 days/week) and Usual teleworkers (UTWers, 3$+$ days/week).
 
@@ -807,7 +775,6 @@ Sparse instrument categories deserve special attention. Only four respondents wo
 <<isco-manual>>=
 timeuse_data$isco_manual <- with(timeuse_data,
   pmin(1, isco_craft + isco_elementary + isco_plant + isco_agri))
-table(timeuse_data$isco_manual, timeuse_data$wfh)
 @
 %
 The full model is then specified according to two rules: the designated instruments (\code{shift_work}, \code{isco_manual}, \code{isco_tech} and \code{isco_clerical}) enter the selection equation only, while every other selection covariate also enters each outcome equation. Travel-specific variables (e.g., \code{car_access}, \code{parking_work}, \code{driverlicense}, or residential location) enter the outcome equations only, because vehicle accessibility and the residential context directly predict travel distance but are not expected to primarily determine telework status after conditioning on occupation type. The formula specification of the full model is hidden here for brevity.
@@ -847,7 +814,7 @@ The second call to \fct{opsr} polishes the BFGS solution with a Newton-Raphson s
 %% Exclusion restriction validation
 \subsection{Exclusion restriction and identification} \label{sec:cs-identification}
 
-Before interpreting treatment effects, we validate the exclusion restriction of the fitted model. The instruments are the shift-work and occupation-teleworkability variables that appear in the selection equation but not in the outcome equations. We test their joint relevance with \fct{opsr\_test\_exclusion\_restriction} and inspect the per-regime profile likelihood for $\rho_j$:
+Before interpreting treatment effects, we validate the exclusion restriction of the fitted model. The instruments are the shift-work and occupation-teleworkability variables that appear in the selection equation but not in the outcome equations. We test their joint relevance with \fct{opsr\_test\_exclusion\_restriction} and inspect the per-regime profile likelihood for $\rho_j$
 %
 <<exclusion-test-cs>>=
 instruments_cs <- c("shift_work", "isco_manual", "isco_clerical")
@@ -857,7 +824,7 @@ test_cs <- opsr_test_exclusion_restriction(fit_red,
 print(test_cs)
 @
 %
-The LR test is strongly significant (the instruments jointly improve the selection fit well beyond chance), confirming instrument relevance. The profile log-likelihood plots per regime (Figure~\ref{fig:profile}) are produced by \code{plot(test\_cs\$profile\_rho)}.
+The LR test is strongly significant (the instruments jointly improve the selection fit), confirming instrument relevance. The profile log-likelihood plots per regime (Figure~\ref{fig:profile}) are produced by \code{plot(test\_cs\$profile\_rho)}.
 %
 \setkeys{Gin}{width=\textwidth}
 \begin{figure}[t!]
@@ -868,7 +835,7 @@ plot(test_cs$profile_rho)
 \caption{\label{fig:profile} Profile log-likelihood for $\rho_j$ per regime. Each panel fixes $\rho_j$ at the grid value and re-maximises over all other parameters. Peaked profiles indicate that $\rho_j$ is identified by the data. Near-boundary grid values ($\rho_j$ close to $\pm 1$) can fail to converge and are omitted, which is why some panels appear truncated before the grid limits.}
 \end{figure}
 %
-Peaked profiles for all three regimes confirm that the error correlations are empirically identified, not merely pinned by the bivariate normality assumption. This stands in contrast to the flat profiles produced when no exclusion restriction is present (Section~\ref{sec:simulation}). \fct{opsr\_diagnostics} adds the second-order optimality checks:
+Peaked profiles for all three regimes confirm that the error correlations are empirically identified, not merely pinned by the bivariate normality assumption. This stands in contrast to the flat profiles produced when no exclusion restriction is present (Section~\ref{sec:simulation}). \fct{opsr\_diagnostics} adds the second-order optimality checks
 %
 <<diagnostics-cs>>=
 opsr_diagnostics(fit_red)
@@ -896,7 +863,7 @@ te(fit_red)
 te.fr <- unclass(te(fit_red))
 @
 %
-The following treatment effects are derived from the correctly identified model (\code{fit\_red}) whose exclusion restriction was validated in Section~\ref{sec:cs-identification}. Telework reduces weekly kilometers traveled across all groups, with the exception of NTWers who would be more mobile when switching from NTWing to NUTWing (\Sexpr{round(te.fr[1, 1], 2)} km --- column \code{NTWer}, row \code{NTWing -> NUTWing}) and UTWers who would travel slightly more when further adopting telework from NUTWing (\Sexpr{round(te.fr[3, 3], 2)} km). The treatment effects when switching from NTWing to NUTWing are strongest for UTWers (\Sexpr{round(te.fr[1, 3], 2)} km) compared to NTWers (\Sexpr{round(te.fr[1, 1], 2)} km) and NUTWers (\Sexpr{round(te.fr[1, 2], 2)} km). The treatment effect over the full range (NTWing to UTWing) increases in magnitude with the factual telework intensity of the group: \Sexpr{round(te.fr[2, 1], 2)} km for NTWers, \Sexpr{round(te.fr[2, 2], 2)} km for NUTWers and \Sexpr{round(te.fr[2, 3], 2)} km for UTWers. This ordering is exactly what self-selection on unobservables (the positive \code{rho1} and \code{rho3} estimates) implies: the individuals who stand to reduce their travel the most by teleworking are also the ones who telework the most. Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (\Sexpr{round(te.fr[1, 1], 2)} km, NTWing to NUTWing) but then substantially decreasing weekly kilometers with more telework (\Sexpr{round(te.fr[3, 1], 2)} km, NUTWing to UTWing). An explanation could be that these individuals (living closer to their workplace) initially do not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show exactly an inverse pattern, first (NTWing to NUTWing) strongly reducing weekly kilometers (\Sexpr{round(te.fr[1, 3], 2)} km) but upon further telework adoption (NUTWing to UTWing) only minimally adjusting weekly kilometers (\Sexpr{round(te.fr[3, 3], 2)} km). A similar argument could be made that these individuals (living further from their workplace) adjust activity chains and location choices from the start. One can therefore conclude that the main travel reduction happens at different treatment intensities for the different groups. Figure~\ref{fig:treatment} visualizes these treatment effects and shows the roughly linear pattern for NUTWers and the (mirrored) hockey stick pattern for NTWers and UTWers.
+Telework reduces weekly kilometers traveled across all groups, with the exception of NTWers who would be more mobile when switching from NTWing to NUTWing (\Sexpr{round(te.fr[1, 1], 2)} km; column \code{NTWer}, row \code{NTWing -> NUTWing}) and UTWers who would travel slightly more when further adopting telework from NUTWing (\Sexpr{round(te.fr[3, 3], 2)} km). The treatment effects when switching from NTWing to NUTWing are strongest for UTWers (\Sexpr{round(te.fr[1, 3], 2)} km) compared to NTWers (\Sexpr{round(te.fr[1, 1], 2)} km) and NUTWers (\Sexpr{round(te.fr[1, 2], 2)} km). The treatment effect over the full range (NTWing to UTWing) increases in magnitude with the factual telework intensity of the group: \Sexpr{round(te.fr[2, 1], 2)} km for NTWers, \Sexpr{round(te.fr[2, 2], 2)} km for NUTWers and \Sexpr{round(te.fr[2, 3], 2)} km for UTWers. This ordering is exactly what self-selection on unobservables (the positive \code{rho1} and \code{rho3} estimates) implies: the individuals who stand to reduce their travel the most by teleworking are also the ones who telework the most. Interestingly, NTWers show a non-linear pattern, first increasing weekly kilometers when adopting some telework (\Sexpr{round(te.fr[1, 1], 2)} km, NTWing to NUTWing) but then substantially decreasing weekly kilometers with more telework (\Sexpr{round(te.fr[3, 1], 2)} km, NUTWing to UTWing). An explanation could be that these individuals (living closer to their workplace) initially do not adjust activity chains and location choices when only occasionally teleworking. For example, an individual might stay subscribed to the gym close to the workplace and visit that facility even on a home office day. On the other hand, UTWers show exactly an inverse pattern, first (NTWing to NUTWing) strongly reducing weekly kilometers (\Sexpr{round(te.fr[1, 3], 2)} km) but upon further telework adoption (NUTWing to UTWing) only minimally adjusting weekly kilometers (\Sexpr{round(te.fr[3, 3], 2)} km). A similar argument could be made that these individuals (living further from their workplace) adjust activity chains and location choices from the start. One can therefore conclude that the main travel reduction happens at different treatment intensities for the different groups. Figure~\ref{fig:treatment} visualizes these treatment effects and shows the roughly linear pattern for NUTWers and the (mirrored) hockey stick pattern for NTWers and UTWers.
 
 \setkeys{Gin}{width=0.8\textwidth}
 \begin{figure}[t!]
@@ -1004,7 +971,7 @@ In a real-world setting, the treatment is usually not exogenously prescribed but
 
 The package provides two layers of model-quality diagnostics. \fct{opsr\_diagnostics} inspects the second-order optimality conditions at the MLE (gradient magnitude, Hessian negative-definiteness, condition number), addressing whether the optimizer found a well-defined maximum. \fct{opsr\_test\_exclusion\_restriction} goes further by testing instrument relevance via a likelihood-ratio test and examining whether $\rho_j$ is empirically identified beyond distributional assumptions via the profile log-likelihood. Together these diagnostics make identification failure modes~---~absent instruments, weak instruments~---~visible before treatment effects are computed. The key limitation, shared with all Heckman-type models, is that an \emph{invalid} exclusion restriction (instrument that belongs in the outcome equation) cannot be detected from within the model and requires substantive judgment.
 
-A Monte Carlo study replicating \citet{Chiburis+Lokshin:2007} for the three-regime case confirms three findings. FIML achieves near-nominal coverage when a valid instrument is in place. Coverage collapses (especially for interior regimes) when identification relies on functional form alone. A violated exclusion restriction produces confident but catastrophically wrong estimates with 0\% coverage. The simulation results are stored as the package data object \code{simulation\_study} and can be used as a benchmark for future extensions.
+A Monte Carlo study replicating \citet{Chiburis+Lokshin:2007} for the three-regime case confirms three findings. FIML achieves near-nominal coverage when a valid instrument is in place. Coverage collapses (especially for interior regimes) when identification relies on functional form alone. A violated exclusion restriction produces confident but catastrophically wrong estimates with 0\% coverage.
 
 In the case study, the OPSR method is applied to a tracking and activity diary dataset collected in Switzerland, investigating the telework treatment effects on weekly distance traveled across all modes. We demonstrate, first, how to specify an appropriately identified model (using shift-work status and grouped occupation-teleworkability indicators as exclusion restrictions, where grouping the sparse site-bound occupation categories avoids a quasi-complete separation that would otherwise leave the likelihood without an interior maximum) and how to validate the exclusion restriction using the diagnostic tools; and second, to what extent computed treatment effects differ if the error correlation is not accounted for. We find that, overall, telework reduces travel and that the reduction over the full switching range grows with the factual telework intensity of a group --- the pattern implied by positive selection on unobservables. Non-teleworkers tend to have shorter commutes and adjust mobility patterns mainly when switching from non-usual telework to usual telework; their weekly distance traveled even increases when initially adopting some telework. Conversely, usual teleworkers (had they not been teleworking) adjust mobility patterns strongly when adopting some telework but then only marginally adjust distance traveled when further adopting telework. Comparing the unit treatment effects to the two-way commute distance indicates that, over the full switching range, telework reduces weekly distance traveled by less than the foregone commute, so some compensating travel (rebound effects) exists; only for the sharpest adjustments (usual teleworkers initially adopting telework, and non-teleworkers moving from non-usual to usual telework) does the reduction exceed the foregone commute.
 
@@ -1046,12 +1013,47 @@ We would like to thank Kay W. Axhausen and Patricia L. Mokhtarian for their supp
 
 \newpage
 
-% \begin{appendix}
+\begin{appendix}
+
+\section[Tobit-5 model and comparison to sampleSelection]{Tobit-5 model and comparison to \pkg{sampleSelection}} \label{sec:tobit-5}
+
+As noted in Section~\ref{sec:intro}, the Tobit-5 model can be seen as a form of OPSR with only two selection outcomes and can be fitted with the \proglang{R}-package \pkg{sampleSelection}. In this section, we illustrate that \pkg{OPSR} can estimate Tobit-5 models (as all the other examples involve three regimes) and that the results match the ones obtained with \pkg{sampleSelection}. The example, using simulated data, is directly taken from the vignette of \citet[Section~4.2]{Toomet+Henningsen:2020} (\code{vignette("selection", package = "sampleSelection")}).
+
+We create the following switching regression problem
 %
-% \section{More technical details} \label{app:technical}
+<<tobit-5-data>>=
+set.seed(0)
+vc <- diag(3)
+vc[lower.tri(vc)] <- c(0.9, 0.5, 0.1)
+vc[upper.tri(vc)] <- vc[lower.tri(vc)]
+eps <- rmvnorm(500, c(0, 0, 0), vc)
+xs <- runif(500)
+ys <- xs + eps[, 1] > 0
+xo1 <- runif(500)
+yo1 <- xo1 + eps[, 2]
+xo2 <- runif(500)
+yo2 <- xo2 + eps[, 3]
+yo <- ifelse(ys, yo2, yo1)
+ys <- as.numeric(ys) + 1
+dat <- data.frame(ys, yo, yo1, yo2, xs, xo1, xo2)
+head(dat)
+@
 %
+Using \pkg{sampleSelection}, the estimation call reads
 %
-% \end{appendix}
+<<tobit-5-ss>>=
+tobit5_s <- selection(ys ~ xs, list(yo1 ~ xo1, yo2 ~ xo2), data = dat)
+summary(tobit5_s)
+@
+%
+which is equivalent to \pkg{OPSR}
+%
+<<tobit-5-opsr>>=
+tobit5_o <- opsr(ys | yo ~ xs | xo1 | xo2, data = dat, printLevel = 0)
+summary(tobit5_o)
+@
+
+\end{appendix}
 
 %% -----------------------------------------------------------------------------
 
