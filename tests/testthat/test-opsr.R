@@ -73,7 +73,9 @@ test_that("accepts weights vector", {
   f <- ys | yo ~ xs1 + xs2 | xo1 + xo2
   fit <- opsr(f, dat, printLevel = 0)
   fit1 <- opsr(f, dat, weights = w1, printLevel = 0)
-  expect_equal(coef(fit1), coef(fit))
+  ## unit weights only change floating-point summation order, so results may
+  ## differ by ~1e-7 across BLAS/LAPACK implementations (e.g. MKL 2026.2.0).
+  expect_equal(coef(fit1), coef(fit), tolerance = 1e-5)
   fit2 <- opsr(f, dat, weights = w2, printLevel = 0)
   expect_false(any(coef(fit2) == coef(fit1)))
 })
